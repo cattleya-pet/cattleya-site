@@ -1,0 +1,18 @@
+
+// Border radius tokens from Figma
+$radius-full: 62.4375rem; // 9999px
+$radius-l: 1rem;       // 16px
+$radius-m: 0.5rem;     // 8px
+$radius-s: 0.25rem;    // 4px
+
+// Additional radius tokens for project needs
+$radius-xs: 0.125rem;  // 2px
+$radius-xl: 0.75rem;   // 12px
+$radius-2xl: 1.25rem;  // 20px
+$radius-3xl: 1.5rem;   // 24px
+
+// Alias for common usage
+$border-radius-full: $radius-full;
+$border-radius-large: $radius-l;
+$border-radius-medium: $radius-m;
+$border-radius-small: $radius-s;

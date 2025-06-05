@@ -1,0 +1,216 @@
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+
+.top-reason-section {
+  background: #f8f9fa;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.top-reason-title {
+  text-align: center;
+  @include typography-ja-2l($font-weight-semibold);
+  margin-bottom: rem(51.2);
+  color: $color-gold-600;
+  letter-spacing: rem(1.28);
+}
+
+.top-reason-list {
+  display: grid;
+  grid-template-columns: 1fr; /* スマホ版: タイトル + 5枚のカード = 計6要素を縦1列 */
+  gap: rem(24);
+  justify-content: center;
+  margin: 0 auto;
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: repeat(2, 1fr); /* タブレット版: 2列×3行でタイトルを含めて配置 */
+    gap: rem(28);
+  }
+  
+  @include breakpoint-up(lg) {
+    grid-template-columns: repeat(3, 1fr); /* PC版: 3列×2行でタイトルを含めて配置 */
+    gap: rem(32);
+  }
+}
+
+.top-reason-card {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: rem(20);
+  overflow: hidden;
+  min-height: rem(220);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  
+  @include breakpoint-up(sm) {
+    min-height: rem(220);
+  }
+  
+  @include breakpoint-up(lg) {
+    min-height: rem(320);
+  }
+  
+  /* PC版で理由カードの順序を調整 */
+  @include breakpoint-up(lg) {
+    &:nth-child(2) { order: 0; } /* 理由1 → 1列目1行目 */
+    &:nth-child(3) { order: 2; } /* 理由2 → 3列目1行目 */
+    &:nth-child(4) { order: 3; } /* 理由3 → 1列目2行目 */
+    &:nth-child(5) { order: 4; } /* 理由4 → 2列目2行目 */
+    &:nth-child(6) { order: 5; } /* 理由5 → 3列目2行目 */
+  }
+}
+
+.top-reason-card__overlay {
+  background: rgba(0, 0, 0, 0.4);
+  padding: rem(35) rem(15) rem(25);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(40) rem(25) rem(25);
+  }
+  
+  @include breakpoint-up(xl) {
+    padding: rem(40);
+  }
+}
+
+.top-reason-card__content {
+  color: white;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+}
+
+.top-reason-card__number {
+  @include typography-en-2l();
+  color: rgba(255, 255, 255, 0.2);
+  position: absolute;
+  top: rem(-8);
+  left: rem(-4);
+  line-height: 0.8;
+  z-index: 1;
+  
+  @include breakpoint-up(lg) {
+    @include typography-en-3l();
+    top: rem(-20);
+    left: rem(-8);
+  }
+}
+
+.top-reason-card__title {
+  @include typography-ja-m($font-weight-semibold);
+  color: white;
+  margin-bottom: rem(16);
+  line-height: 1.3;
+  position: relative;
+  z-index: 2;
+  margin-top: rem(12);
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+    margin-bottom: rem(20);
+    margin-top: rem(26);
+  }
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: $color-text-disabled;
+    opacity: 0.5;
+    margin-top: rem(12);
+    
+    @include breakpoint-up(lg) {
+      margin-top: rem(16);
+    }
+  }
+}
+
+.top-reason-card__desc {
+  font-size: rem(12);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-s;
+    line-height: 1.7;
+  }
+}
+
+
+.top-reason-title-card {
+  background-color: $color-background-tertiary;
+  border-radius: rem(20);
+  padding: rem(32);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(40);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(48);
+    order: 1; /* PC版でタイトルを2列目1行目に配置 */
+  }
+}
+
+.top-reason-title-card__subtitle {
+  @include typography-en-2s;
+  color: $color-text-tertiary;
+  margin-bottom: rem(10);
+  display: block;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.top-reason-title-card__title {
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1;
+  font-weight: $font-weight-semibold;
+  
+  .title-text-m {
+    @include typography-ja-m($font-weight-semibold);
+  }
+  
+  .title-text-l {
+    @include typography-ja-l($font-weight-semibold);
+  }
+  
+  .title-text-s {
+    @include typography-ja-s($font-weight-semibold);
+  }
+}
+
+.wanwan-link {
+  color: rgba(255, 255, 255, 1);
+  text-decoration: underline;
+  transition: opacity 0.3s ease;
+  
+  &:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+} 

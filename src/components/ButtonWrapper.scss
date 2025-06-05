@@ -1,0 +1,11 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.btn-wrapper {
+  margin-top: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(60);
+  }
+}

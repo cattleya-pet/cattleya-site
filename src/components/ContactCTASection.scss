@@ -1,0 +1,108 @@
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+@use '../styles/tokens/radius' as *;
+
+.contact-cta-section {
+  position: relative;
+  min-height: rem(500);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @include breakpoint-up(lg) {
+    min-height: rem(600);
+  }
+}
+
+.contact-cta-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.contact-cta-background-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  @include typography-en-3l($font-weight-bold);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+  text-stroke: 1px rgba(255, 255, 255, 0.6);
+  user-select: none;
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.contact-cta-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  max-width: rem(600);
+  padding: 0 rem(20);
+}
+
+.contact-cta-title-group {
+  position: relative;
+}
+
+.contact-cta-title {
+  @include typography-ja-l($font-weight-semibold);
+  width: 100%;
+  color: white;
+  margin-bottom: rem(24);
+}
+
+.contact-cta-desc {
+  @include typography-ja-s;
+  color: white;
+  line-height: 1.6;
+  margin-bottom: rem(32);
+}
+
+.btn-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+// ContactCTASection内のBaseButtonのカスタマイズ
+.contact-cta-content .base-button {
+  border-color: white;
+  color: white;
+  background: transparent;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+  }
+  
+  // 左の横棒を白色に変更
+  .base-button__line {
+    background: white;
+  }
+  
+  // 文字を白色に変更
+  .base-button__text {
+    color: white;
+  }
+  
+  // 肉球アイコンを白色に変更
+  .base-button__icon svg {
+    filter: brightness(0) invert(1);
+  }
+} 

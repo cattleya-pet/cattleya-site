@@ -1,0 +1,126 @@
+@use '../styles/variables' as vars;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+
+.topview-section {
+  // モバイル用（デフォルト）
+  width: 100vw;
+  aspect-ratio: auto;
+  height: rem(690);
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  
+  @include breakpoint-up(md) {
+    // タブレット以上：4:3比率に変更
+    aspect-ratio: 4 / 3;
+    height: auto;
+  }
+  
+  @include breakpoint-up(lg) {
+    // デスクトップ以上：フルハイトでヘッダーとオーバーラップ
+    aspect-ratio: auto!important;
+    height: 100vh!important;
+    // margin-top: -7rem;
+    z-index: 1;
+  }
+  
+  @include breakpoint-up(xl) {
+    // 大画面：ヘッダーマージン調整
+    // margin-top: -6rem;
+  }
+}
+
+.topview-video-wrapper {
+  width: 100vw;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.topview-overlay {
+  // モバイル用（デフォルト）
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.18);
+  padding-bottom: rem(50);
+  
+  @include breakpoint-up(md) {
+    // タブレット以上：中央配置に変更
+    align-items: center;
+    padding-bottom: 0;
+  }
+}
+
+.topview-content {
+  // モバイル用（デフォルト）
+  color: #fff;
+  z-index: 3;
+  position: absolute;
+  left: 6vw;
+  bottom: rem(40);
+  max-width: calc(100% - 12vw);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  text-align: left;
+  
+  // @include breakpoint-up(md) {
+  //   // タブレット以上：中央配置
+  //   position: static;
+  //   text-align: center;
+  //   max-width: 90vw;
+  //   margin: 0 auto;
+  //   padding: 0;
+  //   left: auto;
+  //   bottom: auto;
+  //   width: auto;
+  // }
+  
+  @include breakpoint-up(lg) {
+    // デスクトップ以上：左下配置
+    position: absolute;
+    left: rem(50);
+    bottom: rem(60);
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    text-align: left;
+    z-index: 2;
+    max-width: none;
+  }
+}
+
+.topview-title {
+  // rem()関数をclamp()で使用した例
+  font-family: $font-family-ja;
+  font-size: clamp(rem(26), 5vw, rem(67)); // 26px〜67pxで画面幅に応じて変化
+  font-weight: 700;
+  line-height: 1.6; // line-heightは通常固定値を使用
+  color: #fff;
+  margin-bottom: clamp(rem(12), 2vw, rem(24)); // 12px〜24px
+  
+  // より細かい制御が必要な場合のブレークポイント
+  @include breakpoint-up(lg) {
+    line-height: 1.4; // 大画面では少し詰める
+  }
+}

@@ -1,0 +1,119 @@
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/radius' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.voice-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: $color-background-primary;
+  border-radius: $radius-l;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: rem(20) rem(20) rem(25) rem(20);
+  min-width: 0;
+  width: 100%;
+  gap: rem(35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  margin: rem(30) 0;
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    // align-items: stretch;
+    padding: rem(30);
+    gap: rem(50);
+    width: auto;
+  }
+  
+  &:hover {
+    transform: translateY(rem(-6));
+    box-shadow: 0 8px 24px -2px rgba(0,0,0,0.12);
+    
+    .voice-card-img {
+      transform: scale(1.05);
+    }
+  }
+}
+.voice-card-img-wrap {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  border-radius: $radius-m;
+  overflow: hidden;
+  
+  @include breakpoint-up(lg) {
+    width: rem(210);
+    flex: 0 0 auto;
+    align-self: flex-start;
+  }
+  @include breakpoint-up(xl) {
+    width: rem(270);
+  }
+}
+.voice-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #f8f7f5;
+  transition: transform 0.3s ease;
+}
+.voice-card-body {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  @include breakpoint-up(lg) {
+    min-width: rem(210);
+  }
+  @include breakpoint-up(xl) {
+    min-width: rem(270);
+  }
+}
+.voice-card-title-row {
+  font-size: rem(16);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: rem(10);
+  line-height: 1.2;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($weight: $font-weight-semibold);
+  }
+}
+.voice-card-owner-row {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-bottom: rem(17.6);
+  @include breakpoint-up(xl) {
+    @include typography-ja-s($weight: $font-weight-semibold);
+  }
+}
+.voice-card-meta-table {
+  display: grid;
+  grid-template-columns: rem(88) 1fr;
+  gap: rem(3.2) rem(19.2);
+  width: 100%;
+  margin-bottom: rem(15);
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: rem(104) 1fr;
+    font-size: rem(17.6);
+  }
+}
+.voice-card-meta-label {
+  @include typography-ja-2s();
+  text-align: left;
+}
+.voice-card-meta-value {
+  @include typography-ja-s();
+  text-align: left;
+}
+.voice-card-content {
+  @include typography-ja-s();
+  word-break: break-all;
+}
+
+ 

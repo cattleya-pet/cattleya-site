@@ -1,0 +1,241 @@
+---
+// ConceptSection.astro - コンセプトセクション
+---
+
+<section class="concept-section">
+  <div class="concept-container">
+    <!-- 上部エリア（ラベル + コンテンツ） -->
+    <div class="concept-main">
+      <!-- セクションラベル -->
+      <div class="concept-label">Concept</div>
+      
+      <!-- メインコンテンツエリア -->
+      <div class="concept-content">
+        <!-- タイトル -->
+        <div class="concept-title-section">
+          <h2 class="concept-title">
+            笑顔あふれる<br class="lg-up-only">
+            暮らしの始まり。
+          </h2>
+        </div>
+        
+        <!-- 説明文 -->
+        <div class="concept-description-section">
+          <div class="concept-description">
+            <p>
+              ペットショップ「Cattleya（カトレア）」では、<br class="sm-up-only">
+              お客様とワンちゃん・ネコちゃんとの新しい出会いをサポートしています。<br>命あるパートナーを迎える不安や悩みが少しでも解消できるよう、<br>
+              健康で社会性豊かな子たちを、<br class="sm-up-only">私たちは健康管理からお迎え後のサポートまで、安心していただけるサービスを提供しています。<br><br>この出会いが、お客様とワンちゃん・ネコちゃんの<br class="sm-up-only">
+              笑顔あふれる暮らしの始まりとなりますように——。<br>
+              ぜひ「Cattleya」に足を運んでいただき、私たちの想いに触れてみてください。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- スクロールアニメーション -->
+    <div class="concept-scroll-animation">
+      <div class="scroll-text">
+        <span>The beginning of a life full of smiles for our customers and their dogs and cats.</span>
+        <span>The beginning of a life full of smiles for our customers and their dogs and cats.</span>
+        <span>The beginning of a life full of smiles for our customers and their dogs and cats.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+
+.concept-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-primary;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .concept-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: rem(40);
+  }
+}
+
+.concept-main {
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center; // 左右中央寄せ
+    gap: rem(80);
+  }
+}
+
+.concept-label {
+  @include typography-en-m;
+  color: $color-text-disabled;
+  letter-spacing: rem(2);
+  position: relative;
+  padding-left: rem(40);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: rem(30);
+    height: rem(1);
+    background-color: $color-text-disabled;
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(10);
+  }
+}
+
+.concept-content {
+  // モバイルファースト: デフォルトは縦書き風レイアウト
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: rem(32);
+  
+  // lg以上: concept-labelと横並び、内部は縦並び
+  @include breakpoint-up(lg) {
+    flex: 0 0 auto; // 内部コンテンツ幅に応じる
+    flex-direction: column; // 内部は縦並び（title-section → description-section）
+    gap: rem(40);
+  }
+}
+
+.concept-title-section {
+  // モバイルファースト: デフォルトは幅100%
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+.concept-title {
+  @include typography-ja-l;
+  color: $color-text;
+  margin: 0;
+  line-height: 1.4;
+  text-align: left; // モバイルファースト: デフォルトは左寄せ
+  
+  @include breakpoint-up(sm) {
+  }
+  @include breakpoint-up(md) {
+    @include typography-ja-2l;
+  }
+}
+
+.concept-description-section {
+  // モバイルファースト: デフォルトスタイル
+  width: 100%;
+  position: relative;
+  
+  
+  @include breakpoint-up(sm) {
+    padding-left: 0; // タブレット以上では縦線とpadding削除
+    
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.concept-description {
+  @include breakpoint-up(sm) {
+    max-width: rem(600);
+  }
+  
+  p {
+    font-size: rem(16);
+    color: $color-text;
+    line-height: 1.8;
+    margin: 0;
+    text-align: left; // モバイルファースト: デフォルトは左寄せ
+    
+    @include breakpoint-up(sm) {
+    }
+  }
+}
+
+// sm以上でのみ表示される改行
+.sm-up-only {
+  display: none; // モバイルファースト: デフォルトは非表示
+  
+  @include breakpoint-up(sm) {
+    display: inline; // sm以上で改行を表示
+  }
+}
+
+// lg以上では非表示される改行
+.lg-up-only {
+  display: inline; // モバイルファースト: デフォルトは表示
+  
+  @include breakpoint-up(lg) {
+    display: none; // lg以上で改行を非表示
+  }
+}
+
+// スクロールアニメーション
+.concept-scroll-animation {
+  // モバイルファースト: デフォルトは小さいマージン
+  margin-top: rem(40);
+  width: 100vw; // 画面幅一杯
+  margin-left: calc(-50vw + 50%); // 中央寄せのコンテナから画面幅一杯に拡張
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(60);
+  }
+}
+
+.scroll-text {
+  display: inline-block;
+  animation: scroll-right-to-left 90s linear infinite; // モバイルは少し早めに
+  
+  @include breakpoint-up(sm) {
+    animation: scroll-right-to-left 120s linear infinite; // デスクトップは元の速度
+  }
+  
+  span {
+    // モバイルファースト: デフォルトは小さいサイズ
+    @include typography-en-2l;
+    color: $color-text-disabled;
+    font-weight: $font-weight-regular;
+    margin-right: rem(60); // スパン間の間隔
+    display: inline-block;
+    
+    @include breakpoint-up(sm) {
+      font-size: rem(100);
+      margin-right: rem(100);
+    }
+  }
+}
+
+// 右から左へのスクロールアニメーション
+@keyframes scroll-right-to-left {
+  0% {
+    transform: translateX(0%); // 読み込み時に1文字目がすぐ見える
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>

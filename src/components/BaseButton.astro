@@ -1,0 +1,27 @@
+---
+import './BaseButton.scss';
+import CatFootprintIcon from '../assets/icons/icon_cat-footprint-01.svg?raw';
+
+interface Props {
+  href?: string;
+  text: string;
+  onClick?: string;
+  class?: string;
+}
+
+const { href, text, onClick, class: className = '' } = Astro.props;
+---
+
+{href ? (
+  <a href={href} class={`base-button ${className}`}>
+    <span class="base-button__line"></span>
+    <span class="base-button__text">{text}</span>
+    <span class="base-button__icon" set:html={CatFootprintIcon}></span>
+  </a>
+) : (
+  <button type="button" class={`base-button ${className}`} onclick={onClick}>
+    <span class="base-button__line"></span>
+    <span class="base-button__text">{text}</span>
+    <span class="base-button__icon" set:html={CatFootprintIcon}></span>
+  </button>
+)}

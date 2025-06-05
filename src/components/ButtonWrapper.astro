@@ -1,0 +1,13 @@
+---
+import './ButtonWrapper.scss';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`btn-wrapper ${className}`}>
+  <slot />
+</div>

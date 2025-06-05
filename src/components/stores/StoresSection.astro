@@ -1,0 +1,41 @@
+---
+import StoreCard from './StoreCard.astro';
+import './StoresSection.scss';
+import SectionHeading from '../SectionHeading.astro';
+import BaseButton from '../BaseButton.astro';
+import ButtonWrapper from '../ButtonWrapper.astro';
+
+const { stores } = Astro.props;
+---
+
+<section class="stores-section">
+  <div class="container stores-container">
+    <!-- セクション見出し -->
+    <SectionHeading 
+      subtitle="Stores information"
+      title="店舗情報"
+      alignment="center"
+      subtitleClass="text-disabled"
+      titleClass="text-primary"
+    />
+    
+    <div class="stores-viewport">
+      
+      <!-- 店舗カード表示エリア -->
+      <div class="stores-grid">
+        {stores.map((store, i) => (
+          <div class="stores-card" data-index={i}>
+            <StoreCard {...store} />
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- lg未満用ボタン -->
+    <div class="stores-button-wrapper">
+      <ButtonWrapper>
+        <BaseButton href="/stores" text="もっとみる" />
+      </ButtonWrapper>
+    </div>
+  </div>
+</section>

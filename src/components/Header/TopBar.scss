@@ -1,0 +1,76 @@
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/typography' as *;
+
+.top-bar {
+  background-color: $color-background;
+  padding: rem(8) 0;
+  transition: padding 0.3s ease;
+
+  /* スクロール時の縮小効果 */
+  .header-scrolled & {
+    padding: 0;
+  }
+}
+
+.top-bar-container {
+  @include flex-between;
+}
+
+.left-section {
+  @include flex-center;
+  
+  // xl以上では左端から50px相当の余白
+  @include breakpoint-up(xl) {
+    margin-left: calc(#{rem(50)} - #{rem(32)}); // containerのpadding-leftを考慮して調整
+  }
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: rem(24);
+}
+
+.social-links {
+  display: flex;
+  gap: rem(16);
+}
+
+.social-link {
+  color: $color-black;
+  transition: $transition-base;
+  display: flex;
+  align-items: center;
+  height: rem(20);
+  
+  svg {
+    width: rem(20);
+    height: rem(20);
+  }
+  
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: rem(16);
+}
+
+.action-button {
+  padding: rem(8) rem(16);
+  border: rem(1) solid $color-black;
+  border-radius: rem(4);
+  @include typography-ja-s;
+  color: $color-text;
+  text-decoration: none;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: #ece9e7;
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,264 @@
+---
+import VoiceCard from './VoiceCard.astro';
+import './VoiceSliderSection.scss';
+import SectionHeading from '../SectionHeading.astro';
+import BaseButton from '../BaseButton.astro';
+import ButtonWrapper from '../ButtonWrapper.astro';
+const { voices } = Astro.props;
+---
+<section class="voice-slider-section">
+  <div class="container voice-slider-container">
+    <!-- lg未満用ヘッダー -->
+    <div class="section-heading--mobile">
+      <SectionHeading 
+        subtitle="Voice"
+        title="お客様の声"
+        alignment="center"
+        subtitleClass="text-disabled"
+        titleClass="text-primary"
+      />
+    </div>
+    
+    <div class="voice-slider-viewport">
+    <div class="voice-slider-left">
+      <!-- lg以降用ヘッダー -->
+      <div class="section-heading--desktop">
+        <SectionHeading 
+          subtitle="Voice"
+          title="お客様の声"
+          alignment="left"
+          subtitleClass="text-disabled"
+          titleClass="text-primary"
+        />
+      </div>
+      
+      <!-- lg未満用スライダー -->
+      <div class="voice-slider-track--mobile">
+        {voices.map((voice, i) => (
+          <div class="voice-slider-card" data-index={i}>
+            <VoiceCard {...voice} />
+          </div>
+        ))}
+      </div>
+      
+      <!-- ナビゲーション統合 -->
+      <div class="voice-slider-navigation">
+        <!-- ドットナビゲーション -->
+        <div class="voice-slider-dots">
+          {voices.map((_, i) => (
+            <button class="voice-slider-dot" data-slide={i} aria-label={`スライド${i + 1}へ`}></button>
+          ))}
+        </div>
+        
+        <div class="voice-slider-nav">
+          <button class="voice-slider-btn prev" aria-label="前へ">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button class="voice-slider-btn next" aria-label="次へ">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- lg以降用ボタン -->
+      <div class="voice-slider-button-wrapper--desktop">
+        <ButtonWrapper>
+          <BaseButton href="/voice" text="もっとみる" />
+        </ButtonWrapper>
+      </div>
+    </div>
+    
+    <!-- lg以降用スライダー -->
+    <div class="voice-slider-track--desktop">
+      {voices.map((voice, i) => (
+        <div class="voice-slider-card" data-index={i}>
+          <VoiceCard {...voice} />
+        </div>
+      ))}
+    </div>
+  </div>
+    
+    <!-- lg未満用ボタン -->
+    <div class="voice-slider-button-wrapper">
+      <ButtonWrapper>
+        <BaseButton href="/voice" text="もっとみる" />
+      </ButtonWrapper>
+    </div>
+  </div>
+</section>
+<script>
+  let currentSlide = 0;
+  
+  const sliderContainer = document.querySelector('.voice-slider-section');
+  const mobileTrack = document.querySelector('.voice-slider-track--mobile') as HTMLElement;
+  const desktopTrack = document.querySelector('.voice-slider-track--desktop') as HTMLElement;
+  const prevButton = document.querySelector('.voice-slider-btn.prev') as HTMLButtonElement;
+  const nextButton = document.querySelector('.voice-slider-btn.next') as HTMLButtonElement;
+  const dots = document.querySelectorAll('.voice-slider-dot') as NodeListOf<HTMLButtonElement>;
+
+  if (!sliderContainer || !mobileTrack || !desktopTrack || !prevButton || !nextButton) {
+    console.error('スライダーの必要な要素が見つかりません');
+  } else {
+    const mobileCards = mobileTrack.querySelectorAll('.voice-slider-card');
+    const desktopCards = desktopTrack.querySelectorAll('.voice-slider-card');
+
+    // 画面サイズに応じた表示カード数を取得
+    function getCardsPerView() {
+      // lg未満(1024px未満)は1枚ずつスライド、lg以上は2枚ずつスライド
+      return window.innerWidth < 1024 ? 1 : 2;
+    }
+
+    // アクティブなトラックとカードを取得
+    function getActiveElements() {
+      const isMobile = window.innerWidth < 1024;
+      return {
+        track: isMobile ? mobileTrack : desktopTrack,
+        cards: isMobile ? mobileCards : desktopCards
+      };
+    }
+
+    // ドットの状態を更新
+    function updateDots() {
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    // スライド位置の更新
+    function updateSlidePosition() {
+      const { track, cards } = getActiveElements();
+      const cardsPerView = getCardsPerView();
+      
+      if (!track || !cards.length) return;
+
+      // lg未満は親コンテナの幅を基準にする
+      const isMobile = window.innerWidth < 1024;
+      let cardWidth;
+      
+      if (isMobile) {
+        // lg未満は親コンテナ(.voice-slider-left)の幅を使用（カード内部が95%）
+        const container = track.parentElement;
+        cardWidth = container ? container.getBoundingClientRect().width : window.innerWidth * 0.9;
+      } else {
+        // lg以上は実際のカード幅を使用
+        cardWidth = cards[0].getBoundingClientRect().width;
+      }
+      
+      // CSSから計算済みのギャップ幅を取得
+      const computedStyle = window.getComputedStyle(track);
+      const gapWidth = parseInt(computedStyle.gap || computedStyle.columnGap || '0', 10);
+      
+      // 移動量を計算
+      const offset = currentSlide * (cardWidth + gapWidth);
+      console.log(`スライド移動: currentSlide=${currentSlide}, cardWidth=${cardWidth}, gapWidth=${gapWidth}, offset=${offset}, isMobile=${isMobile}`);
+      
+      // transform を確実に適用
+      track.style.transform = `translateX(-${offset}px)`;
+      track.style.transition = 'transform 0.5s cubic-bezier(.4,1,.4,1)';
+      
+      // 最大スライド数を計算
+      // lg未満(1024px未満)は1枚ずつスライドするので、表示カード数ではなくスライド単位で計算
+      let maxSlide;
+      if (isMobile) {
+        // 2枚表示でも1枚ずつスライドの場合
+        const visibleCards = window.innerWidth < 640 ? 1 : 2;
+        maxSlide = Math.max(0, cards.length - visibleCards);
+      } else {
+        // lg以上は表示カード数単位でスライド
+        maxSlide = Math.max(0, cards.length - cardsPerView);
+      }
+      console.log(`maxSlide=${maxSlide}, cards.length=${cards.length}, cardsPerView=${cardsPerView}, isMobile=${isMobile}`);
+      
+      // ボタンの状態を更新
+      prevButton.disabled = currentSlide === 0;
+      nextButton.disabled = currentSlide >= maxSlide;
+      
+      // カード数が表示可能数以下の場合はボタンを非表示
+      const visibleCards = isMobile ? (window.innerWidth < 640 ? 1 : 2) : cardsPerView;
+      if (cards.length <= visibleCards) {
+        prevButton.style.display = 'none';
+        nextButton.style.display = 'none';
+      } else {
+        prevButton.style.display = 'inline-flex';
+        nextButton.style.display = 'inline-flex';
+      }
+      
+      // ドットの状態を更新
+      updateDots();
+    }
+
+    // 初期化 - 確実に最初のカードを表示
+    currentSlide = 0;
+    
+    // 初期位置を強制的に設定
+    if (mobileTrack) {
+      mobileTrack.style.transform = 'translateX(0px)';
+    }
+    if (desktopTrack) {
+      desktopTrack.style.transform = 'translateX(0px)';
+    }
+    
+    // 少し遅延してから正式な初期化
+    setTimeout(() => {
+      updateSlidePosition();
+    }, 100);
+
+    // ボタンイベント
+    prevButton.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlidePosition();
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      const { cards } = getActiveElements();
+      const cardsPerView = getCardsPerView();
+      
+      // lg未満(1024px未満)は1枚ずつスライドするので、表示カード数ではなくスライド単位で計算
+      const isMobile = window.innerWidth < 1024;
+      let maxSlide;
+      if (isMobile) {
+        // 2枚表示でも1枚ずつスライドの場合
+        const visibleCards = window.innerWidth < 640 ? 1 : 2;
+        maxSlide = Math.max(0, cards.length - visibleCards);
+      } else {
+        // lg以上は表示カード数単位でスライド
+        maxSlide = Math.max(0, cards.length - cardsPerView);
+      }
+      
+      if (currentSlide < maxSlide) {
+        currentSlide++;
+        updateSlidePosition();
+      }
+    });
+
+    // ドットナビゲーションのイベント
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentSlide = index;
+        updateSlidePosition();
+      });
+    });
+
+    // リサイズ時の処理
+    window.addEventListener('resize', () => {
+      // 画面サイズ変更時にスライド位置をリセット
+      currentSlide = 0;
+      updateSlidePosition();
+    });
+
+    // Astroのページ遷移時クリーンアップ
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('resize', updateSlidePosition);
+    });
+  }
+</script> 

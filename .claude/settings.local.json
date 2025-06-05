@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run dev:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(rg:*)",
+      "Bash(node:*)",
+      "Bash(pkill:*)",
+      "Bash(open test-xl-debug.html)",
+      "WebFetch(domain:fonts.googleapis.com)",
+      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg \"@media\" --type scss -A 3 -B 1)",
+      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg \"@media\" -g \"*.scss\" -A 3 -B 1)",
+      "Bash(git checkout:*)",
+      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg -n \"background-color.*#ffffff|background-color.*white|background.*#fff\" /Users/uedanaomichi/project-astro/cattleya-test/src/components/Header/ /Users/uedanaomichi/project-astro/cattleya-test/src/components/layout/)"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": false
+}

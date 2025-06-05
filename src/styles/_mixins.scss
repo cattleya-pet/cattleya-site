@@ -1,0 +1,150 @@
+@use 'variables' as vars;
+
+// Utility functions
+@function rem($px) {
+  // ブラウザデフォルト16pxベースでrem計算
+  @return #{$px / 16}rem;
+}
+
+// px to rem converter (alias)
+@function px-to-rem($px) {
+  @return rem($px);
+}
+
+// Media query mixins
+@mixin breakpoint-up($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: vars.$breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (min-width: vars.$breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: vars.$breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (min-width: vars.$breakpoint-xl) { @content; }
+  }
+}
+
+@mixin breakpoint-down($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: vars.$breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: vars.$breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: vars.$breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: vars.$breakpoint-xl) { @content; }
+  }
+}
+
+@mixin breakpoint-between($min, $max) {
+  @media (min-width: #{$min}) and (max-width: #{$max}) { @content; }
+}
+
+// Flexbox helpers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Typography helpers
+@mixin heading-1 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: vars.$font-weight-bold;
+  line-height: 1.2;
+}
+
+@mixin heading-2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: vars.$font-weight-bold;
+  line-height: 1.2;
+}
+
+@mixin heading-3 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: vars.$font-weight-bold;
+  line-height: 1.2;
+}
+
+// Container
+@mixin container {
+  width: 100%;
+  padding-left: 5%; // スマホ時から$breakpoint-lg未満時は左右5%ずつのpadding
+  padding-right: 5%;
+  
+  @include breakpoint-up(lg) {
+    padding-left: rem(50); // $breakpoint-lg以上は左右50pxずつのpadding
+    padding-right: rem(50);
+  }
+}
+
+// Card styles
+@mixin card {
+  background-color: vars.$color-background;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: vars.$transition-base;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: vars.$spacing-sm vars.$spacing-lg;
+  border-radius: 9999px;
+  font-weight: vars.$font-weight-bold;
+  text-align: center;
+  cursor: pointer;
+  transition: vars.$transition-base;
+  border: none;
+  text-decoration: none;
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: vars.$color-primary;
+  color: vars.$color-background;
+  
+  &:hover, &:focus {
+    background-color: darken(vars.$color-primary, 10%);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: vars.$color-secondary;
+  color: vars.$color-background;
+  
+  &:hover, &:focus {
+    background-color: darken(vars.$color-secondary, 10%);
+  }
+}
+
+@mixin button-outline {
+  @include button-base;
+  background-color: transparent;
+  border: 1px solid vars.$color-border;
+  color: vars.$color-text;
+  
+  &:hover, &:focus {
+    background-color: #f8f9fa;
+  }
+}

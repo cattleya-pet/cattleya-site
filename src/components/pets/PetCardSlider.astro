@@ -1,0 +1,338 @@
+---
+import './PetCardSlider.scss';
+import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+import { formatDate } from '../../lib/utils/date';
+import MaleIcon from '../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
+import SectionHeading from '../SectionHeading.astro';
+
+interface Pet {
+  id: string;
+  animalType: string;
+  breedTypeJa: string;
+  gender: string;
+  color: string;
+  birthday: string;
+  storeName: string;
+  imageUrl01: string;
+  isNew: string;
+}
+
+interface Props {
+  pets: Pet[];
+  title: string;
+  subtitle?: string;
+  titleDecorated?: boolean;
+  sliderId: string;
+  autoSlideInterval?: number;
+}
+
+const { 
+  pets, 
+  title, 
+  subtitle = '',
+  titleDecorated = true, 
+  sliderId, 
+  autoSlideInterval = 4000 
+} = Astro.props;
+---
+
+<section class="pet-slider-section">
+  <div class="container">
+    {subtitle ? (
+      <SectionHeading 
+        subtitle={subtitle}
+        title={title}
+        size="large"
+        alignment="center"
+        subtitleClass="text-new"
+        titleClass="text-new"
+      />
+    ) : titleDecorated ? (
+      <h2 class="pet-slider-title">
+        <span class="pet-slider-title__decoration">＼</span>
+        {title}
+        <span class="pet-slider-title__decoration">／</span>
+      </h2>
+    ) : (
+      <h2 class="pet-slider-title">{title}</h2>
+    )}
+    <div class="slider-container" data-slider-id={sliderId} data-auto-slide-interval={autoSlideInterval}>
+      <button class="slider-button prev" aria-label="前の画像へ">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div class="slider-track">
+        <div class="pets-slider">
+          {pets.map((pet) => {
+            const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
+            const formattedDate = formatDate(pet.birthday);
+            
+            return (
+              <div class="pet-card__new">
+                {pet.isNew === 'true' && <span class="pet-card__new-badge">NEW</span>}
+                <div class="pet-card__new-inner">
+                  <div class="pet-card__new-image-container">
+                    <img
+                      class="pet-card__new-image"
+                      src={imageUrl}
+                      alt={`${pet.breedTypeJa}の写真`}
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                    />
+                  </div>
+                  <div class="pet-card__new-info">
+                    <h3 class="pet-card__new-title">
+                      {pet.breedTypeJa}
+                      {pet.gender === '男の子' && (
+                        <span 
+                          class="pet-card__new-gender male" 
+                          set:html={MaleIcon}
+                        />
+                      )}
+                      {pet.gender === '女の子' && (
+                        <span 
+                          class="pet-card__new-gender female" 
+                          set:html={FemaleIcon}
+                        />
+                      )}
+                    </h3>
+                    <div class="pet-card__new-details">
+                      <p class="pet-card__new-detail-item">色：{pet.color}</p>
+                      <p class="pet-card__new-detail-item">誕生日：{formattedDate}</p>
+                      <p class="pet-card__new-detail-item">店舗：{pet.storeName}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <button class="slider-button next" aria-label="次の画像へ">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <!-- スライダードットナビゲーション -->
+      <div class="slider-dots">
+        {pets.map((_, i) => (
+          <button class="slider-dot" data-slide={i} aria-label={`スライド${i + 1}へ`}></button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // スライダー処理関数
+  function initializeSlider(container: HTMLElement) {
+    const sliderId = container.dataset.sliderId;
+    const autoSlideInterval = parseInt(container.dataset.autoSlideInterval || '4000', 10);
+    
+    const sliderTrack = container.querySelector('.slider-track') as HTMLElement;
+    const prevButton = container.querySelector('.slider-button.prev') as HTMLButtonElement;
+    const nextButton = container.querySelector('.slider-button.next') as HTMLButtonElement;
+    const dots = container.querySelectorAll('.slider-dot') as NodeListOf<HTMLButtonElement>;
+    
+    if (!sliderTrack || !prevButton || !nextButton) {
+      console.error(`スライダー${sliderId}の必要な要素が見つかりません`);
+      return null;
+    }
+    
+    const sliderElement = sliderTrack.querySelector('.pets-slider') as HTMLElement;
+    if (!sliderElement) {
+      console.error(`スライダー${sliderId}の.pets-sliderが見つかりません`);
+      return null;
+    }
+    
+    let currentSlide = 0;
+    const petCards = sliderElement.querySelectorAll('.pet-card__new');
+    if (!petCards.length) {
+      console.warn(`スライダー${sliderId}にカードが見つかりません`);
+      prevButton.style.display = 'none';
+      nextButton.style.display = 'none';
+      return null;
+    }
+    
+    // 画面サイズに応じたスライド表示列数を取得
+    function getColumnsPerView() {
+      // 1024px未満は2列、以上は3列（SCSSのブレイクポイントと一致）
+      return window.innerWidth >= 1024 ? 3 : 2;
+    }
+    
+    // ドットの状態を更新
+    function updateDots() {
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+    
+    // スライド位置の更新
+    function updateSlidePosition() {
+      // 現在の表示可能な列数
+      const columnsPerView = getColumnsPerView();
+      
+      // カードの幅を取得（実際の要素から取得して正確に）
+      const cardWidth = petCards[0].getBoundingClientRect().width;
+      
+      // CSSから計算済みのギャップ幅を取得する
+      const computedStyle = window.getComputedStyle(sliderElement);
+      const gapWidth = parseInt(computedStyle.gap || computedStyle.columnGap || '0', 10);
+      
+      // 移動量を計算（現在のスライド位置 × (カード幅 + ギャップ)）
+      const offset = currentSlide * (cardWidth + gapWidth);
+      sliderElement.style.transform = `translateX(-${offset}px)`;
+      
+      // 最大スライド数を計算
+      const maxSlide = Math.max(0, petCards.length - columnsPerView);
+      
+      // スライダーボタンの表示/非表示を設定
+      if (petCards.length <= columnsPerView) {
+        // カードが表示エリアに収まる場合はボタンを非表示
+        prevButton.style.display = 'none';
+        nextButton.style.display = 'none';
+      } else {
+        // 収まらない場合はボタン表示
+        prevButton.style.display = '';
+        nextButton.style.display = '';
+        
+        // ボタンの有効/無効状態を更新
+        prevButton.disabled = currentSlide === 0;
+        nextButton.disabled = currentSlide >= maxSlide;
+      }
+      
+      // ドットの状態を更新
+      updateDots();
+    }
+    
+    // 自動スライド機能
+    function autoSlide() {
+      const columnsPerView = getColumnsPerView();
+      const maxSlide = Math.max(0, petCards.length - columnsPerView);
+      
+      if (maxSlide <= 0) return; // スライドが必要ない場合はスキップ
+      
+      if (currentSlide < maxSlide) {
+        currentSlide++;
+      } else {
+        currentSlide = 0;
+      }
+      
+      updateSlidePosition();
+    }
+    
+    // 設定した間隔で自動スライド
+    let interval = setInterval(autoSlide, autoSlideInterval);
+    
+    // 各ボタンのイベントリスナー設定
+    prevButton.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlidePosition();
+      }
+    });
+    
+    nextButton.addEventListener('click', () => {
+      const columnsPerView = getColumnsPerView();
+      const maxSlide = Math.max(0, petCards.length - columnsPerView);
+      
+      if (currentSlide < maxSlide) {
+        currentSlide++;
+        updateSlidePosition();
+      }
+    });
+    
+    // ドットナビゲーションのイベント
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentSlide = index;
+        updateSlidePosition();
+      });
+    });
+
+    
+    // カード幅はレイアウトクラスで設定するため、JSからの直接設定は不要
+    
+    // 画像読み込み後に正しい位置計算を行う
+    const images = sliderElement.querySelectorAll('img');
+    const imagePromises = Array.from(images).map(img => {
+      // 画像コンテナに読み込み状態を表すクラスを追加
+      const container = img.closest('.pet-card__new-image-container');
+      
+      if (img.complete) {
+        if (container) container.classList.add('loaded');
+        return Promise.resolve();
+      }
+      
+      return new Promise(resolve => {
+        img.onload = () => {
+          if (container) container.classList.add('loaded');
+          resolve();
+        };
+        img.onerror = resolve; // 画像が読み込めなくても続行
+      });
+    });
+    
+    // 画像読み込み完了後に位置計算を実行
+    Promise.all(imagePromises).then(() => {
+      updateSlidePosition();
+    });
+    
+    // 必要な場合は更新前におおよその位置計算を行う
+    updateSlidePosition();
+    
+    // ウィンドウリサイズ時の処理 - スロットリングを適用
+    let resizeTimeout: number;
+    window.addEventListener('resize', () => {
+      // 連続したリサイズイベントで処理が重複しないようにスロットリング
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      
+      resizeTimeout = setTimeout(() => {
+        // リサイズ完了後に一度だけ実行
+        const columnsPerView = getColumnsPerView();
+        
+        const maxSlide = Math.max(0, petCards.length - columnsPerView);
+        
+        // 現在位置が最大値を超えないように調整
+        currentSlide = Math.min(currentSlide, maxSlide);
+        
+        // スライド位置を更新
+        requestAnimationFrame(() => {
+          updateSlidePosition();
+        });
+      }, 100); // 100ms間隔でスロットリング
+    });
+    
+    // タブが非表示の時は自動スライドを停止してパフォーマンスを改善
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        clearInterval(interval);
+      } else {
+        interval = setInterval(autoSlide, autoSlideInterval);
+      }
+    });
+    
+    // クリーンアップ
+    document.addEventListener('astro:before-swap', () => {
+      clearInterval(interval);
+    });
+    
+    return { updateSlidePosition };
+  }
+  
+  // ページ読み込み完了時にすべてのスライダーを初期化
+  document.addEventListener('DOMContentLoaded', () => {
+    const sliderContainers = document.querySelectorAll('.slider-container');
+    sliderContainers.forEach(container => {
+      initializeSlider(container as HTMLElement);
+    });
+  });
+</script>

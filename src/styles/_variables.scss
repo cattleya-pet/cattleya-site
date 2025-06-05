@@ -1,0 +1,58 @@
+// Import design tokens
+@use 'tokens/colors' as *;
+@use 'tokens/typography' as *;
+@use 'tokens/radius' as *;
+
+// Legacy variables for backward compatibility (will be deprecated)
+$color-primary: $color-brand-secondary;
+$color-secondary: $color-green-500-base;
+$color-background: $color-background-primary;
+$color-text: $color-text-primary;
+$color-text-light: $color-text-tertiary;
+$color-border: $color-border-secondary;
+
+// Typography legacy variables
+$font-family-base: $font-family-ja;
+$font-size-base: $font-size-ja-s;
+$font-size-sm: $font-size-ja-2s;
+$font-size-lg: $font-size-ja-l;
+$font-weight-normal: $font-weight-regular;
+$font-weight-bold: $font-weight-semibold;
+
+// Typography variables are imported from tokens/typography
+
+// Breakpoints (based on browser default, 1rem = 16px)
+$breakpoint-sm: 40rem;    // 640px (40 × 16px)
+$breakpoint-md: 48rem;    // 768px (48 × 16px)  
+$breakpoint-lg: 64rem;    // 1024px (64 × 16px)
+$breakpoint-xl: 80rem;    // 1280px (80 × 16px)
+
+// For debugging
+$breakpoint-xl-px: 1280px;
+
+// Spacing (based on 16px = 1rem)
+$spacing-xs: 0.25rem;   // 4px
+$spacing-sm: 0.5rem;    // 8px
+$spacing-md: 1rem;      // 16px
+$spacing-lg: 1.5rem;    // 24px
+$spacing-xl: 2rem;      // 32px
+$spacing-2xl: 3rem;     // 48px
+$spacing-3xl: 4rem;     // 64px
+
+// Border radius legacy variables
+$border-radius-sm: $radius-s;
+$border-radius-md: $radius-m;
+$border-radius-lg: $radius-l;
+$border-radius-full: $radius-full;
+
+// Transitions
+$transition-base: all 0.2s ease;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;

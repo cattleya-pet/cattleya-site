@@ -1,0 +1,102 @@
+---
+import './PetTabs.scss';
+
+interface Props {
+  activeTab: string;
+}
+
+const { activeTab } = Astro.props;
+const tabs = [
+  { id: 'all', label: 'すべて' },
+  { id: 'dog', label: '子犬' },
+  { id: 'cat', label: '子猫' }
+];
+---
+
+<div class="pet-tabs">
+  {tabs.map(tab => (
+    <button
+      type="button"
+      data-tab={tab.id}
+      class:list={[
+        'pet-tabs__item',
+        { 'pet-tabs__item--active': activeTab === tab.id }
+      ]}
+    >
+      <span class="pet-tabs__label">{tab.label}</span>
+      <span class="pet-tabs__arrow">▼</span>
+    </button>
+  ))}
+</div>
+
+<script>
+  import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+  import { formatDate } from '../../lib/utils/date';
+
+  const tabButtons = document.querySelectorAll('.pet-tabs__item');
+  const petsGrid = document.querySelector('.pets-grid');
+  const allPets = JSON.parse(petsGrid?.dataset.allPets || '[]');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      tabButtons.forEach(btn => btn.classList.remove('pet-tabs__item--active'));
+      button.classList.add('pet-tabs__item--active');
+
+      const selectedTab = button.dataset.tab;
+      let filteredPets = allPets;
+      
+      if (selectedTab === 'dog') {
+        filteredPets = allPets.filter(pet => pet.animalType === 'dog');
+      } else if (selectedTab === 'cat') {
+        filteredPets = allPets.filter(pet => pet.animalType === 'cat');
+      }
+
+      if (petsGrid) {
+        petsGrid.innerHTML = filteredPets.map(pet => `
+          <div class="pet-card" data-animal-type="${pet.animalType}">
+            ${pet.isNew === 'true' ? '<span class="pet-card__new-badge">NEW</span>' : ''}
+            <div class="pet-card__inner">
+              <div class="pet-card__image-container">
+                <img
+                  class="pet-card__image"
+                  src="${getGoogleDriveImageUrl(pet.imageUrl01, 600, 600)}"
+                  alt="${pet.breedTypeJa}の写真"
+                  loading="lazy"
+                  width="600"
+                  height="600"
+                />
+              </div>
+              <div class="pet-card__info">
+                <h3 class="pet-card__title">
+                  ${pet.breedTypeJa}
+                  ${pet.gender === '♂' ? '<span class="pet-card__gender male">♂</span>' : ''}
+                  ${pet.gender === '♀' ? '<span class="pet-card__gender female">♀</span>' : ''}
+                </h3>
+                <div class="pet-card__details">
+                  <p class="pet-card__detail-item">色：${pet.color}</p>
+                  <p class="pet-card__detail-item">誕生日：${formatDate(pet.birthday)}</p>
+                  <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        // 画面幅に応じてグリッドレイアウトを設定
+        const screenWidth = window.innerWidth;
+        console.log('タブ切替時の画面幅:', screenWidth, 'px');
+        
+        if (screenWidth >= 1024) {
+          petsGrid.style.gridTemplateColumns = 'repeat(3, calc((100% - 5rem) / 3))';
+          petsGrid.style.gap = '2.5rem';
+          console.log('タブ切替: 3列表示に設定 - 1024px以上');
+        } else {
+          petsGrid.style.gridTemplateColumns = 'repeat(2, 43vw)';
+          petsGrid.style.gap = 'calc(90vw - 86vw)';
+          petsGrid.style.justifyContent = 'center';
+          console.log('タブ切替: 2列表示に設定 - 1024px未満');
+        }
+      }
+    });
+  });
+</script>

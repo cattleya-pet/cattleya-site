@@ -1,0 +1,81 @@
+---
+import './StoreCard.scss';
+import type { Store } from '../../lib/api/stores/types';
+import mapIcon from '../../assets/icons/icon_store-map-01.svg';
+import clockIcon from '../../assets/icons/icon_store-clock-01.svg';
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+
+interface Props extends Store {}
+
+const { 
+  id,
+  storeName,
+  storeImages,
+  storePostCode,
+  storeAddress, 
+  trafficInformation,
+  businessHours,
+  storePhoneNumber
+} = Astro.props;
+
+// 画像URLを取得（1枚目を使用）
+const storeImage = storeImages && storeImages.length > 0 
+  ? storeImages[0].url 
+  : '/noimage.webp';
+
+// 住所を結合
+const fullAddress = `${storePostCode ? `〒${storePostCode} ` : ''}${storeAddress || ''}`;
+
+// 店舗詳細ページのURL
+const storeDetailUrl = `/store/${id}`;
+---
+
+<a href={storeDetailUrl} class="store-card">
+  <div class="store-card-img-wrap">
+    <img src={storeImage} alt={storeName} class="store-card-img" loading="lazy" />
+  </div>
+  <div class="store-card-body">
+    <div class="store-card-title-row">
+      <h3 class="store-card-name">Cattleya {storeName}</h3>
+    </div>
+    
+    <div class="store-card-info">
+      <!-- 住所 -->
+      <div class="store-card-info-item">
+        <div class="store-card-info-icon">
+          <img src={mapIcon.src} alt="住所" class="store-icon" />
+        </div>
+        <div class="store-card-info-content">
+          <div class="store-card-address">{fullAddress}</div>
+          {trafficInformation && (
+            <div class="store-card-traffic">{trafficInformation}</div>
+          )}
+        </div>
+      </div>
+      
+      <!-- 営業時間 -->
+      {businessHours && (
+        <div class="store-card-info-item">
+          <div class="store-card-info-icon">
+            <img src={clockIcon.src} alt="営業時間" class="store-icon" />
+          </div>
+          <div class="store-card-info-content">
+            <div class="store-card-hours">{businessHours}</div>
+          </div>
+        </div>
+      )}
+      
+      <!-- 電話番号 -->
+      {storePhoneNumber && (
+        <div class="store-card-info-item">
+          <div class="store-card-info-icon">
+            <img src={phoneIcon.src} alt="電話番号" class="store-icon" />
+          </div>
+          <div class="store-card-info-content">
+            <div class="store-card-phone">{storePhoneNumber}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</a>

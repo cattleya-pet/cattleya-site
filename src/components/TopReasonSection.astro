@@ -1,0 +1,61 @@
+---
+import './TopReasonSection.scss';
+import BaseButton from './BaseButton.astro';
+import ButtonWrapper from './ButtonWrapper.astro';
+const reasons = [
+  {
+    img: '/src/assets/images/img_top_reason-01.webp',
+    title: '徹底した健康管理',
+    desc: 'プロの専門スタッフと獣医師が、厳しいメディカルチェックを実施。常に健康状態を確認し、ワンちゃん・ネコちゃんが安心して過ごせる環境を整えています。理由1の説明文が入ります。カンプの内容に合わせて後ほど修正可能です。',
+  },
+  {
+    img: '/src/assets/images/img_top_reason-02.webp',
+    title: 'かわいいワンちゃん・ネコちゃん',
+    desc: '理由2の全国から厳選したブリーダーのワンちゃん・ネコちゃんとの素敵な出会いをお届けします。お客様にマッチした特別なパートナーを見つけるお手伝いをします。説明文が入ります。',
+  },
+  {
+    img: '/src/assets/images/img_top_reason-03.webp',
+    title: '安心のお迎えシステム',
+    desc: '<a href="#wannyan-support" class="wanwan-link">わんにゃんサポート</a>プログラムで万が一の病気に備えて、様々なサポートをご用意しております。',
+  },
+  {
+    img: '/src/assets/images/img_top_reason-04.webp',
+    title: '専門知識を持つスタッフ',
+    desc: 'ペットの特性や飼育方法を熟知したスタッフが、最適なアドバイスをします。どんなご質問にも丁寧にお答えします。',
+  },
+  {
+    img: '/src/assets/images/img_top_reason-05.webp',
+    title: 'お迎え後の安心サポート',
+    desc: 'お迎え後のサポートコールで、新しい家族としての生活をしっかりサポート。お客様とペットが安心して暮らせる環境づくりをお手伝いします。',
+  },
+];
+---
+<section class="top-reason-section">
+  <div class="container">
+    <div class="top-reason-list">
+      <!-- タイトル要素をグリッドの最初の要素として配置 -->
+      <div class="top-reason-title-card">
+        <span class="top-reason-title-card__subtitle">5 reasons</span>
+        <h2 class="top-reason-title-card__title">
+          <span class="title-text-m">カトレアが選ばれる</span><br><span class="title-text-l">5</span><span class="title-text-s">つの</span><span class="title-text-m">理由</span>
+        </h2>
+      </div>
+      
+      <!-- 理由カード -->
+      {reasons.map((reason, i) => (
+        <div class="top-reason-card" style={`background-image: url('${reason.img}')`}>
+          <div class="top-reason-card__overlay">
+            <div class="top-reason-card__content">
+              <span class="top-reason-card__number">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="top-reason-card__title">{reason.title}</h3>
+              <p class="top-reason-card__desc" set:html={reason.desc}></p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    <ButtonWrapper>
+      <BaseButton href="/company" text="詳しくみる" />
+    </ButtonWrapper>
+  </div>
+</section> 

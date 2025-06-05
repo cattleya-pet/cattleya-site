@@ -1,0 +1,92 @@
+---
+interface Props {
+  subtitle: string;
+  title: string;
+  subtitleClass?: string;
+  titleClass?: string;
+  alignment?: 'left' | 'center' | 'right';
+  size?: 'default' | 'large';
+}
+
+const { 
+  subtitle, 
+  title, 
+  subtitleClass = '',
+  titleClass = '',
+  alignment = 'center',
+  size = 'default'
+} = Astro.props;
+---
+
+<div class={`section-heading section-heading--${alignment} section-heading--${size}`}>
+  <p class={`section-heading__subtitle ${subtitleClass}`}>{subtitle}</p>
+  <h2 class={`section-heading__title ${titleClass}`}>{title}</h2>
+</div>
+
+<style lang="scss">
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+  
+  // アライメント
+  &--left {
+    text-align: left;
+  }
+  
+  &--center {
+    text-align: center;
+  }
+  
+  &--right {
+    text-align: right;
+  }
+  
+  // サブタイトル
+  &__subtitle {
+    @include typography-en-2s;
+    margin: 0;
+    font-weight: $font-weight-bold;
+    
+    @include breakpoint-up(lg) {
+    }
+  }
+  
+  // メインタイトル
+  &__title {
+    @include typography-ja-l($font-weight-semibold);
+    line-height: 1.2;
+    
+    @include breakpoint-up(lg) {
+      @include typography-ja-2l($font-weight-semibold);
+    }
+  }
+  
+  // ラージサイズバリエーション
+  &--large {
+    .section-heading__subtitle {
+      font-size: rem(16);
+      
+      @include breakpoint-up(lg) {
+      }
+    }
+    
+    .section-heading__title {
+      @include typography-ja-2l($font-weight-semibold);
+      
+      @include breakpoint-up(xl) {
+        @include typography-ja-3l($font-weight-semibold);
+      }
+    }
+  }
+  margin-bottom: rem(24);
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(34);
+  }
+}
+</style>

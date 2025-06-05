@@ -1,0 +1,476 @@
+---
+import { getAnimalTypeLabel } from '../../lib/utils/breed';
+import { getMixBreedsByAnimalType } from '../../lib/api/pets/navigation';
+import type { SubmenuItem } from '../../lib/api/pets/types';
+import { getAllStores } from '../../lib/api/stores';
+
+interface Props {
+  title: string;
+  href?: string;
+  submenu?: SubmenuItem[];
+  isMobile?: boolean;
+  isDrawer?: boolean;
+  storeSubmenu?: boolean;
+}
+
+const { title, href, submenu, isMobile = false, isDrawer = false, storeSubmenu = false } = Astro.props;
+const hasSubmenu = !!submenu?.length || storeSubmenu;
+
+// 店舗情報サブメニュー用のデータを取得
+let stores = [];
+if (storeSubmenu) {
+  stores = await getAllStores();
+}
+
+// 各動物種類のミックス犬種/猫種を取得
+const mixBreeds = await getMixBreedsByAnimalType(submenu);
+---
+
+<li class="nav-item">
+  {hasSubmenu ? (
+    <div class="nav-link dropdown-toggle">
+      <a href={storeSubmenu ? "/stores" : "/search"} class="nav-title">{title}</a>
+      <button class="dropdown-button" aria-label="サブメニューを開く">
+        <svg
+          class="icon"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4 6L8 10L12 6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      <ul class="submenu">
+        {storeSubmenu ? (
+          // 店舗情報のサブメニュー - 店舗名を直接表示
+          <>
+            {stores.map((store) => (
+              <li class="submenu-group">
+                <div class="submenu-header">
+                  <a href={`/stores/${store.id}`} class="submenu-link submenu-type">
+                    {store.storeName}
+                  </a>
+                </div>
+              </li>
+            ))}
+          </>
+        ) : (
+          // 通常のサブメニュー
+          submenu.map((item) => (
+          <li class="submenu-group">
+            <div class="submenu-header">
+              <a href={`/search/${item.type}s`} class="submenu-link submenu-type">
+                {getAnimalTypeLabel(item.type)}
+              </a>
+              {(item.breeds.length > 0 || item.hasMix) && (
+                <button class="submenu-toggle" aria-label="サブカテゴリを開く">
+                  <svg
+                    class="icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 4L10 8L6 12"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
+            {(item.breeds.length > 0 || item.hasMix) && (
+              <ul class="submenu-breeds">
+                {item.breeds.map((breed) => (
+                  <li>
+                    <a href={breed.url} class="submenu-link breed-link">
+                      {breed.name}
+                    </a>
+                  </li>
+                ))}
+                {item.hasMix && (
+                  <li class="mix-breeds-group">
+                    <div class="mix-header">
+                      <a
+                        href={`/animals/${item.type}/mix`}
+                        class="submenu-link mix-link"
+                      >
+                        ミックス
+                      </a>
+                      <button class="mix-toggle" aria-label="ミックスカテゴリを開く">
+                        <svg
+                          class="icon"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 4L10 8L6 12"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <ul class="mix-breeds-submenu">
+                      {mixBreeds.find(mb => mb.type === item.type)?.breeds.map((mixBreed) => (
+                        <li>
+                          <a href={mixBreed.url} class="submenu-link mix-breed-link">
+                            {mixBreed.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                )}
+              </ul>
+            )}
+          </li>
+        ))
+        )}
+      </ul>
+    </div>
+  ) : (
+    <a href={href} class="nav-link">
+      {title}
+    </a>
+  )}
+</li>
+
+<script>
+  // モバイル表示時のドロップダウンメニュー操作
+  document.addEventListener('DOMContentLoaded', () => {
+    const isMobile = () => window.innerWidth < 1024;
+
+    // メインドロップダウントグル
+    const dropdownToggles = document.querySelectorAll('.dropdown-button');
+    dropdownToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        if (isMobile()) {
+          e.preventDefault();
+          const parent = toggle.closest('.dropdown-toggle');
+          parent?.classList.toggle('is-open');
+        }
+      });
+    });
+
+    // サブメニュートグル
+    const submenuToggles = document.querySelectorAll('.submenu-toggle');
+    submenuToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        if (isMobile()) {
+          e.preventDefault();
+          const parent = toggle.closest('.submenu-group');
+          parent?.classList.toggle('is-open');
+        }
+      });
+    });
+
+    // ミックストグル
+    const mixToggles = document.querySelectorAll('.mix-toggle');
+    mixToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        if (isMobile()) {
+          e.preventDefault();
+          const parent = toggle.closest('.mix-breeds-group');
+          parent?.classList.toggle('is-open');
+        }
+      });
+    });
+  });
+</script>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/typography' as *;
+@use '../../styles/tokens/colors' as *;
+  .nav-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    
+    /* PC表示でのアイテム高さを統一 */
+    @media (min-width: 1024px) {
+      height: rem(46);
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: rem(12) rem(20);
+    color: #262626;
+    text-decoration: none;
+    cursor: pointer;
+    @include typography-ja-s;
+    transition: color 0.2s;
+  }
+
+  .nav-title {
+    color: inherit;
+    text-decoration: none;
+  }
+
+
+  .dropdown-button,
+  .submenu-toggle,
+  .mix-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .submenu-header,
+  .mix-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    transition: transform 0.2s;
+  }
+
+  /* PC表示用スタイル */
+  @media (min-width: 1024px) {
+    .submenu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 20rem;
+      background-color: $color-background-primary;
+      box-shadow: 0 rem(1) rem(3) rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+      z-index: 1000;
+    }
+
+    .nav-item:hover .submenu {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .submenu-group {
+      position: relative;
+      height: rem(46);
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #ece9e7;
+      }
+    }
+
+    /* 子メニュー（.submenu-breeds）がホバーされた時も親をアクティブに */
+    .submenu-group:has(.submenu-breeds:hover) {
+      background-color: #ece9e7;
+    }
+
+    .submenu-breeds {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      min-width: 20rem;
+      background-color: $color-background-primary;
+      box-shadow: 0 rem(1) rem(3) rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+      
+      li {
+        &:hover {
+          background-color: #ece9e7;
+        }
+      }
+    }
+
+    .submenu-group:hover .submenu-breeds {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mix-breeds-group {
+      position: relative;
+      height: rem(46);
+      display: flex;
+      align-items: center;
+      padding: 0;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #ece9e7;
+      }
+    }
+
+    /* 子メニュー（.mix-breeds-submenu）がホバーされた時も親をアクティブに */
+    .mix-breeds-group:has(.mix-breeds-submenu:hover) {
+      background-color: #ece9e7;
+    }
+
+    /* サブメニュー内のli要素の高さを統一 */
+    .submenu-breeds > li,
+    .mix-breeds-submenu > li {
+      height: rem(46);
+      display: flex;
+      align-items: center;
+      
+      a {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+    }
+
+    .mix-breeds-submenu {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      min-width: 20rem;
+      background-color: $color-background-primary;
+      box-shadow: 0 rem(1) rem(3) rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+      li {
+        &:hover {
+          background-color: #ece9e7;
+        }
+      }
+    }
+
+    .mix-breeds-group:hover .mix-breeds-submenu {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  /* モバイル表示用スタイル */
+  @media (max-width: 1023px) {
+    .dropdown-toggle.is-open .icon {
+      transform: rotate(180deg);
+    }
+
+    .submenu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      border: none;
+      box-shadow: none;
+      min-width: 100%;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .dropdown-toggle.is-open .submenu {
+      max-height: 100rem;
+    }
+
+    .submenu-group {
+      border-left: 0.2rem solid #cccccc;
+      margin: 1rem 0 1rem 1rem;
+      padding-left: 1rem;
+    }
+
+    .submenu-toggle .icon {
+      transform: rotate(90deg);
+    }
+
+    .submenu-group.is-open .submenu-toggle .icon {
+      transform: rotate(-90deg);
+    }
+
+    .submenu-breeds {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      border: none;
+      box-shadow: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .submenu-group.is-open .submenu-breeds {
+      max-height: 100rem;
+    }
+
+    .mix-toggle .icon {
+      transform: rotate(90deg);
+    }
+
+    .mix-breeds-group.is-open .mix-toggle .icon {
+      transform: rotate(-90deg);
+    }
+
+    .mix-breeds-submenu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      border: none;
+      box-shadow: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .mix-breeds-group.is-open .mix-breeds-submenu {
+      max-height: 100rem;
+    }
+  }
+
+  .submenu-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    color: #262626;
+    text-decoration: none;
+    @include typography-ja-s;
+    transition: background-color 0.2s;
+  }
+
+
+
+  // リストスタイルを削除
+  .submenu,
+  .submenu-breeds,
+  .mix-breeds-submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+
+  .submenu-type {
+    font-weight: 500;
+  }
+</style>

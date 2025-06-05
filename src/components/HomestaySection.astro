@@ -1,0 +1,46 @@
+---
+import './HomestaySection.scss';
+import SectionHeading from './SectionHeading.astro';
+import BaseButton from './BaseButton.astro';
+import ButtonWrapper from './ButtonWrapper.astro';
+const mainImg = '/src/assets/images/img_homestay_main-01.webp';
+---
+<section class="homestay-section">
+  <div class="container homestay-container">
+    <!-- モバイル用ヘッダー -->
+    <div class="section-heading--mobile">
+      <SectionHeading 
+        subtitle="Home stay"
+        title="ホームステイ"
+        alignment="center"
+        subtitleClass="text-secondary"
+        titleClass="text-primary"
+      />
+    </div>
+    
+    <div class="homestay-img-wrap">
+      <img src={mainImg} alt="ホームステイ" class="homestay-img" loading="lazy" />
+    </div>
+    
+    <div class="homestay-content">
+      <!-- デスクトップ用ヘッダー -->
+      <div class="section-heading--desktop">
+        <SectionHeading 
+          subtitle="Home stay"
+          title="ホームステイ"
+          alignment="left"
+          subtitleClass="text-secondary"
+          titleClass="text-primary"
+        />
+      </div>
+      <div class="homestay-features">
+        <p class="homestay-feature">一律10,000円(税込)で選べる泊数</p>
+        <p class="homestay-feature">お泊まりセット無料でレンタル</p>
+      </div>
+      <p class="homestay-desc">カトレアでは、相性や飼育不安を解消するためにホームステイサービスを行っています。<br><br>ホームステイ中もスタッフが精一杯サポートいたします。お気軽にお申し付けください。</p>
+      <ButtonWrapper>
+        <BaseButton href="/homestay" text="詳しくみる" />
+      </ButtonWrapper>
+    </div>
+  </div>
+</section> 

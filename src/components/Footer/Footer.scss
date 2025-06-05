@@ -1,0 +1,220 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.footer {
+  background-color: $color-background-hover;
+  padding: rem(120) 0 rem(20) 0;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) 0 rem(30) 0;
+  }
+}
+
+.footer-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: rem(32);
+  
+  @include breakpoint-up(lg) {
+    gap: rem(48);
+  }
+}
+
+// モバイル版レイアウト
+.footer-mobile {
+  display: block;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+// PC版レイアウト
+.footer-desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: block;
+  }
+}
+
+.footer-desktop-content {
+  @include breakpoint-up(lg) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: rem(48);
+  }
+}
+
+// PC版ロゴエリア（左側）
+.footer-desktop-logo-area {
+  @include breakpoint-up(lg) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: rem(16);
+    flex-shrink: 0;
+    max-width: rem(280);
+    
+    .footer-logo-section {
+      justify-content: flex-start;
+    }
+    
+    .footer-company-info {
+      text-align: left;
+    }
+    
+    .footer-social {
+      justify-content: flex-start;
+    }
+  }
+}
+
+// PC版リンクエリア（右側：4列）
+.footer-desktop-links {
+  @include breakpoint-up(lg) {
+    display: flex;
+    gap: rem(48);
+    flex: 1;
+    justify-content: flex-end;
+  }
+}
+
+.footer-desktop-column {
+  @include breakpoint-up(lg) {
+    min-width: rem(120);
+  }
+}
+
+.footer-desktop-nav {
+  @include breakpoint-up(lg) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: rem(12);
+    
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.footer-desktop-nav-link {
+  @include breakpoint-up(lg) {
+    @include typography-ja-s($font-weight-semibold);
+    color: $color-text-primary;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    text-align: left;
+    
+    &:hover {
+      color: $color-text-secondary;
+      text-decoration: none;
+    }
+  }
+}
+
+// ロゴエリア（モバイル）
+.footer-logo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: rem(32);
+}
+
+.footer-logo-section {
+  display: flex;
+  justify-content: center;
+  padding-bottom: rem(30);
+}
+
+.footer-company-info {
+  font-size: rem(12);
+  color: $color-text-primary;
+  text-align: center;
+}
+
+.footer-social {
+  padding-top: rem(30);
+  display: flex;
+  gap: rem(16);
+  justify-content: center;
+}
+
+.footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(30);
+  height: rem(30);
+  border-radius: 50%;
+  color: $color-text-primary;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+// リンクエリア（モバイル）
+.footer-links-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-nav-list {
+  list-style: none;
+  margin: rem(30) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-link-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-link-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: rem(20);
+  padding: rem(16) 0;
+}
+
+.footer-nav-link {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  text-align: left;
+  
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.footer-divider {
+  height: 1px;
+  background-color: $color-border-tertiary;
+  margin: rem(30) 0;
+}
+
+// 最下部：コピーライト
+.footer-bottom {
+  padding-top: rem(20);
+  text-align: center;
+  margin-top: rem(32);
+}
+
+.footer-copyright {
+  @include typography-ja-2s();
+  color: $color-text-tertiary;
+}

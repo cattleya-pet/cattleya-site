@@ -1,0 +1,395 @@
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+@use '../styles/tokens/radius' as *;
+
+.relief-section {
+  background-size: cover;
+  background-position: center;
+  padding: rem(90) 0 rem(110) 0;
+  position: relative;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.relief-section__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($color-background-primary, 0.5);
+  z-index: 1;
+}
+
+.relief-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.relief-title {
+  text-align: center;
+  @include typography-ja-2l($font-weight-semibold);
+  margin-bottom: rem(51.2);
+  color: $color-gold-600;
+  letter-spacing: rem(1.28);
+}
+
+.relief-list {
+  display: flex;
+  flex-direction: column;
+  gap: rem(90);
+  margin: 0 auto;
+  
+  @include breakpoint-up(md) {
+    gap: rem(70);
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(90);
+  }
+  
+  @include breakpoint-up(xl) {
+    gap: rem(110);
+  }
+}
+
+.relief-item {
+  // background: $color-background-primary;
+  // border-radius: rem(24);
+  // box-shadow: 0 6px 20px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  // border: 1px solid rgba(255, 255, 255, 0.8);
+  // padding: rem(15);
+  display: flex;
+  flex-direction: column;
+  gap: rem(24);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  .relief-info-header--mobile {
+    order: 1;
+    display: block;
+  }
+  
+  .relief-main-img-wrap {
+    order: 2;
+  }
+  
+  .relief-info {
+    order: 3;
+    
+    .relief-info-header--desktop {
+      display: none;
+    }
+    
+    .relief-item-desc {
+      order: 1;
+    }
+    
+    .relief-detail-icons {
+      order: 2;
+    }
+  }
+  
+  @include breakpoint-up(lg) {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: rem(0);
+    padding: 0;
+    min-height: rem(450);
+    
+    .relief-info-header--mobile {
+      display: none;
+    }
+    
+    .relief-main-img-wrap {
+      order: 1;
+    }
+    
+    .relief-info {
+      order: 2;
+      
+      .relief-info-header--desktop {
+        display: block;
+        order: 1;
+      }
+      
+      .relief-item-desc {
+        order: 2;
+      }
+      
+      .relief-detail-icons {
+        order: 3;
+      }
+    }
+  }
+}
+
+// 偶数番目のアイテムで画像とコンテンツの順序を入れ替え
+.relief-item--even {
+  @include breakpoint-up(lg) {
+    .relief-main-img-wrap {
+      order: 2;
+    }
+    
+    .relief-info {
+      order: 1;
+      margin-left: 0;
+      margin-right: rem(-40);
+    }
+  }
+}
+
+.relief-main-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: $radius-m;
+  overflow: hidden;
+  flex-shrink: 0;
+  
+  @include breakpoint-up(lg) {
+    width: 43%;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.relief-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relief-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(16);
+  transition: all 0.3s ease;
+  
+  @include breakpoint-up(lg) {
+    align-items: flex-start;
+    text-align: left;
+    width: 65%;
+    gap: rem(24);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: $radius-m;
+    padding: rem(40);
+    position: relative;
+    z-index: 2;
+    margin-top: rem(100);
+    margin-left: -8%;
+  }
+}
+
+.relief-info-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(12);
+  transition: all 0.3s ease;
+  
+  @include breakpoint-up(lg) {
+    align-items: flex-start;
+    gap: rem(18);
+  }
+}
+
+.relief-title-group {
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  gap: rem(4);
+  
+  @include breakpoint-up(lg) {
+    align-items: flex-start;
+    gap: rem(6);
+  }
+}
+
+
+.relief-detail-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: rem(12);
+  row-gap: rem(16);
+  width: 100%;
+  
+  @include breakpoint-up(lg) {
+    // gap: rem(20);
+    // margin-top: rem(20);
+  }
+}
+
+// メディカルチェック（5つのアイコン）専用レイアウト
+.relief-item:nth-child(1) .relief-detail-icons {
+  .relief-detail-icon-item {
+    
+    // &:nth-child(1),
+    // &:nth-child(2),
+    // &:nth-child(3) {
+    //   width: 33.33%;
+    // }
+    
+    // &:nth-child(4) {
+    //   width: calc(33.33% - rem(20));
+    //   // margin-right: rem(40);
+    // }
+    
+    // &:nth-child(5) {
+    //   width: calc(33.33% - rem(20));
+    //   // margin-left: rem(40);
+    // }
+  }
+  
+  @include breakpoint-up(lg) {
+    .relief-detail-icon-item {
+      width: 20%;
+      
+      &:nth-child(1),
+      &:nth-child(2),
+      &:nth-child(3),
+      &:nth-child(4),
+      &:nth-child(5) {
+        width: 20%;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// わんにゃんサポート（3つのアイコン）専用レイアウト
+.relief-item:nth-child(2) .relief-detail-icons {
+  .relief-detail-icon-item {
+    // width: 33.33%;
+  }
+}
+
+// アフターサポート（1つのアイコン）専用レイアウト
+.relief-item:nth-child(3) {
+  .relief-detail-icons {
+    justify-content: center;
+    
+    .relief-detail-icon-item {
+      width: 73%;
+      max-width: rem(374);
+      @include breakpoint-up(lg) {
+        width: 44%;
+      }
+    }
+  }
+  
+  .relief-info {
+    @include breakpoint-up(xl) {
+      min-height: calc((100vw - rem(100)) * 0.43 * 0.75);
+    }
+  }
+}
+
+.relief-detail-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: rem(8);
+  // padding: rem(12);
+  border-radius: rem(12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  width: 33.33%;
+  max-width: rem(170);
+  @include breakpoint-up(sm) {
+    width: 20%;
+  }
+  
+  @include breakpoint-up(lg) {
+
+  }
+  
+}
+
+.relief-detail-icon {
+  width: 80%;
+  // aspect-ratio: 1 / 1;
+
+  @include breakpoint-up(lg) {
+    // width: 100%;
+    // width: rem(36);
+    // height: rem(36);
+  }
+}
+
+.relief-detail-icon-label {
+  @include typography-ja-2s($font-weight-semibold);
+  color: $color-text-primary;
+  line-height: 1.4;
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-s($font-weight-semibold);
+    line-height: 1.3;
+  }
+}
+
+.relief-item-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+  
+  @include breakpoint-up(lg) {
+    line-height: 1.3;
+  }
+}
+
+.relief-item-subtitle {
+  font-family: $font-family-en;
+  font-size: rem(12);
+  font-weight: $font-weight-regular;
+  color: $color-text-secondary;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(14);
+  }
+}
+
+.relief-item-desc {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.75;
+  margin: 0;
+  letter-spacing: 0.01em;
+  transition: color 0.3s ease;
+  
+  @include breakpoint-up(md) {
+    line-height: 1.7;
+  }
+  
+  @include breakpoint-up(lg) {
+    line-height: 1.65;
+  }
+}
+
+.relief-section__button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: rem(60);
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(80);
+  }
+}
+
+ 

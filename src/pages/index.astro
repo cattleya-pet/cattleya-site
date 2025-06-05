@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PetCard from '../components/pets/PetCard.astro';
+import PetTabs from '../components/pets/PetTabs.astro';
+import PetCardSlider from '../components/pets/PetCardSlider.astro';
+import TopView from '../components/TopView.astro';
+import TopReasonSection from '../components/TopReasonSection.astro';
+import ReliefSection from '../components/ReliefSection.astro';
+import HomestaySection from '../components/HomestaySection.astro';
+import BannerSection from '../components/BannerSection.astro';
+import ContactCTASection from '../components/ContactCTASection.astro';
+import VoiceSliderSection from '../components/voice/VoiceSliderSection.astro';
+import StoresSection from '../components/stores/StoresSection.astro';
+import ConceptSection from '../components/ConceptSection.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import BaseButton from '../components/BaseButton.astro';
+import ButtonWrapper from '../components/ButtonWrapper.astro';
+import { getAllLatestPets } from '../lib/api/pets/queries';
+import { getVoices } from '../lib/api/voice';
+import { getAllStores } from '../lib/api/stores/queries';
+import '../styles/layout/pets-grid.scss';
+
+// すべてのペットを取得
+const allPets = await getAllLatestPets();
+const allVoices = await getVoices(5);
+const allStores = await getAllStores();
+
+// 新着Dogs&Cats用のデータ
+const newPets = allPets.filter(pet => pet.isNew === 'true');
+
+// 子犬・子猫を探す用のデータ
+const regularPets = allPets.filter(pet => pet.isNew === 'false');
+const dogs = regularPets.filter(pet => pet.animalType === 'dog').slice(0, 6);
+const cats = regularPets.filter(pet => pet.animalType === 'cat').slice(0, 6);
+const initialPets = [...dogs, ...cats].sort((a, b) => b.id.localeCompare(a.id)).slice(0, 6);
+---
+
+<Layout title="ペットショップ">
+  <main>
+    <TopView />
+    <ConceptSection />
+    <PetCardSlider
+      pets={newPets}
+      title="新入生のご紹介"
+      subtitle="NEW FACE"
+      sliderId="newcomer-pets"
+      autoSlideInterval={5000}
+    />
+
+    <section class="pets-section">
+      <SectionHeading 
+        subtitle="Seach Dogs and Cats"
+        title="子犬・子猫を探す"
+        subtitleClass="text-disabled"
+        titleClass="text-primary"
+      />
+      <PetTabs activeTab="all" />
+      <div class="pets-grid" 
+        data-all-pets={JSON.stringify(initialPets)}
+        data-dogs={JSON.stringify(dogs)}
+        data-cats={JSON.stringify(cats)}>
+        {initialPets.map((pet) => (
+          <PetCard pet={pet} />
+        ))}
+      </div>
+      <ButtonWrapper>
+        <BaseButton href="/search" text="もっとみる" />
+      </ButtonWrapper>
+    </section>
+
+    <TopReasonSection />
+    <ReliefSection />
+    <HomestaySection />
+    <VoiceSliderSection voices={allVoices} />
+    <StoresSection stores={allStores} />
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+  
+  /* スタイルはPetCardSlider.scssに移動しました */
+</style>
+
+<script>
+  // コンテナ幅をCSSカスタムプロパティとして設定
+  function setContainerWidth() {
+    const container = document.querySelector('.container') as HTMLElement;
+    if (container) {
+      const containerWidth = container.offsetWidth;
+      document.documentElement.style.setProperty('--container-width', `${containerWidth}px`);
+      
+      // ブレイクポイントに応じて余白を調整するためのデバッグログ
+      console.log(`コンテナ幅: ${containerWidth}px`);
+    }
+  }
+  
+  // 初期化時と画面サイズ変更時にコンテナ幅を設定
+  setContainerWidth();
+  window.addEventListener('resize', setContainerWidth);
+  
+</script>

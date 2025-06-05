@@ -1,0 +1,54 @@
+---
+import type { Pet } from '../../lib/api/pets/types';
+import { formatDate } from '../../lib/utils/date';
+import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+import './PetCard.scss';
+import MaleIcon from '../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
+
+interface Props {
+  pet: Pet;
+}
+
+const { pet } = Astro.props;
+// カード画像用のサイズを指定
+const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
+---
+
+<div class="pet-card" data-animal-type={pet.animalType}>
+  {pet.isNew === 'true' && <span class="pet-card__new-badge">NEW</span>}
+  <div class="pet-card__inner">
+    <div class="pet-card__image-container">
+      <img
+        class="pet-card__image"
+        src={imageUrl}
+        alt={`${pet.breedTypeJa}の写真`}
+        loading="lazy"
+        width="600"
+        height="600"
+      />
+    </div>
+    <div class="pet-card__info">
+      <h3 class="pet-card__title">
+        {pet.breedTypeJa}
+        {pet.gender === '男の子' && (
+          <span 
+            class="pet-card__gender male" 
+            set:html={MaleIcon}
+          />
+        )}
+        {pet.gender === '女の子' && (
+          <span 
+            class="pet-card__gender female" 
+            set:html={FemaleIcon}
+          />
+        )}
+      </h3>
+      <div class="pet-card__details">
+        <p class="pet-card__detail-item">色：{pet.color}</p>
+        <p class="pet-card__detail-item">誕生日：{formatDate(pet.birthday)}</p>
+        <p class="pet-card__detail-item">店舗：{pet.storeName}</p>
+      </div>
+    </div>
+  </div>
+</div>

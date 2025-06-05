@@ -1,0 +1,192 @@
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/radius' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.store-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: $color-background-primary;
+  border-radius: $radius-l;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: rem(20) rem(20) rem(25) rem(20);
+  min-width: 0;
+  width: 100%;
+  gap: rem(35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: rem(20);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  @include breakpoint-up(xl) {
+    padding: rem(30);
+  }
+  
+  &:hover {
+    transform: translateY(rem(-6));
+    box-shadow: 0 8px 24px -2px rgba(0,0,0,0.12);
+    text-decoration: none;
+    color: inherit;
+    
+    .store-card-img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+
+.store-card-img-wrap {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  border-radius: $radius-m;
+  overflow: hidden;
+  
+  @include breakpoint-up(lg) {
+    width: rem(160);
+    flex: 0 0 auto;
+    align-self: flex-start;
+  }
+  @include breakpoint-up(xl) {
+    width: rem(270);
+  }
+}
+
+.store-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #f8f7f5;
+  transition: transform 0.3s ease;
+}
+
+.store-card-body {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  
+  @include breakpoint-up(lg) {
+    min-width: 0;
+    flex: 1;
+  }
+  @include breakpoint-up(xl) {
+    min-width: rem(240);
+  }
+}
+
+.store-card-title-row {
+  width: 100%;
+  margin-bottom: rem(40);
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(20);
+  }
+  @include breakpoint-up(xl) {
+    margin-bottom: rem(30);
+  }
+}
+
+.store-card-name {
+  font-size: rem(16);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.2;
+  text-align: center;
+  position: relative;
+  @include breakpoint-up(lg) {
+    text-align: left;
+  }
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($weight: $font-weight-semibold);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: rem(-15);
+    left: 50%;
+    transform: translateX(-50%);
+    width: rem(40);
+    height: 1px;
+    background-color: $color-border-tertiary;
+    @include breakpoint-up(lg) {
+      transform: translateX(0);
+      bottom: rem(-10);
+      left: 0;
+    }
+    @include breakpoint-up(xl) {
+      bottom: rem(-15);
+    }
+  }
+}
+
+.store-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  width: 100%;
+  @include breakpoint-up(lg) {
+    gap: 0;
+  }
+  @include breakpoint-up(lg) {
+    gap: rem(12);
+  }
+}
+
+.store-card-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: rem(12);
+}
+
+.store-card-info-icon {
+  flex-shrink: 0;
+  margin-top: rem(2);
+  width: rem(24);
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.store-card-info-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.store-card-address,
+.store-card-hours,
+.store-card-phone {
+  @include typography-ja-s();
+  color: $color-text-primary;
+  margin: 0;
+  padding-top: rem(4);
+  line-height: 1.4;
+}
+
+.store-card-traffic {
+  @include typography-ja-2s();
+  color: $color-text-secondary;
+  margin-top: rem(4);
+  line-height: 1.4;
+  white-space: pre-line;
+}

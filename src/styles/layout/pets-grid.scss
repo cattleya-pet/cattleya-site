@@ -1,0 +1,68 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.pets-section {
+  padding: rem(90) 0 rem(110) 0;
+  background-color: $color-background;
+  min-height: 100vh;
+  @include container; /* paddingベースのコンテナシステムを使用 */
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .container {
+    width: 100%; /* .pets-section直下の.containerは幅100% */
+    padding-left: 0; /* 親のpaddingがあるのでリセット */
+    padding-right: 0;
+  }
+
+  &__title {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacing-2xl;
+    text-align: center;
+    color: $color-text;
+    line-height: 1.2;
+  }
+}
+
+/* ===== ノーマルペットカードのグリッドレイアウト ===== */
+.pets-grid {
+  display: grid;
+  padding: 0;
+  width: 100%;
+  max-width: rem(1200);
+  margin: 0 auto;
+  /* margin: 0 auto; removed - centering handled by grid justify-content */
+  justify-content: center; /* 中央寄せにする */
+  
+  /* スマホ時から$breakpoint-lg未満: 2列表示 */
+  grid-template-columns: repeat(2, 43vw); /* 画面幅の43%のカードを2つ */
+  gap: 4vw; /* カード間のギャップは4vw固定 */
+  
+  /* $breakpoint-lg以上: 3列表示 */
+  @include breakpoint-up(lg) { /* 1024px */
+    grid-template-columns: repeat(3, calc((100% - rem(60)) / 3)); /* コンテナ幅から30px×2を差し引いて3等分 */
+    gap: rem(30); /* カード間のギャップは30px固定 */
+  }
+}
+
+/* ===== 子犬・子猫を探すセクションのペットカード固有スタイル ===== */
+.pets-grid .pet-card {
+  /* スタイル設定 */
+  min-width: auto; /* スマホでも収まるように最小幅を解除 */
+  border-bottom: none; /* 通常のペットカードはゴールドのボーダーを削除 */
+  border-radius: 0.8rem; /* 全体の角丸を調整 */
+  width: 100%; /* グリッドセルに合わせる */
+  
+  /* タブレット以上で角丸を調整 */
+  @include breakpoint-up(md) {
+    border-radius: 1.6rem;
+  }
+  
+  /* $breakpoint-lg以上: 最大幅を設定 */
+  @include breakpoint-up(lg) { /* 1024px */
+    max-width: 41rem; /* 410px相当の最大幅 */
+  }
+}

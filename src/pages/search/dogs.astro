@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PetCard from '../../components/pets/PetCard.astro';
+import PetTabs from '../../components/pets/PetTabs.astro';
+import { getLatestPetsByType } from '../../lib/api/pets/queries';
+import '../../styles/layout/pets-grid.scss';
+
+// すべての犬を取得
+const dogs = await getLatestPetsByType('dog');
+const cats = await getLatestPetsByType('cat');
+const allPets = [...dogs, ...cats].sort((a, b) => b.id.localeCompare(a.id));
+---
+
+<Layout title="子犬を探す">
+  <main>
+    <section class="pets-section">
+      <div class="container">
+        <h1 class="pets-section__title">子犬を探す</h1>
+        <PetTabs activeTab="dog" />
+        <div
+          class="pets-grid"
+          data-all-pets={JSON.stringify(allPets)}
+          data-dogs={JSON.stringify(dogs)}
+          data-cats={JSON.stringify(cats)}
+        >
+          {dogs.map((pet) => <PetCard pet={pet} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style lang="scss">
+  @import '../../styles/variables';
+  @import '../../styles/mixins';
+
+  .pets-section {
+    padding: $spacing-3xl 0;
+    background-color: $color-background;
+    min-height: calc(100vh - 300px);
+  }
+
+  .pets-section__title {
+    font-size: 2.25rem;
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacing-2xl;
+    text-align: center;
+  }
+</style>

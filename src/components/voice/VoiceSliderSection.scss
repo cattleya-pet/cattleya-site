@@ -1,0 +1,255 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/colors' as *;
+
+.voice-slider-section {
+  background: $color-background-tertiary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(90) 0 rem(110) 0;
+  }
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.voice-slider-container {
+  @include container;
+  @include breakpoint-up(lg) {
+    padding-left: rem(10);
+  }
+  @include breakpoint-up(xl) {
+    padding-left: rem(50);
+  }
+}
+.voice-slider-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: $color-text;
+  margin-bottom: 2.2rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+.voice-slider-viewport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: rem(32);
+  position: relative;
+  overflow: hidden;
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: rem(20);
+    margin-right: rem(-50);
+  }
+}
+.section-heading--mobile {
+  display: block;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.section-heading--desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: block;
+  }
+}
+
+.voice-slider-left {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+  position: relative;
+  
+  @include breakpoint-up(lg) {
+    align-items: flex-start;
+    overflow: visible;
+    gap: 0;
+    z-index: 2;
+    position: relative;
+    background-color: $color-background-tertiary;
+    padding: 0 rem(60) rem(100) rem(40);
+  }
+  @include breakpoint-up(xl) {
+    padding: 0 rem(100) rem(100) rem(40);
+  }
+}
+
+.voice-slider-track--mobile {
+  display: flex;
+  flex-direction: row;
+  gap: rem(20);
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  transition: transform 0.5s cubic-bezier(.4,1,.4,1);
+  will-change: transform;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.voice-slider-track--desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: flex;
+    flex-direction: row;
+    gap: rem(40);
+    transition: transform 0.5s cubic-bezier(.4,1,.4,1);
+    will-change: transform;
+    padding-right: rem(50);
+    z-index: 1;
+    position: relative;
+  }
+}
+.voice-slider-card {
+  flex: 0 0 100%;
+  width: 95%;
+  min-width: 0;
+  margin: 0 auto;
+  transition: box-shadow 0.2s;
+  
+  @include breakpoint-up(sm) {
+    flex: 0 0 calc(50% - 1rem);
+    width: calc(50% - 1rem);
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    flex: 0 0 rem(540);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+  @include breakpoint-up(xl) {
+    flex: 0 0 rem(660);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+}
+.voice-slider-btn {
+  width: rem(36);
+  height: rem(36);
+  border-radius: 50%;
+  border: 1px solid $color-text-tertiary;
+  background: $color-background;
+  color: $color-text-tertiary;
+  font-size: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $transition-base;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    color: $color-text-primary;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  @include breakpoint-up(sm) {
+    width: rem(40);
+    height: rem(40);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(44);
+    height: rem(44);
+  }
+}
+.voice-slider-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(15);
+  margin: rem(20) auto 0;
+  
+  @include breakpoint-up(lg) {
+    align-items: flex-start;
+    margin: 0;
+  }
+}
+
+.voice-slider-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: rem(14);
+  
+  @include breakpoint-up(lg) {
+    justify-content: flex-start;
+  }
+}
+
+.voice-slider-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: rem(10);
+  width: 100%;
+}
+
+.voice-slider-dot {
+  width: rem(5);
+  height: rem(5);
+  border-radius: 50%;
+  border: none;
+  background: $color-background-secondary;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &.active {
+    background: $color-background-select;
+  }
+  
+  &:hover {
+    background: $color-background-black;
+  }
+}
+
+.voice-slider-button-wrapper {
+  display: block;
+  text-align: center;
+  margin-top: rem(32);
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.voice-slider-button-wrapper--desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: block;
+    margin-top: rem(40);
+  }
+}
+
+ 

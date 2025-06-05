@@ -1,0 +1,72 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  width: 100%;
+  background-color: $color-background;
+  box-shadow: 0 rem(1) rem(3) rgba(0, 0, 0, 0.1);
+  // border-bottom: rem(1) solid $color-border;
+  position: fixed;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+/* PC向け2段ヘッダー */
+.header-desktop {
+  display: none;
+  padding: rem(20) rem(50) 0;
+  transition: padding 0.3s ease;
+
+  @include breakpoint-up(xl) {
+    display: block;
+  }
+
+  /* スクロール時の縮小効果 */
+  .header-scrolled & {
+    padding: rem(15) rem(50) 0;
+  }
+}
+
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
+}
+
+.header-desktop-logo {
+  margin-right: auto;
+  padding-right: rem(32);
+}
+
+/* スマホ向け1段ヘッダー */
+.header-mobile {
+  display: block;
+
+  @include breakpoint-up(xl) {
+    display: none;
+  }
+}
+
+.header-mobile-container {
+  width: 100%;
+  max-width: rem(1200);
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: rem(70);
+  padding: rem(15) 5%; // 左右の余白を5%に設定
+}
+
+.header-mobile-logo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: rem(173); // SVGの実際の幅と一致（viewBox幅）
+  flex: 0 0 auto;
+  overflow: visible;
+  padding: 0;
+}

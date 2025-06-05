@@ -1,0 +1,29 @@
+---
+import { siteConfig } from '../config/site';
+import Header from '../components/Header/Header.astro';
+import Footer from '../components/Footer/Footer.astro';
+import '../styles/global.scss';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = siteConfig.description } = Astro.props;
+const fullTitle = `${title} | ${siteConfig.name}`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <Header />
+    <slot />
+    <Footer />
+  </body>
+</html>

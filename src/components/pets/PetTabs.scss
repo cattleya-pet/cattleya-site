@@ -1,0 +1,57 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.pet-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacing-3xl;
+  border: 1px solid $color-text-primary;
+  border-radius: $border-radius-sm;
+  overflow: hidden;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: rem(5);
+}
+
+.pet-tabs__item {
+  padding: rem(12) rem(32);
+  border: none;
+  border-radius: 0;
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  color: $color-text-secondary;
+  background-color: $color-background-primary;
+  transition: all 0.3s ease;
+  position: relative;
+  min-width: rem(100);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(4);
+  
+  &:last-child {
+    border-right: none;
+  }
+  
+  &:hover {
+    opacity: 0.7;
+  }
+  
+  &--active {
+    color: $color-text-primary;
+    background-color: $color-background-tertiary;
+    border: 1px solid $color-text-primary;
+    border-radius: rem(3);
+    
+  }
+}
+
+.pet-tabs__arrow {
+  font-size: rem(10);
+  transition: opacity 0.3s ease;
+}

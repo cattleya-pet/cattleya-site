@@ -1,0 +1,34 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; // 左寄せに変更
+  text-decoration: none;
+  transition: $transition-base;
+  padding: 0; // 余白を削除
+  width: 100%; // 親要素いっぱいに広げる
+  
+  .header-desktop & {
+    padding-left: 0; // デスクトップでも左余白なし
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.logo-image {
+  width: auto !important; // SVGの実際の幅と一致（viewBox幅）
+  height: rem(71) !important; // 高さは自動調整
+  max-height: rem(71); // 最大高さを制限
+  display: block;
+  object-fit: contain; // アスペクト比を維持
+
+  // モバイル表示用の特別な設定
+  .header-mobile & {
+    width: auto !important; // SVGの実際の幅に合わせる
+    height: rem(40) !important; // 高さは自動調整
+  }
+}

@@ -1,0 +1,31 @@
+---
+import './BannerSection.scss';
+const banners = [
+  {
+    img: '/src/assets/images/banner_homestay-01.webp',
+    title: 'ホームステイバナー',
+    link: '/homestay',
+  },
+  {
+    img: '/src/assets/images/banner_pet-insurance-01.webp',
+    title: 'ペット保険バナー',
+    link: '/insurance',
+  },
+  {
+    img: '/src/assets/images/banner_recruit-01.webp',
+    title: '採用情報バナー',
+    link: '/recruit',
+  },
+];
+---
+<section class="banner-section">
+  <div class="container banner-container">
+    <div class="banner-list">
+      {banners.map((banner, i) => (
+        <a href={banner.link} class="banner-item">
+          <img src={banner.img} alt={banner.title} class="banner-img" loading="lazy" />
+        </a>
+      ))}
+    </div>
+  </div>
+</section> 

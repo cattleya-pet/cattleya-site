@@ -1,0 +1,58 @@
+---
+import Navigation from './Navigation.astro';
+import TopBar from './TopBar.astro';
+import Logo from './Logo.astro';
+import './Header.scss';
+---
+
+<header class="header" id="header">
+  <!-- PC向け2段ヘッダー (128rem以上 / 1280px以上) -->
+  <div class="header-desktop">
+    <TopBar />
+    <div class="header-container">
+      <Navigation mode="desktop" />
+    </div>
+  </div>
+
+  <!-- スマホ向け1段ヘッダー (128rem未満 / 1280px未満) -->
+  <div class="header-mobile">
+    <div class="header-mobile-container">
+      <div class="header-mobile-logo">
+        <Logo />
+      </div>
+      <Navigation mode="mobile" />
+    </div>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const header = document.getElementById('header');
+    let isScrolled = false;
+    
+    function handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (scrollTop > 0 && !isScrolled) {
+        header.classList.add('header-scrolled');
+        isScrolled = true;
+      } else if (scrollTop === 0 && isScrolled) {
+        header.classList.remove('header-scrolled');
+        isScrolled = false;
+      }
+    }
+    
+    // スクロールイベントリスナーを追加（パフォーマンス最適化のためthrottling）
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  });
+</script>
+

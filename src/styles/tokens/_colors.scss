@@ -1,0 +1,102 @@
+// Primitive colors from Figma tokens
+$color-white: #ffffff;
+$color-black: #000000;
+$color-gray-600: #666666;
+$color-gray-700: #4d4d4d;
+$color-gray-800: #333333;
+$color-gray-850: #262626;
+$color-gray-750: #3f3f3f;
+$color-gray-50: #f2f2f2;
+$color-gray-100: #e6e6e6;
+$color-gray-200: #cccccc;
+$color-gray-420: #949494;
+$color-gray-536: #767676;
+$color-gray-500: #7f7f7f;
+$color-gray-400: #999999;
+$color-gray-900: #1a1a1a;
+$color-gray-300: #b3b3b3;
+$color-gray-25: #f9f9f9;
+
+$color-red-100: #db6e7b;
+$color-red-300: #cf3d4f;
+$color-red-400: #c92539;
+$color-red-500-base: #c30d23;
+$color-red-50: #e18691;
+$color-red-600: #b00c20;
+$color-red-200: #d55665;
+$color-red-1000: #620712;
+$color-red-900: #750815;
+$color-red-700: #9c0a1c;
+$color-red-800: #890919;
+$color-red-25: #e79ea7;
+$color-red-5: #edb6bd;
+$color-red-502: #e18691;
+
+$color-brown-1000: #3a1f0e;
+$color-brown-900-base: #40220f;
+$color-brown-800: #533827;
+$color-brown-700: #664e3f;
+$color-brown-600: #796457;
+$color-brown-500: #8c7a6f;
+$color-brown-400: #a09187;
+$color-brown-300: #b3a79f;
+$color-brown-200: #c6bdb7;
+$color-brown-100: #d9d3cf;
+$color-brown-50: #ece9e7;
+
+$color-green-400: #25c7b2;
+$color-green-500-base: #0dc1a9;
+$color-green-600: #0cae98;
+
+$color-blue-600: #6889c0;
+$color-blue-500-base: #7398d5;
+$color-blue-400: #81a2d9;
+
+$color-gold-600: #c2aa88;
+$color-gold-500-base: #d8bd97;
+$color-gold-400: #dcc4a1;
+
+// Semantic colors (unified for all devices)
+// Text colors
+$color-text-primary: #262626;
+$color-text-secondary: #664e3f;
+$color-text-tertiary: #8c7a6f;
+$color-text-white: #ffffff;
+$color-text-link: #666666;
+$color-text-link-hover: #7f7f7f;
+$color-text-disabled: #dddddd;
+$color-text-error: #cf3d4f;
+$color-text-success: #25c7b2;
+$color-text-gender-male: #7398d5;
+$color-text-gender-female: #d55665;
+$color-text-new: #d8bd97;
+$color-text-select: #8c7a6f;
+
+// Background colors
+$color-background-primary: #ffffff;
+$color-background-secondary: #ece9e7;
+$color-background-tertiary: #f9f9f9;
+$color-background-accent: #664e3f;
+$color-background-hover: #ece9e7;
+$color-background-select: #8c7a6f;
+$color-background-black: #1a1a1a;
+$color-background-quaternary: #c6bdb7;
+$color-background-gender-female: #d55665;
+$color-background-gender-male: #7398d5;
+$color-background-new: #d8bd97;
+$color-background-submenu: #fff5e8;
+
+// Border colors
+$color-border-primary: #1a1a1a;
+$color-border-secondary: #cccccc;
+$color-border-tertiary: #8c7a6f;
+$color-border-hover: #e18691;
+$color-border-new: #d8bd97;
+
+// Feedback colors
+$color-feedback-error: #cf3d4f;
+$color-feedback-success: #25c7b2;
+
+// Brand colors
+$color-brand-primary: #40220f;
+$color-brand-secondary: #c30d23;

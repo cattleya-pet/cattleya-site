@@ -1,0 +1,944 @@
+---
+import { siteConfig } from '../../config/site';
+import NavigationItem from '../layout/NavigationItem.astro';
+import { getAnimalTypes, getBreedsByAnimalType } from '../../lib/api/pets';
+import { getMixBreedsByAnimalType } from '../../lib/api/pets/navigation';
+import { getAllStores } from '../../lib/api/stores';
+import { BREAKPOINTS_REM } from '../../lib/constants/styles';
+import './Navigation.scss';
+
+interface Props {
+  mode?: 'desktop' | 'mobile';
+}
+
+const { mode = 'desktop' } = Astro.props;
+const isMobile = mode === 'mobile';
+
+const animalTypes = await getAnimalTypes();
+// サブメニューアイテムを作成し、dogとcatの順序を明示的に制御
+const submenuItems = [];
+
+// まず犬のデータを追加
+const dogIndex = animalTypes.indexOf('dog');
+if (dogIndex !== -1) {
+  const { pureBreeds: dogBreeds, hasMix: dogHasMix } = await getBreedsByAnimalType('dog');
+  submenuItems.push({ type: 'dog', breeds: dogBreeds, hasMix: dogHasMix });
+}
+
+// 次に猫のデータを追加
+const catIndex = animalTypes.indexOf('cat');
+if (catIndex !== -1) {
+  const { pureBreeds: catBreeds, hasMix: catHasMix } = await getBreedsByAnimalType('cat');
+  submenuItems.push({ type: 'cat', breeds: catBreeds, hasMix: catHasMix });
+}
+
+// その他の動物種がある場合は追加
+for (const type of animalTypes) {
+  if (type !== 'dog' && type !== 'cat') {
+    const { pureBreeds, hasMix } = await getBreedsByAnimalType(type);
+    submenuItems.push({ type, breeds: pureBreeds, hasMix });
+  }
+}
+
+// PCと共通のミックス品種データを取得 - NavigationItemと同じロジックを使用
+const mixBreeds = await getMixBreedsByAnimalType(submenuItems);
+console.log('PC版と共通のミックス品種データ:', mixBreeds);
+
+// 店舗情報を取得
+const stores = await getAllStores();
+console.log('店舗情報データ:', stores);
+
+const mainMenuItems = [
+  { title: '探す', submenu: submenuItems },
+  { title: '店舗情報', storeSubmenu: true },
+  { title: 'カトレアの安心', href: siteConfig.links.about },
+  { title: 'ホームステイ', href: '/homestay' },
+  { title: '完成予約', href: '/reservation' },
+  { title: 'お迎えまでの流れ', href: '/process' },
+  { title: '会社情報', href: siteConfig.links.company },
+  { title: 'お客様の声', href: '/reviews' }
+];
+
+// モバイルとデスクトップで表示するメニュー項目を分離
+const mobileTopItems = [
+  { title: '探す', submenu: submenuItems },
+  { title: '店舗情報', storeSubmenu: true },
+];
+---
+
+{isMobile ? (
+  <nav class="nav">
+    <!-- モバイル用ナビゲーション (128rem未満 / 1280px未満) -->
+    <div class="nav-mobile">
+      <button class="hamburger-menu" aria-label="メニュー" id="menu-toggle">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- モバイルトップメニューは非表示 -->
+      <div class="nav-mobile-top" style="display: none;">
+        <ul class="nav-list-mobile-top">
+          {mobileTopItems.map((item) => (
+            <NavigationItem {...item} isMobile={true} />
+          ))}
+        </ul>
+      </div>
+
+      <!-- ハンバーガーをクリックすると表示されるドロワーメニュー -->
+      <div class="nav-drawer" id="nav-drawer">
+        <!-- 閉じるボタンを固定位置に配置 -->
+        <button class="nav-drawer-close" id="drawer-close" aria-label="メニューを閉じる">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="nav-drawer-header">
+          <button class="menu-back-button" id="menu-back-button" aria-label="前のメニューに戻る">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="back-button-text">戻る</span>
+          </button>
+        </div>
+
+        <!-- Level 0: メインメニュー -->
+        <div class="menu-level active" id="menu-level-0">
+          <ul class="menu-items">
+            {mainMenuItems.map((item) => (
+              <li>
+                {item.submenu || item.storeSubmenu ? (
+                  <a
+                    href="#"
+                    class="menu-item"
+                    data-menu-trigger
+                    data-menu-target-level="1"
+                    data-menu-type={item.title === '探す' ? 'search' : item.title === '店舗情報' ? 'store' : ''}
+                  >
+                    {item.title}
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <a href={item.href} class="menu-item">
+                    {item.title}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Level 1: 動物種選択または店舗情報 -->
+        <div class="menu-level" id="menu-level-1">
+          <h2 class="menu-level-title">探す</h2>
+          <ul class="menu-items search-items">
+            <li>
+              <a
+                href="#"
+                class="menu-item"
+                data-menu-trigger
+                data-menu-target-level="2"
+                data-menu-type="animal"
+                data-animal-type="dog"
+              >
+                子犬
+                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="menu-item"
+                data-menu-trigger
+                data-menu-target-level="2"
+                data-menu-type="animal"
+                data-animal-type="cat"
+              >
+                子猫
+                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="/search" class="menu-item menu-all-link">
+                すべての子犬・子猫を見る
+              </a>
+            </li>
+          </ul>
+          
+          <!-- 店舗情報選択メニュー（初期状態では非表示） -->
+          <ul class="menu-items store-items" style="display: none;">
+            {stores.map((store) => (
+              <li>
+                <a 
+                  href={`/stores/${store.id}`}
+                  class="menu-item store-item"
+                >
+                  {store.storeName}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Level 2: 品種選択または店舗詳細 -->
+        <div class="menu-level" id="menu-level-2" style="display: none;">
+          <h2 class="menu-level-title">子犬</h2>
+          
+          {/* 犬種リスト */}
+          <ul class="dog-breeds">
+            {submenuItems.find(item => item.type === 'dog')?.breeds.map((breed) => (
+              <li>
+                <a
+                  href={breed.url}
+                  class="menu-item dog-breed-item"
+                >
+                  {breed.name}
+                </a>
+              </li>
+            ))}
+
+            {/* 犬のミックスボタン */}
+            <li>
+              <a
+                href="#"
+                class="menu-item menu-mix-button dog-mix-button"
+                data-menu-trigger
+                data-menu-target-level="3"
+                data-menu-type="breed"
+                data-animal-type="dog"
+              >
+                ミックス
+                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+
+            {/* 犬の「すべて見る」リンク */}
+            <li>
+              <a href="/search/dogs" class="menu-item menu-all-link dog-all-link">
+                すべての子犬を見る
+              </a>
+            </li>
+          </ul>
+
+          {/* 猫種リスト（犬種リストと同じレベルに分離） */}
+          <ul class="cat-breeds">
+            {submenuItems.find(item => item.type === 'cat')?.breeds.map((breed) => (
+              <li>
+                <a
+                  href={breed.url}
+                  class="menu-item cat-breed-item"
+                >
+                  {breed.name}
+                </a>
+              </li>
+            ))}
+
+            {/* 猫のミックスボタン */}
+            <li>
+              <a
+                href="#"
+                class="menu-item menu-mix-button cat-mix-button"
+                data-menu-trigger
+                data-menu-target-level="3"
+                data-menu-type="breed"
+                data-animal-type="cat"
+              >
+                ミックス
+                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+
+            {/* 猫の「すべて見る」リンク */}
+            <li>
+              <a href="/search/cats" class="menu-item menu-all-link cat-all-link">
+                すべての子猫を見る
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+        <!-- Level 3: ミックス品種選択 -->
+        <div class="menu-level" id="menu-level-3" style="display: none;">
+          <h2 class="menu-level-title">ミックス</h2>
+          <div class="menu-mix-breed-list">
+            {/* 犬のミックス品種 */}
+            <ul class="dog-mix-breeds">
+              {mixBreeds.find(mb => mb.type === 'dog')?.breeds.map((mixBreed) => (
+                <li>
+                  <a
+                    href={mixBreed.url}
+                    class="menu-item dog-mix-breed-item"
+                  >
+                    {mixBreed.name}
+                  </a>
+                </li>
+              ))}
+
+              {/* 犬ミックスの「すべて見る」リンク */}
+              <li>
+                <a href="/animals/dog/mix" class="menu-item menu-all-link dog-mix-all-link">
+                  すべてのミックスを見る
+                </a>
+              </li>
+            </ul>
+
+            {/* 猫のミックス品種 */}
+            <ul class="cat-mix-breeds" id="cat-mix-breeds-container">
+              {mixBreeds.find(mb => mb.type === 'cat')?.breeds.map((mixBreed) => (
+                <li>
+                  <a
+                    href={mixBreed.url}
+                    class="menu-item cat-mix-breed-item"
+                  >
+                    {mixBreed.name}
+                  </a>
+                </li>
+              ))}
+
+              {/* 猫ミックスの「すべて見る」リンク */}
+              <li>
+                <a href="/animals/cat/mix" class="menu-item menu-all-link cat-mix-all-link">
+                  すべてのミックスを見る
+                </a>
+              </li>
+            </ul>
+
+            {/* ミックス種データがない場合に後から挿入されるコンテナ */}
+            <div id="dynamic-mix-breeds"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- オーバーレイ -->
+      <div class="nav-overlay" id="nav-overlay"></div>
+    </div>
+  </nav>
+) : (
+  <nav class="nav">
+    <!-- デスクトップ用ナビゲーション (128rem以上 / 1280px以上) -->
+    <div class="nav-desktop">
+      <ul class="nav-list">
+        {mainMenuItems.map((item) => (
+          <NavigationItem {...item} />
+        ))}
+      </ul>
+    </div>
+  </nav>
+)}
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM読み込み完了 - メニューイベントを初期化します');
+    
+    // すべての階層メニューのレベルをコンソールに出力（デバッグ用）
+    const allMenuLevels = document.querySelectorAll('.menu-level');
+    console.log(`検出された階層メニュー数: ${allMenuLevels.length}`);
+    allMenuLevels.forEach((level, index) => {
+      console.log(`メニューレベル ${index}: ${level.id}`);
+    });
+    
+    // すべてのトリガー要素を確認（デバッグ用）
+    const allTriggers = document.querySelectorAll('[data-menu-trigger]');
+    console.log(`検出されたメニュートリガー数: ${allTriggers.length}`);
+    allTriggers.forEach((trigger, index) => {
+      const targetLevel = trigger.getAttribute('data-menu-target-level');
+      const menuType = trigger.getAttribute('data-menu-type');
+      const animalType = trigger.getAttribute('data-animal-type');
+      console.log(`トリガー ${index}: target=${targetLevel}, type=${menuType}, animal=${animalType}`);
+    });
+    const menuToggle = document.getElementById('menu-toggle');
+    const drawerClose = document.getElementById('drawer-close');
+    const navDrawer = document.getElementById('nav-drawer');
+    const navOverlay = document.getElementById('nav-overlay');
+
+    // 階層メニュー関連の要素
+    const menuLayers = {
+      level0: document.getElementById('menu-level-0'),
+      level1: document.getElementById('menu-level-1'),
+      level2: document.getElementById('menu-level-2'),
+      level3: document.getElementById('menu-level-3')
+    };
+    const backButtons = document.querySelectorAll('.menu-back-button');
+
+    // 現在のメニュー階層
+    let currentLevel = 0;
+    let previousLevel = 0;
+
+    // メニュー階層を表示する関数 - 明確に分離したアプローチ
+    const showMenuLevel = (level, menuType = '', animalType = '') => {
+      // 現在のレベルを記録
+      previousLevel = currentLevel;
+      currentLevel = level;
+
+      console.log(`メニューレベル変更: ${previousLevel} → ${level}, メニュータイプ: ${menuType}, animalType: ${animalType}`);
+      
+      // ===== 共通の階層切り替え処理 =====
+      const previousLayer = menuLayers[`level${previousLevel}`];
+      const currentLayer = menuLayers[`level${level}`];
+      
+      // スライド方向を決定
+      let previousSlideDirection = '';
+      let currentSlideDirection = '';
+      
+      if (level > previousLevel) {
+        // 次のレベルへ: 現在のレベルは右から左へスライドイン、前のレベルは左へスライドアウト
+        previousSlideDirection = 'slide-out-left';
+        currentSlideDirection = 'slide-in-left';
+      } else if (level < previousLevel) {
+        // 前のレベルへ: 現在のレベルは左から右へスライドイン、前のレベルは右へスライドアウト
+        previousSlideDirection = 'slide-out-right';
+        currentSlideDirection = 'slide-in-right';
+      }
+      
+      // アニメーションクラスをリセット
+      Object.values(menuLayers).forEach(layer => {
+        if (layer) {
+          layer.classList.remove('slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right');
+        }
+      });
+      
+      // 前のレイヤーのアニメーション
+      if (previousLayer && previousLevel !== level) {
+        // 前の階層をアニメーション付きで非表示にする準備
+        previousLayer.style.display = 'flex'; // 一時的に表示状態に
+        previousLayer.classList.add(previousSlideDirection);
+        
+        // アニメーション終了後に非表示にする
+        setTimeout(() => {
+          previousLayer.classList.remove('active');
+          previousLayer.style.display = 'none';
+          previousLayer.classList.remove(previousSlideDirection);
+        }, 300); // アニメーションの時間と一致させる
+      } else {
+        // 初期表示時などは他のすべての階層を非表示に
+        Object.values(menuLayers).forEach(layer => {
+          if (layer && layer !== currentLayer) {
+            layer.classList.remove('active');
+            layer.style.display = 'none';
+          }
+        });
+      }
+      
+      // 現在の階層をアクティブにしてアニメーション付きで表示
+      if (currentLayer) {
+        currentLayer.classList.add('active');
+        currentLayer.style.display = 'flex';
+        console.log(`Level ${level} をアクティブに設定`);
+        
+        // 少し遅延させてアニメーションを追加
+        setTimeout(() => {
+          currentLayer.classList.add(currentSlideDirection);
+        }, 10);
+        
+        // アニメーション終了後にクラスをクリア
+        setTimeout(() => {
+          currentLayer.classList.remove(currentSlideDirection);
+        }, 310);
+      }
+
+      // ===== Level固有の処理 =====
+      // Level 1: 探すまたは店舗情報メニュー
+      if (level === 1) {
+        const level1Title = document.querySelector('#menu-level-1 .menu-level-title');
+        const searchItems = document.querySelector('.menu-items.search-items');
+        const storeItems = document.querySelector('.menu-items.store-items');
+        
+        if (level1Title && searchItems && storeItems) {
+          // メニュータイプに応じた表示切替
+          if (menuType === 'store') {
+            // 店舗情報メニュー
+            level1Title.textContent = '店舗情報';
+            searchItems.style.display = 'none';
+            storeItems.style.display = 'block';
+          } else {
+            // 探すメニュー
+            level1Title.textContent = '探す';
+            searchItems.style.display = 'block';
+            storeItems.style.display = 'none';
+          }
+        }
+      }
+      
+      // Level 2: 動物種メニュー (店舗詳細は直接リンクに変更済み)
+      if (level === 2 && menuType === 'animal') {
+        const level2Title = document.querySelector('#menu-level-2 .menu-level-title');
+        
+        if (level2Title) {
+          // 動物種に応じたタイトル更新
+          level2Title.textContent = animalType === 'dog' ? '子犬' : '子猫';
+          
+          // 動物種メニュー表示の更新
+          console.log(`動物種メニューを表示: ${animalType}`);
+          updateAnimalTypeMenu(animalType);
+        }
+      }
+      
+      // ===== UIコントロール更新 =====
+      // スクロール位置をリセット
+      if (currentLayer) {
+        currentLayer.scrollTop = 0;
+      }
+      
+      // 戻るボタンの表示・非表示
+      backButtons.forEach(btn => {
+        btn.style.display = level > 0 ? 'flex' : 'none';
+      });
+      
+      // 戻るボタンのテキストを更新
+      updateBackButtonText(level);
+    };
+
+    // ミックスボタンのクリックハンドラ - シンプル化
+    const mixButtonClickHandler = (e) => {
+      e.preventDefault();
+      const animalType = e.currentTarget.getAttribute('data-animal-type') || '';
+      const targetLevel = parseInt(e.currentTarget.getAttribute('data-menu-target-level'), 10);
+
+      console.log(`ミックスボタンクリック: targetLevel=${targetLevel}, animalType=${animalType}`);
+
+      // 次のレベルのコンテンツを動的に更新
+      updateBreedMenu(animalType);
+      
+      // 階層切り替えの共通処理を利用 - ロジックの重複を避ける
+      showMenuLevel(targetLevel, 'breed', animalType);
+    };
+
+    // メニューアイテムのクリックハンドラ - シンプル化と引数の整理
+    const menuItemClickHandler = (e) => {
+      e.preventDefault();
+      const link = e.currentTarget;
+      const targetLevel = parseInt(link.getAttribute('data-menu-target-level'), 10);
+      const menuType = link.getAttribute('data-menu-type') || '';
+      const animalType = link.getAttribute('data-animal-type') || '';
+
+      console.log(`メニューアイテムクリック: targetLevel=${targetLevel}, menuType=${menuType}, animalType=${animalType}`);
+
+      // 階層切り替えの共通処理を利用
+      showMenuLevel(targetLevel, menuType, animalType);
+    };
+
+    // メニュー項目がクリックされたときにサブメニューに進む処理
+    function setupMenuTriggers() {
+      const menuItemLinks = document.querySelectorAll('[data-menu-trigger]');
+      console.log('メニュートリガー要素数:', menuItemLinks.length);
+      menuItemLinks.forEach(link => {
+        // 既存のイベントリスナーを削除してから再登録（重複防止）
+        link.removeEventListener('click', menuItemClickHandler);
+        link.addEventListener('click', menuItemClickHandler);
+      });
+    }
+    
+    // 初期設定
+    setupMenuTriggers();
+    
+    // 定期的にトリガー要素を再チェック（動的に追加された要素に対応）
+    setTimeout(setupMenuTriggers, 500);
+
+    // 戻るボタンがクリックされたときの処理
+    backButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetLevel = currentLevel - 1;
+        if (targetLevel >= 0) {
+          showMenuLevel(targetLevel);
+        }
+      });
+    });
+
+    // 戻るボタンのテキストを更新する関数
+    const updateBackButtonText = (level) => {
+      const backButtonText = document.querySelector('.back-button-text');
+      if (!backButtonText) return;
+
+      // 現在のレベル1のタイトルを取得
+      const level1Title = document.querySelector('#menu-level-1 .menu-level-title');
+      const level1MenuType = level1Title ? level1Title.textContent : '探す';
+      
+      // 現在のレベル2のタイトルを取得
+      const level2Title = document.querySelector('#menu-level-2 .menu-level-title');
+      
+      // レベルに応じて戻るボタンのテキストを変更
+      if (level === 1) {
+        // Lv1 は「すべて」に戻る
+        backButtonText.textContent = 'すべて';
+      } else if (level === 2) {
+        // Lv2 はレベル1のタイトルに戻る
+        backButtonText.textContent = level1MenuType;
+      } else if (level === 3) {
+        // Lv3 は動物種の名前に戻る（犬か猫か）
+        const animalType = document.querySelector('.menu-mix-button:not([style*="display: none"])');
+        if (animalType) {
+          const type = animalType.getAttribute('data-animal-type');
+          if (type === 'dog') {
+            backButtonText.textContent = '子犬';
+          } else if (type === 'cat') {
+            backButtonText.textContent = '子猫';
+          } else {
+            backButtonText.textContent = '戻る';
+          }
+        } else {
+          backButtonText.textContent = level2Title ? level2Title.textContent : '戻る';
+        }
+      } else {
+        backButtonText.textContent = '戻る';
+      }
+    };
+
+    // 動物種に基づいて、Lv2メニュー（犬種/猫種一覧）を更新する関数
+    const updateAnimalTypeMenu = (animalType) => {
+      console.log(`${animalType}のメニューを更新します`);
+
+      // ここで動物種に基づいたメニューを動的に生成
+      const level2Menu = menuLayers.level2;
+      if (level2Menu) {
+        // タイトルを更新
+        const title = level2Menu.querySelector('.menu-level-title');
+        if (title) {
+          title.textContent = animalType === 'dog' ? '子犬' : '子猫';
+        }
+
+        // 犬種/猫種リストの表示を更新
+        const dogBreedsList = level2Menu.querySelector('.dog-breeds');
+        const catBreedsList = level2Menu.querySelector('.cat-breeds');
+        // 犬と猫それぞれの「すべて見る」リンクを取得
+        const dogAllLink = level2Menu.querySelector('.dog-all-link');
+        const catAllLink = level2Menu.querySelector('.cat-all-link');
+
+        if (dogBreedsList && catBreedsList) {
+          // 犬種・猫種の表示切り替え
+          const dogBreeds = dogBreedsList.querySelectorAll('.dog-breed-item');
+          const catBreeds = catBreedsList.querySelectorAll('.cat-breed-item');
+          const dogMixButton = dogBreedsList.querySelector('.dog-mix-button');
+          const catMixButton = catBreedsList.querySelector('.cat-mix-button');
+
+          console.log(`dogBreeds: ${dogBreeds.length}, catBreeds: ${catBreeds.length}`);
+
+          if (animalType === 'dog') {
+            console.log('犬種メニューを表示します');
+            // 犬種リストを表示、猫種リストを非表示
+            dogBreedsList.classList.add('active');
+            catBreedsList.classList.remove('active');
+            if (dogAllLink) dogAllLink.style.display = 'flex';
+            if (catAllLink) catAllLink.style.display = 'none';
+          } else if (animalType === 'cat') {
+            console.log('猫種メニューを表示します');
+            // 猫種リストを表示、犬種リストを非表示
+            dogBreedsList.classList.remove('active');
+            catBreedsList.classList.add('active');
+            if (dogAllLink) dogAllLink.style.display = 'none';
+            if (catAllLink) catAllLink.style.display = 'flex';
+          }
+        }
+
+        // 現在表示されている方の適切なミックスボタンを取得
+        const currentMixButton = animalType === 'dog' ?
+          dogBreedsList.querySelector('.dog-mix-button') :
+          catBreedsList.querySelector('.cat-mix-button');
+
+        if (currentMixButton) {
+          console.log(`${animalType}用ミックスボタンを更新`);
+
+          // データ属性を更新し、あらかじめミックス品種データを準備
+          currentMixButton.setAttribute('data-animal-type', animalType);
+          currentMixButton.setAttribute('data-menu-trigger', '');
+          currentMixButton.setAttribute('data-menu-target-level', '3');
+          currentMixButton.setAttribute('data-menu-type', 'breed');
+
+          console.log(`ミックスボタンの属性を更新: data-menu-target-level=${currentMixButton.getAttribute('data-menu-target-level')}, data-animal-type=${animalType}`);
+
+          // イベントリスナーを一度削除してから再追加（重複防止と確実な適用のため）
+          currentMixButton.removeEventListener('click', mixButtonClickHandler);
+          currentMixButton.removeEventListener('click', menuItemClickHandler); // 万が一menuItemClickHandlerが設定されていても削除
+
+          // mixButtonClickHandlerを使用して特別なスライド効果を確保
+          currentMixButton.addEventListener('click', mixButtonClickHandler);
+
+          console.log('ミックスボタンにカスタムイベントハンドラを設定しました');
+
+          // リンクをリセット
+          currentMixButton.href = '#';
+
+          // メニューレベル3の準備
+          const mixContainer = document.querySelector('#menu-level-3 .menu-mix-breed-list');
+          if (mixContainer) {
+            console.log('事前に猫/犬のミックスデータを更新します');
+            // 次のレベルに進む前にミックス品種を更新して、データが確実に反映されるようにする
+            updateBreedMenu(animalType);
+          }
+
+          // テキストノードとチェブロンの表示を確認
+          const chevron = currentMixButton.querySelector('.menu-item-chevron');
+
+          // SVGがない場合のみ追加
+          if (!chevron) {
+            const chevronHTML = `<svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            currentMixButton.insertAdjacentHTML('beforeend', chevronHTML);
+          }
+        }
+
+        // ※「すべて見る」リンクの更新は不要になりました（犬/猫それぞれ別のリンクを表示/非表示で切り替えるため）
+        console.log(`動物種に応じて${animalType === 'dog' ? '犬' : '猫'}の「すべて見る」リンクを表示`);
+        
+      }
+    };
+
+    // ミックス犬/猫に基づいて、Lv3メニュー（ミックス一覧）を更新する関数
+    const updateBreedMenu = (animalType) => {
+      // ここで、ミックス犬/猫に基づいたメニューを動的に生成
+      const level3Menu = menuLayers.level3;
+      if (level3Menu) {
+        console.log(`ミックス品種メニューを更新: ${animalType}`);
+
+        const title = level3Menu.querySelector('.menu-level-title');
+        if (title) {
+          title.textContent = 'ミックス';
+        }
+
+        // ミックス犬/猫リストの表示を更新
+        const mixBreedList = level3Menu.querySelector('.menu-mix-breed-list');
+
+        // 犬と猫のコンテナを取得
+        const dogMixContainer = mixBreedList.querySelector('.dog-mix-breeds');
+        const catMixContainer = mixBreedList.querySelector('.cat-mix-breeds');
+
+        // 犬と猫それぞれの「すべて見る」リンクを取得
+        const dogMixAllLink = mixBreedList.querySelector('.dog-mix-all-link');
+        const catMixAllLink = mixBreedList.querySelector('.cat-mix-all-link');
+        const dynamicContainer = document.getElementById('dynamic-mix-breeds');
+
+        if (mixBreedList) {
+          // .menu-mix-breed-listを表示するためにactiveクラスを追加
+          mixBreedList.classList.add('active');
+          // 動的コンテナをクリア
+          if (dynamicContainer) {
+            dynamicContainer.innerHTML = '';
+          }
+
+          // ミックス品種アイテムをリセット
+          const dogMixItems = mixBreedList.querySelectorAll('.dog-mix-breed-item');
+          const catMixItems = mixBreedList.querySelectorAll('.cat-mix-breed-item');
+
+          // アイテム数を確認
+          console.log(`犬ミックスアイテム数: ${dogMixItems.length}, 猫ミックスアイテム数: ${catMixItems.length}`);
+
+          if (animalType === 'dog') {
+            // 犬のミックス品種と「すべて見る」リンクを表示、猫のミックス品種を非表示
+            if (dogMixContainer) dogMixContainer.style.display = 'block';
+            if (catMixContainer) catMixContainer.style.display = 'none';
+            if (dogMixAllLink) dogMixAllLink.style.display = 'flex';
+            if (catMixAllLink) catMixAllLink.style.display = 'none';
+
+            dogMixItems.forEach(item => item.style.display = 'flex');
+            catMixItems.forEach(item => item.style.display = 'none');
+
+            // 犬のミックス品種がない場合は、データを取得
+            if (dogMixItems.length === 0) {
+              loadMixBreeds(animalType, mixBreedList);
+            }
+          } else if (animalType === 'cat') {
+            // 猫のミックス品種と「すべて見る」リンクを表示、犬のミックス品種を非表示
+            if (dogMixContainer) dogMixContainer.style.display = 'none';
+            if (dogMixAllLink) dogMixAllLink.style.display = 'none';
+            if (catMixContainer) {
+              catMixContainer.style.display = 'block';
+              if (catMixAllLink) catMixAllLink.style.display = 'flex';
+
+              // 猫データを強制的に再設定
+              console.log('猫ミックスデータを強制更新します');
+
+              // 子猫ミックスのコンテナを一旦クリア（既存のデータがある場合は保持）
+              if (catMixItems.length === 0) {
+                // PCと同じ猫のミックス品種データを取得
+                const catMixData = mixBreeds.find(mb => mb.type === 'cat');
+                if (catMixData && catMixData.breeds && catMixData.breeds.length > 0) {
+                  console.log('猫ミックス品種のデータ:', catMixData.breeds);
+
+                  // 猫のミックス品種を再生成
+                  catMixData.breeds.forEach(breed => {
+                    const breedItem = document.createElement('a');
+                    breedItem.href = breed.url;
+                    breedItem.className = 'menu-item cat-mix-breed-item';
+                    breedItem.style.display = 'flex';
+                    breedItem.textContent = breed.name;
+                    catMixContainer.appendChild(breedItem);
+                  });
+                } else {
+                  console.log('猫ミックスデータが見つかりません。データを取得します。');
+                  loadMixBreeds(animalType, mixBreedList);
+                }
+              } else {
+                // 既存のアイテムを表示
+                catMixItems.forEach(item => item.style.display = 'flex');
+              }
+            }
+
+            dogMixItems.forEach(item => item.style.display = 'none');
+
+            // 猫のミックス品種がない場合は、データを取得
+            if (catMixItems.length === 0 && !catMixContainer.hasChildNodes()) {
+              loadMixBreeds(animalType, mixBreedList);
+            }
+          }
+        }
+
+        // Lv3ミックスメニューの「すべて見る」リンクは
+        // 犬と猫それぞれのコンテナに配置済みのため、表示切替だけで対応可能になりました
+        console.log(`${animalType}用ミックス「すべて見る」リンクを表示`);
+
+        // リンクの表示/非表示はコンテナの表示/非表示と連動して切り替わります
+      }
+    };
+
+    // ミックス品種データを切り替える関数（PCと同じデータを使用）
+    const loadMixBreeds = (animalType, targetContainer) => {
+      console.log('PC版と共通のミックス品種データを使用:', mixBreeds);
+      console.log('切り替え先のanimalType:', animalType);
+
+      // 犬・猫のミックス品種コンテナを特定
+      const dogMixContainer = targetContainer.querySelector('.dog-mix-breeds');
+      const catMixContainer = targetContainer.querySelector('.cat-mix-breeds');
+      const dynamicContainer = document.getElementById('dynamic-mix-breeds');
+
+      // 表示をリセットし、新たに構築する
+      if (dynamicContainer) {
+        dynamicContainer.innerHTML = '';
+      }
+
+      // 対象の動物種のミックス品種データ
+      const targetAnimalMixBreeds = mixBreeds.find(mb => mb.type === animalType)?.breeds || [];
+      console.log(`${animalType}のミックス品種データ:`, targetAnimalMixBreeds);
+
+      // 動物種に応じて表示切替
+      // 犬と猫それぞれの「すべて見る」リンクを取得
+      const dogMixAllLink = targetContainer.querySelector('.dog-mix-all-link');
+      const catMixAllLink = targetContainer.querySelector('.cat-mix-all-link');
+
+      if (animalType === 'dog') {
+        if (dogMixContainer) dogMixContainer.style.display = 'block';
+        if (catMixContainer) catMixContainer.style.display = 'none';
+        if (dogMixAllLink) dogMixAllLink.style.display = 'flex';
+        if (catMixAllLink) catMixAllLink.style.display = 'none';
+
+        // 既存のデータが少ない場合は、PCと同じデータで補完
+        if (targetAnimalMixBreeds.length > 0) {
+          // 犬ミックス品種のコンテナに品種を追加
+          targetAnimalMixBreeds.forEach(breedData => {
+            // 既存のアイテムと重複がないか確認
+            const existingItem = dogMixContainer.querySelector(`a[href="${breedData.url}"]`);
+            if (!existingItem) {
+              const breedItem = document.createElement('a');
+              breedItem.href = breedData.url;
+              breedItem.className = 'menu-item dog-mix-breed-item';
+              breedItem.textContent = breedData.name;
+              breedItem.style.display = 'flex';
+
+              // 「すべて見る」リンクの前に追加
+              if (dogMixAllLink) {
+                dogMixContainer.insertBefore(breedItem, dogMixAllLink);
+              } else {
+                dogMixContainer.appendChild(breedItem);
+              }
+            }
+          });
+        }
+      } else if (animalType === 'cat') {
+        if (dogMixContainer) dogMixContainer.style.display = 'none';
+        if (catMixContainer) catMixContainer.style.display = 'block';
+        if (dogMixAllLink) dogMixAllLink.style.display = 'none';
+        if (catMixAllLink) catMixAllLink.style.display = 'flex';
+
+        // 既存のデータが少ない場合は、PCと同じデータで補完
+        if (targetAnimalMixBreeds.length > 0) {
+          // 猫ミックス品種のコンテナに品種を追加
+          targetAnimalMixBreeds.forEach(breedData => {
+            // 既存のアイテムと重複がないか確認
+            const existingItem = catMixContainer.querySelector(`a[href="${breedData.url}"]`);
+            if (!existingItem) {
+              const breedItem = document.createElement('a');
+              breedItem.href = breedData.url;
+              breedItem.className = 'menu-item cat-mix-breed-item';
+              breedItem.textContent = breedData.name;
+              breedItem.style.display = 'flex';
+
+              // 「すべて見る」リンクの前に追加
+              if (catMixAllLink) {
+                catMixContainer.insertBefore(breedItem, catMixAllLink);
+              } else {
+                catMixContainer.appendChild(breedItem);
+              }
+            }
+          });
+        }
+      }
+
+      // ※「すべて見る」リンクの更新は不要になりました（すでに表示コンテナ内にあるため）
+      console.log(`${animalType}用ミックス品種を表示済み`);
+
+      // 「すべて見る」リンクの表示/非表示はコンテナの表示/非表示と連動します
+    };
+
+    // ハンバーガーメニューをクリックしたときの処理
+    menuToggle?.addEventListener('click', () => {
+      console.log('ハンバーガーメニュークリック');
+      menuToggle.classList.toggle('is-active');
+      navDrawer?.classList.toggle('is-open');
+      navOverlay?.classList.toggle('is-visible');
+      document.body.classList.toggle('menu-open');
+
+      // メニューを開いたときは常にトップレベルから表示
+      showMenuLevel(0);
+      
+      // データ属性が変わっている可能性があるため、イベントリスナーを再セットアップ
+      const triggerItems = document.querySelectorAll('[data-menu-trigger]');
+      console.log('トリガー要素を再検出:', triggerItems.length);
+      triggerItems.forEach(item => {
+        // 一旦既存のリスナーを削除して再追加（重複防止）
+        item.removeEventListener('click', menuItemClickHandler);
+        item.addEventListener('click', menuItemClickHandler);
+      });
+    });
+
+    // 閉じるボタンをクリックしたときの処理
+    drawerClose?.addEventListener('click', () => {
+      menuToggle?.classList.remove('is-active');
+      navDrawer?.classList.remove('is-open');
+      navOverlay?.classList.remove('is-visible');
+      document.body.classList.remove('menu-open');
+    });
+
+    // オーバーレイをクリックしたときの処理
+    navOverlay?.addEventListener('click', () => {
+      menuToggle?.classList.remove('is-active');
+      navDrawer?.classList.remove('is-open');
+      navOverlay?.classList.remove('is-visible');
+      document.body.classList.remove('menu-open');
+    });
+
+    // ウィンドウサイズが変更されたときにモバイルメニューを閉じる
+    // rem単位で計算してSCSSブレイクポイントと一致させる
+    window.addEventListener('resize', () => {
+      const xlBreakpointRem = BREAKPOINTS_REM.xl; // 128rem
+      // Use matchMedia with rem units to match CSS behavior exactly
+      const mediaQuery = window.matchMedia(`(min-width: ${xlBreakpointRem}rem)`);
+      if (mediaQuery.matches) {
+        menuToggle?.classList.remove('is-active');
+        navDrawer?.classList.remove('is-open');
+        navOverlay?.classList.remove('is-visible');
+        document.body.classList.remove('menu-open');
+      }
+    });
+  });
+</script>

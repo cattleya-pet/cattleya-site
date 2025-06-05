@@ -1,0 +1,407 @@
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/typography' as *;
+
+.nav {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* デスクトップ用ナビゲーション */
+.nav-desktop {
+  width: 100%;
+
+  .nav-list {
+    display: flex;
+    gap: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    justify-content: center;
+    align-items: center;
+
+    @include breakpoint-up(lg) {
+      // gap: $spacing-lg;
+    }
+
+    // nav-list直下のliにホバー効果を追加
+    > li:hover {
+      background-color: #ece9e7;
+    }
+  }
+}
+
+/* モバイル用ナビゲーション */
+.nav-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 右端にハンバーガーメニュー */
+  width: 100%;
+
+  /* モバイルトップメニュー - 非表示 */
+  .nav-mobile-top {
+    display: none;
+  }
+
+  .nav-list-mobile-top {
+    display: flex;
+    gap: $spacing-md;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // モバイルメニューのリストスタイルを削除
+  .menu-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// ハンバーガーメニュー
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: rem(30); // 拡大
+  height: rem(21); // ×ボタンと同じ高さに
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0; // パディングを調整
+  margin-right: 0; // マージンを削除
+  z-index: $z-index-dropdown + 10;
+  position: relative;
+
+  &.is-active {
+    .hamburger-line {
+      &:nth-child(1) {
+        transform: translateY(1rem) rotate(45deg);
+        background-color: $color-primary;
+      }
+
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:nth-child(3) {
+        transform: translateY(-1rem) rotate(-45deg);
+        background-color: $color-primary;
+      }
+    }
+  }
+
+  // 以下のホバー効果はデスクトップのみに適用
+  @media (hover: hover) {
+    &:hover {
+      .hamburger-line {
+        background-color: $color-primary;
+      }
+    }
+  }
+}
+
+.hamburger-line {
+  width: 100%;
+  height: rem(3);
+  background-color: $color-text;
+  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.25s ease;
+  border-radius: rem(1.5);
+}
+
+// ドロワーメニュー
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 80%;
+  max-width: 35rem;
+  height: 100vh;
+  background-color: $color-background;
+  padding: rem(24) rem(30) rem(30) rem(30);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: $z-index-modal;
+  box-shadow: -0.2rem 0 1rem rgba(0, 0, 0, 0.1);
+
+  &.is-open {
+    transform: translateX(0);
+  }
+}
+
+.nav-drawer-header {
+  display: flex;
+  justify-content: flex-start; // 戻るボタンを左寄せ
+  align-items: center;
+  margin-bottom: $spacing-xl;
+  margin-top: 0 // 閉じるボタンとの間隔を確保
+}
+
+.nav-drawer-close {
+  position: absolute;
+  top: rem(20);
+  right: calc(5vw + rem(7.5));
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(30);
+  height: rem(30);
+  z-index: 10;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.menu-back-button {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: $color-text;
+  @include typography-ja-s;
+
+  svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .back-button-text {
+    @include typography-ja-s;
+  }
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.nav-list-drawer {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  position: relative;
+}
+
+// 階層メニュー
+.menu-level {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: $spacing-3xl;
+  padding: $spacing-lg rem(30) rem(30) rem(30);
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; // スムーズスクロール（iOS用）
+  transform: translateX(100%); // 初期位置を画面外に設定
+  transition: transform 0.3s ease;
+  background-color: $color-background;
+
+  &.active {
+    display: flex;
+    transform: translateX(0); // アクティブ時は画面内に移動
+  }
+}
+
+.menu-level-title {
+  @include typography-ja-l($font-weight-semibold);
+  margin-top: 0;
+  margin-bottom: $spacing-lg;
+  color: $color-text;
+  @include breakpoint-up(sm) { 
+    margin-bottom: $spacing-lg;
+  }
+}
+
+// スライドアニメーション
+.slide-in-left {
+  animation: slideInLeft 0.3s ease forwards;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s ease forwards;
+}
+
+.slide-out-left {
+  animation: slideOutLeft 0.3s ease forwards;
+}
+
+.slide-out-right {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+// メニュー項目とリスト
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: rem(12) 0;
+  border-bottom: 0.1rem solid $color-border;
+  text-decoration: none;
+  color: $color-text;
+  min-height: rem(49);
+  @include typography-ja-s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .menu-item-chevron {
+    width: 1.6rem;
+    height: 1.6rem;
+    color: $color-text-light;
+  }
+
+  &:hover {
+    color: $color-primary;
+
+    .menu-item-chevron {
+      color: $color-primary;
+    }
+  }
+  @include breakpoint-up(sm) {
+    padding: rem(16) 0;
+  }
+}
+
+.dog-breeds,
+.cat-breeds,
+.menu-mix-breed-list {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: $spacing-xl;
+  max-height: 55vh; // メニューの高さを制限
+  overflow-y: auto; // スクロール可能に
+  
+  &.active {
+    display: flex;
+  }
+}
+
+// 読み込み中表示
+.menu-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: $spacing-md 0;
+  color: $color-text-light;
+  @include typography-ja-s;
+  text-align: center;
+}
+
+// エラー表示
+.menu-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: $spacing-md 0;
+  color: $color-primary; // エラー表示にプライマリーカラーを使用
+  @include typography-ja-s;
+  text-align: center;
+}
+
+// データなし表示
+.menu-no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: $spacing-md 0;
+  color: $color-text-light;
+  @include typography-ja-s;
+  text-align: center;
+  font-style: italic;
+}
+
+// すべて見るリンクは通常のメニューアイテムと同じスタイルを使用するため削除
+
+// オーバーレイ
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: $z-index-modal-backdrop;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  backdrop-filter: blur(0.2rem); // 背景をぼかす効果（モダンブラウザのみ）
+  -webkit-backdrop-filter: blur(0.2rem); // Safari用
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// ボディにメニューオープン時のスタイル
+:global(body.menu-open) {
+  overflow: hidden;
+}

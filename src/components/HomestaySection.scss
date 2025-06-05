@@ -1,0 +1,124 @@
+@use '../styles/tokens/colors' as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+@use '../styles/tokens/typography' as *;
+@use '../styles/tokens/radius' as *;
+
+.homestay-section {
+  background: $color-background-secondary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.homestay-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    align-items: center;
+    margin-left: calc(-5%);
+    
+    .homestay-img-wrap {
+      width: 50vw;
+      max-width: rem(900);
+      margin-right: rem(40);
+    }
+    
+    .homestay-content {
+      flex: 1;
+      padding-left: rem(20);
+    }
+  }
+}
+
+.section-heading--mobile {
+  display: block;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.section-heading--desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: block;
+    
+    .section-heading__subtitle {
+      text-align: left;
+    }
+  }
+}
+
+.homestay-img-wrap {
+  // flex: 0 0 rem(340);
+  // max-width: rem(340);
+  width: 100%;
+  // display: flex;
+  // justify-content: center;
+  aspect-ratio: 4 / 3;
+}
+.homestay-img {
+  width: 100%;
+  // max-width: rem(340);
+  height: 100%;
+  border-radius: $radius-m;
+  object-fit: cover;
+}
+
+.homestay-content {
+  flex: 1 1 rem(320);
+  min-width: rem(260);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: rem(19.2) 0;
+  
+  .btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+    @include breakpoint-up(lg) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+.homestay-title {
+  @include typography-ja-2l($font-weight-semibold);
+  color: $color-gold-600;
+  margin-bottom: rem(19.2);
+}
+.homestay-desc {
+  @include typography-ja-s;
+  color: $color-text;
+  line-height: 1.7;
+}
+
+.homestay-features {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+  margin:rem(50) 0 rem(30);
+}
+
+.homestay-feature {
+  position: relative;
+  display: inline-block;
+  font-size: rem(16);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0;
+  background: $color-background-primary;
+  background-size: 100% 100%;
+  padding: rem(2) rem(4);
+  border-radius: rem(2);
+}
