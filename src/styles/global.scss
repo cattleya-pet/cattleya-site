@@ -38,7 +38,7 @@ body {
   padding-top: rem(70); /* モバイルヘッダー高さ */
   
   @include breakpoint-up(xl) {
-    padding-top: rem(120); /* PC版ヘッダー高さ（概算） */
+    padding-top: rem(153); /* PC版ヘッダー高さ（TopBar + Navigation + padding）*/
   }
 }
 
@@ -60,6 +60,10 @@ img {
 /* Container */
 .container {
   @include container;
+}
+
+.hero-container {
+  @include hero-container;
 }
 
 /* Button styles */

@@ -36,11 +36,15 @@ export async function getBreedsByAnimalType(animalType: string) {
     // 血統書付きの犬種/猫種を抽出
     const pureBreeds = pets
       .filter(pet => pet.classification === 'bloodline')
-      .map(pet => ({
-        name: pet.breedTypeJa,
-        url: `/animals/${animalType}/${encodeURIComponent(pet.breedTypeJa)}`
-      }));
+      .map(pet => {
+        console.log(`[breeds.ts] Pet sample - Ja: ${pet.breedTypeJa}, En: ${pet.breedTypeEn}`);
+        return {
+          name: pet.breedTypeJa,
+          url: `/search/${animalType}s/${encodeURIComponent(pet.breedTypeEn)}`
+        };
+      });
     console.log(`[breeds.ts] ${animalType}の純血種数:`, pureBreeds.length);
+    console.log(`[breeds.ts] ${animalType}の純血種サンプルURL:`, pureBreeds[0]?.url);
 
     // ミックスペットを抽出して確認する
     const mixPets = pets.filter(pet => pet.classification === 'mix');
@@ -55,7 +59,7 @@ export async function getBreedsByAnimalType(animalType: string) {
     // ミックス品種を抽出
     const mixBreedsData = mixPets.map(pet => ({
       name: pet.breedTypeJa,
-      url: `/animals/${animalType}/mix/${encodeURIComponent(pet.breedTypeJa)}`
+      url: `/search/${animalType}s/mix/${encodeURIComponent(pet.breedTypeEn)}`
     }));
     console.log(`[breeds.ts] ${animalType}のミックス品種データ:`, mixBreedsData);
 
@@ -67,11 +71,11 @@ export async function getBreedsByAnimalType(animalType: string) {
     // ダミーデータを追加（テスト用）
     const dummyMixBreeds = animalType === 'dog'
       ? [
-          { name: 'チワワミックス（テスト）', url: `/animals/${animalType}/mix/test-chihuahua-mix` },
-          { name: 'プードルミックス（テスト）', url: `/animals/${animalType}/mix/test-poodle-mix` }
+          { name: 'チワワミックス（テスト）', url: `/search/${animalType}s/mix/chihuahua-mix` },
+          { name: 'プードルミックス（テスト）', url: `/search/${animalType}s/mix/poodle-mix` }
         ]
       : [
-          { name: 'アメリカンショートヘアーミックス（テスト）', url: `/animals/${animalType}/mix/test-ash-mix` }
+          { name: 'アメリカンショートヘアーミックス（テスト）', url: `/search/${animalType}s/mix/american-shorthair-mix` }
         ];
 
     // 実データがある場合はそれを使用し、なければダミーデータを使用

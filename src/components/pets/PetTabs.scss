@@ -6,7 +6,7 @@
 .pet-tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: $spacing-xl;
   border: 1px solid $color-text-primary;
   border-radius: $border-radius-sm;
   overflow: hidden;
@@ -33,9 +33,11 @@
   align-items: center;
   justify-content: center;
   gap: rem(4);
+  box-sizing: border-box;
+  border: 1px solid transparent;
   
   &:last-child {
-    border-right: none;
+    // border-right: none;
   }
   
   &:hover {

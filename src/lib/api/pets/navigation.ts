@@ -27,7 +27,7 @@ export async function getMixBreedsByAnimalType(submenuItems: SubmenuItem[] = [])
           .filter(pet => pet.classification === 'mix')
           .map(pet => ({
             name: pet.breedTypeJa,
-            url: `/animals/${item.type}/mix/${encodeURIComponent(pet.breedTypeJa)}`
+            url: `/search/${item.type}s/mix/${encodeURIComponent(pet.breedTypeEn.toLowerCase())}`
           }));
         return { type: item.type, breeds: mixBreeds };
       }

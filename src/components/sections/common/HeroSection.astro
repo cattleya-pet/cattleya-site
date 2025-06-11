@@ -1,0 +1,144 @@
+---
+import Breadcrumb from '../../ui/Breadcrumb.astro';
+
+
+export interface Props {
+  title: string;
+  image: string;
+  breadcrumbItems: Array<{
+    label: string;
+    href?: string;
+  }>;
+}
+
+const { title, image, breadcrumbItems } = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero__content">
+      <div class="hero__text">
+        <h1 class="hero__title">{title}</h1>
+      </div>
+      <div class="hero__image">
+        <img src={image} alt={title} class="hero__img" />
+      </div>
+    </div>
+    <div class="hero__breadcrumb--desktop">
+      <Breadcrumb items={breadcrumbItems} />
+    </div>
+    <div class="hero__breadcrumb--mobile">
+      <Breadcrumb items={breadcrumbItems} />
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../../styles/variables' as *;
+  @use '../../../styles/mixins' as *;
+  @use '../../../styles/tokens/colors' as *;
+  @use '../../../styles/tokens/typography' as *;
+
+  .hero {
+    padding: rem(50) 0 0;
+    background-color: $color-background;
+
+    @include breakpoint-up(lg) {
+      padding: rem(60) 0 0;
+    }
+  }
+
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    @include breakpoint-up(lg) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: $spacing-2xl;
+    }
+  }
+
+  .hero__text {
+    order: 1;
+
+    @include breakpoint-up(lg) {
+      order: 1;
+      flex: 0 0 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  .hero__title {
+    font-size: $font-size-ja-l;
+    font-weight: $font-weight-bold;
+    color: $color-text;
+    line-height: 1.3;
+    margin-bottom:0;
+
+    @include breakpoint-up(lg) {
+      font-size: $font-size-ja-2l;
+    }
+  }
+
+  .hero__image {
+    order: 2;
+    position: relative;
+
+    @include breakpoint-up(lg) {
+      order: 2;
+      flex: 0 0 55%;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: rem(5);
+      left: rem(-5);
+      width: calc(100% + rem(5));
+      height: 100%;
+      background-color: $color-background-secondary;
+      border-radius: $border-radius-md 0 0 $border-radius-md;
+      z-index: 0;
+
+      @include breakpoint-up(lg) {
+        top: 20px;
+        left: -20px;
+        width: calc(100% + rem(20));
+      }
+    }
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: $border-radius-md 0 0 $border-radius-md;
+    position: relative;
+    z-index: 1;
+
+    @include breakpoint-up(lg) {
+      height: 350px;
+    }
+  }
+
+  .hero__breadcrumb--mobile {
+    order: 3;
+
+    @include breakpoint-up(lg) {
+      display: none;
+    }
+  }
+
+  .hero__breadcrumb--desktop {
+    display: none;
+
+    @include breakpoint-up(lg) {
+      display: block;
+    }
+  }
+</style>

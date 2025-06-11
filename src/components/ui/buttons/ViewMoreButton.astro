@@ -1,0 +1,89 @@
+---
+---
+
+<div class="view-more-container">
+  <button type="button" class="view-more-button" id="viewMoreButton">
+    <span class="view-more-text">VIEW MORE</span>
+    <div class="view-more-spinner" style="display: none;">
+      <div class="spinner"></div>
+    </div>
+  </button>
+</div>
+
+<style lang="scss">
+  @use '../../../styles/variables' as *;
+  @use '../../../styles/mixins' as *;
+  @use '../../../styles/tokens/colors' as *;
+  @use '../../../styles/tokens/typography' as *;
+
+  .view-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: $spacing-2xl;
+    
+    @include breakpoint-up(lg) {
+      margin-top: $spacing-3xl;
+    }
+  }
+
+  .view-more-button {
+    @include button-base;
+    background-color: transparent;
+    border-bottom: 2px solid $color-text-link;
+    color: $color-text-link;
+    padding: $spacing-md $spacing-xs $spacing-sm;
+    font-family: $font-family-en;
+    font-size: rem(12);
+    font-weight: $font-weight-bold;
+    position: relative;
+    border-radius: 0;
+    @include breakpoint-up(lg) {
+      font-size: rem(16);
+    }
+    &:hover:not(:disabled) {
+      color: $color-text-link-hover;
+      border-bottom: 2px solid $color-text-link-hover;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .view-more-text {
+    display: inline-block;
+    transition: opacity 0.3s ease;
+  }
+
+  .view-more-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .spinner {
+    width: rem(20);
+    height: rem(20);
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .view-more-button.loading {
+    .view-more-text {
+      opacity: 0;
+    }
+    
+    .view-more-spinner {
+      display: block !important;
+    }
+  }
+</style>

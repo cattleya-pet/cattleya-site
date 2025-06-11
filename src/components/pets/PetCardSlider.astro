@@ -4,7 +4,7 @@ import { getGoogleDriveImageUrl } from '../../lib/utils/image';
 import { formatDate } from '../../lib/utils/date';
 import MaleIcon from '../../assets/icons/icon_male.svg?raw';
 import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
-import SectionHeading from '../SectionHeading.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
 
 interface Pet {
   id: string;
@@ -78,9 +78,11 @@ const {
                       class="pet-card__new-image"
                       src={imageUrl}
                       alt={`${pet.breedTypeJa}の写真`}
-                      loading="lazy"
+                      loading="eager"
                       width="600"
                       height="600"
+                      onload="this.parentElement.classList.add('loaded')"
+                      onerror="this.parentElement.classList.add('loaded')"
                     />
                   </div>
                   <div class="pet-card__new-info">

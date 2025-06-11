@@ -1,8 +1,8 @@
-@use '../styles/tokens/colors' as *;
-@use '../styles/variables' as *;
-@use '../styles/mixins' as *;
-@use '../styles/tokens/typography' as *;
-@use '../styles/tokens/radius' as *;
+@use '../../../styles/tokens/colors' as *;
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/tokens/typography' as *;
+@use '../../../styles/tokens/radius' as *;
 
 .contact-cta-section {
   position: relative;

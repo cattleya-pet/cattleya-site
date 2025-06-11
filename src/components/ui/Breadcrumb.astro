@@ -1,0 +1,94 @@
+---
+export interface Props {
+  items: Array<{
+    label: string;
+    href?: string;
+  }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="パンくずナビゲーション">
+  <ol class="breadcrumb__list">
+    {items.map((item, index) => (
+      <>
+        <li class="breadcrumb__item">
+          {item.href ? (
+            <a href={item.href} class="breadcrumb__link">
+              {item.label}
+            </a>
+          ) : (
+            <span class="breadcrumb__current" aria-current="page">
+              {item.label}
+            </span>
+          )}
+        </li>
+        {index < items.length - 1 && (
+          <li class="breadcrumb__separator" aria-hidden="true">></li>
+        )}
+      </>
+    ))}
+  </ol>
+</nav>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+  @use '../../styles/tokens/colors' as *;
+  @use '../../styles/tokens/typography' as *;
+
+  .breadcrumb {
+    margin: 0;
+  }
+
+  .breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: rem(15) 0;
+    gap: rem(8);
+    @include breakpoint-up(lg) {
+      padding: rem(30) 0;
+      gap: rem(12);
+    }
+  }
+
+  .breadcrumb__item {
+    display: flex;
+    align-items: center;
+  }
+
+  .breadcrumb__link {
+    font-size: rem(9);
+    font-weight: $font-weight-semibold;
+    color: $color-text-link;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+    @include breakpoint-up(lg) {
+      @include typography-ja-2s($font-weight-semibold);
+    }
+
+    &:hover {
+      color: $color-text-link-hover;;
+    }
+  }
+
+  .breadcrumb__current {
+    color: $color-text;
+    font-size: rem(9);
+    @include breakpoint-up(lg) {
+      @include typography-ja-2s();
+    }
+  }
+
+  .breadcrumb__separator {
+    color: $color-text-light;
+    font-size: $font-size-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

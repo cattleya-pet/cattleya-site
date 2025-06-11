@@ -1,6 +1,6 @@
 ---
 import { siteConfig } from '../../config/site';
-import NavigationItem from '../layout/NavigationItem.astro';
+import NavigationItem from './NavigationItem.astro';
 import { getAnimalTypes, getBreedsByAnimalType } from '../../lib/api/pets';
 import { getMixBreedsByAnimalType } from '../../lib/api/pets/navigation';
 import { getAllStores } from '../../lib/api/stores';
@@ -289,7 +289,7 @@ const mobileTopItems = [
 
               {/* 犬ミックスの「すべて見る」リンク */}
               <li>
-                <a href="/animals/dog/mix" class="menu-item menu-all-link dog-mix-all-link">
+                <a href="/search/dogs/mix" class="menu-item menu-all-link dog-mix-all-link">
                   すべてのミックスを見る
                 </a>
               </li>
@@ -310,7 +310,7 @@ const mobileTopItems = [
 
               {/* 猫ミックスの「すべて見る」リンク */}
               <li>
-                <a href="/animals/cat/mix" class="menu-item menu-all-link cat-mix-all-link">
+                <a href="/search/cats/mix" class="menu-item menu-all-link cat-mix-all-link">
                   すべてのミックスを見る
                 </a>
               </li>

@@ -16,7 +16,6 @@ const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
 ---
 
 <div class="pet-card" data-animal-type={pet.animalType}>
-  {pet.isNew === 'true' && <span class="pet-card__new-badge">NEW</span>}
   <div class="pet-card__inner">
     <div class="pet-card__image-container">
       <img
@@ -26,6 +25,7 @@ const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
         loading="lazy"
         width="600"
         height="600"
+        onerror="this.src='/src/assets/images/img_loading-pet-image-01.webp'"
       />
     </div>
     <div class="pet-card__info">

@@ -16,7 +16,10 @@
       "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg \"@media\" --type scss -A 3 -B 1)",
       "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg \"@media\" -g \"*.scss\" -A 3 -B 1)",
       "Bash(git checkout:*)",
-      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg -n \"background-color.*#ffffff|background-color.*white|background.*#fff\" /Users/uedanaomichi/project-astro/cattleya-test/src/components/Header/ /Users/uedanaomichi/project-astro/cattleya-test/src/components/layout/)"
+      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg -n \"background-color.*#ffffff|background-color.*white|background.*#fff\" /Users/uedanaomichi/project-astro/cattleya-test/src/components/Header/ /Users/uedanaomichi/project-astro/cattleya-test/src/components/layout/)",
+      "Bash(/Users/uedanaomichi/.nvm/versions/node/v20.3.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-darwin/rg -n \"randomId|ID_DESC|orders|sort.*id|id.*sort\" --type=ts --type=js --type=astro)",
+      "Bash(rm:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   },

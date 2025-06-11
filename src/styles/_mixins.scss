@@ -89,6 +89,27 @@
   }
 }
 
+// Hero Container (下層ページのヒーロー用)
+@mixin hero-container {
+  width: 100%;
+  padding-left: 5%; // 通常のcontainerと同じ左padding
+  padding-right: 0; // 右paddingは常に0
+  
+  @include breakpoint-up(lg) {
+    padding-left: rem(50); // 通常のcontainerと同じ左padding
+    padding-right: 0; // 右paddingは常に0
+  }
+}
+
+// Section padding (トップページと同じpadding設定)
+@mixin section-padding {
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
 // Card styles
 @mixin card {
   background-color: vars.$color-background;

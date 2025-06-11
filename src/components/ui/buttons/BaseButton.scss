@@ -1,7 +1,7 @@
-@use '../styles/variables' as *;
-@use '../styles/mixins' as *;
-@use '../styles/tokens/colors' as *;
-@use '../styles/tokens/typography' as *;
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/tokens/colors' as *;
+@use '../../../styles/tokens/typography' as *;
 
 .base-button {
   display: inline-flex;
