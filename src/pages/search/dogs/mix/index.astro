@@ -1,0 +1,231 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import PetCard from '../../../../components/pets/PetCard.astro';
+import BreedTags from '../../../../components/pets/BreedTags.astro';
+import HeroSection from '../../../../components/sections/common/HeroSection.astro';
+import ViewMoreButton from '../../../../components/ui/buttons/ViewMoreButton.astro';
+import BannerSection from '../../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../../components/sections/common/ContactCTASection.astro';
+import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
+import { getBreedsByAnimalType } from '../../../../lib/api/pets';
+import { getMixBreedsByAnimalType } from '../../../../lib/api/pets/navigation';
+import { getGoogleDriveImageUrl } from '../../../../lib/utils/image';
+import '../../../../styles/layout/pets-grid.scss';
+
+// 全ミックス犬を取得
+const allDogs = await getLatestPetsByType('dog', 100);
+const mixDogs = allDogs.filter(pet => pet.classification === 'mix');
+
+// 初期表示は18匹のミックス犬のみ
+const initialDogs = mixDogs.slice(0, 18);
+
+console.log('ミックス犬総数:', mixDogs.length);
+console.log('初期表示ミックス犬数:', initialDogs.length);
+
+// ミックス犬の品種リストを取得（ヘッダーメニューと同じロジック）
+const { pureBreeds, hasMix } = await getBreedsByAnimalType('dog');
+const submenuItems = [{ type: 'dog', breeds: pureBreeds, hasMix: hasMix }];
+
+// Navigation.astroと同じ方式でミックス品種を取得
+const mixBreeds = await getMixBreedsByAnimalType(submenuItems);
+
+// 品種タグ用データを作成（ミックス品種のみ）
+const finalMixBreeds = [];
+
+// ul.mix-breeds-submenuのデータを追加（重複除去）
+const dogMixBreeds = mixBreeds.find(mb => mb.type === 'dog');
+if (dogMixBreeds && dogMixBreeds.breeds) {
+  dogMixBreeds.breeds.forEach(mixBreed => {
+    const breedEn = mixBreed.url.split('/').pop();
+    finalMixBreeds.push({
+      breedTypeJa: mixBreed.name,
+      breedTypeEn: breedEn,
+      classification: 'MIX'
+    });
+  });
+}
+
+console.log('ヘッダーと同じミックス犬品種データ:', finalMixBreeds);
+
+// HeroSection用の画像（先頭のミックス個体の画像）
+const heroImage = initialDogs.length > 0 
+  ? getGoogleDriveImageUrl(initialDogs[0].imageUrl01, 800, 600)
+  : '/src/assets/images/backgrounds/img_bg-hero_search-dogs-01.webp';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '子犬・子猫を探す', href: '/search' },
+  { label: '子犬を探す', href: '/search/dogs' },
+  { label: 'ミックス' }
+];
+---
+
+<Layout title="ミックス | 子犬を探す | カトレア">
+  <main>
+    <HeroSection 
+      title="ミックス"
+      image={heroImage}
+      breadcrumbItems={breadcrumbItems}
+      isPetImage={initialDogs.length > 0}
+    />
+    <BreedTags breeds={finalMixBreeds} animalType="dog" />
+    <section class="pets-section pets-section--with-breed-tags">
+      <div class="container">
+        {initialDogs.length > 0 ? (
+          <>
+            <div class="pets-grid">
+              {initialDogs.map((pet) => <PetCard pet={pet} />)}
+            </div>
+            {mixDogs.length > 18 && <ViewMoreButton />}
+          </>
+        ) : (
+          <div class="no-pets-message">
+            <p>現在、ミックスの子犬はおりません。</p>
+            <p><a href="/search/dogs">他の子犬を見る</a></p>
+          </div>
+        )}
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<script define:vars={{ 
+  initialDogsCount: initialDogs.length,
+  totalDogsCount: mixDogs.length
+}}>
+  // 初期表示時のVIEW MOREボタン表示制御
+  const viewMoreButton = document.getElementById('viewMoreButton');
+  
+  // 初期状態で18匹未満またはデータがない場合はVIEW MOREボタンを非表示
+  if (viewMoreButton) {
+    if (totalDogsCount <= 18) {
+      viewMoreButton.style.display = 'none';
+    }
+  }
+</script>
+
+<script>
+  import { getGoogleDriveImageUrl } from '../../../../lib/utils/image';
+  import { formatDate } from '../../../../lib/utils/date';
+
+  let offset = 18; // ミックス犬のオフセット
+  let isLoading = false; // 読み込み状態
+
+  const viewMoreButton = document.getElementById('viewMoreButton');
+  const petsGrid = document.querySelector('.pets-grid');
+
+  if (viewMoreButton && petsGrid) {
+    viewMoreButton.addEventListener('click', async () => {
+      if (isLoading) return;
+      
+      isLoading = true;
+      viewMoreButton.classList.add('loading');
+      viewMoreButton.disabled = true;
+
+      try {
+        const apiUrl = `/api/pets?offset=${offset}&limit=18&animalType=dog&classification=mix`;
+        const response = await fetch(apiUrl);
+        const newPets = await response.json();
+
+        if (newPets && newPets.length > 0) {
+          // 新しいペットカードを追加
+          newPets.forEach((pet) => {
+            const petCardHTML = `
+              <div class="pet-card" data-animal-type="${pet.animalType}">
+                <div class="pet-card__inner">
+                  <div class="pet-card__image-container">
+                    <img
+                      class="pet-card__image"
+                      src="${getGoogleDriveImageUrl(pet.imageUrl01, 600, 600)}"
+                      alt="${pet.breedTypeJa}の写真"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                      onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
+                    />
+                  </div>
+                  <div class="pet-card__info">
+                    <h3 class="pet-card__title">
+                      ${pet.breedTypeJa}
+                      ${pet.gender === '男の子' ? '<span class="pet-card__gender male"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2M21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9H21Z"/></svg></span>' : ''}
+                      ${pet.gender === '女の子' ? '<span class="pet-card__gender female"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4A4 4 0 0 1 16 8A4 4 0 0 1 12 12A4 4 0 0 1 8 8A4 4 0 0 1 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"/></svg></span>' : ''}
+                    </h3>
+                    <div class="pet-card__details">
+                      <p class="pet-card__detail-item">色：${pet.color}</p>
+                      <p class="pet-card__detail-item">誕生日：${formatDate(pet.birthday)}</p>
+                      <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+            petsGrid.insertAdjacentHTML('beforeend', petCardHTML);
+          });
+
+          offset += 18;
+          
+          // 取得したデータが18未満の場合、VIEW MOREボタンを非表示
+          if (newPets.length < 18) {
+            viewMoreButton.style.display = 'none';
+          }
+        } else {
+          // データがない場合はボタンを非表示
+          viewMoreButton.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading more mix dogs:', error);
+        // エラー時はボタンのテキストを変更
+        viewMoreButton.querySelector('.view-more-text').textContent = 'エラーが発生しました';
+        viewMoreButton.disabled = true;
+      } finally {
+        isLoading = false;
+        viewMoreButton.classList.remove('loading');
+        viewMoreButton.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style lang="scss">
+  @import '../../../../styles/variables';
+  @import '../../../../styles/mixins';
+
+  .pets-section {
+    @include section-padding;
+    background-color: $color-background;
+    min-height: calc(100vh - 400px);
+  }
+  
+  // 品種タグがある場合のpadding-top調整
+  .pets-section--with-breed-tags {
+    padding-top: rem(50);
+  }
+
+  .no-pets-message {
+    text-align: center;
+    padding: rem(60) rem(20);
+    
+    p {
+      margin-bottom: rem(20);
+      font-size: rem(18);
+      color: $color-text;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      a {
+        color: $color-primary;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+</style>

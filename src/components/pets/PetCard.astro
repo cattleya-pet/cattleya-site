@@ -13,10 +13,14 @@ interface Props {
 const { pet } = Astro.props;
 // カード画像用のサイズを指定
 const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
+
+// 詳細ページのURLを生成
+const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
 ---
 
 <div class="pet-card" data-animal-type={pet.animalType}>
-  <div class="pet-card__inner">
+  <a href={detailUrl} class="pet-card__link">
+    <div class="pet-card__inner">
     <div class="pet-card__image-container">
       <img
         class="pet-card__image"
@@ -25,7 +29,7 @@ const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
         loading="lazy"
         width="600"
         height="600"
-        onerror="this.src='/src/assets/images/img_loading-pet-image-01.webp'"
+        onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
       />
     </div>
     <div class="pet-card__info">
@@ -50,5 +54,6 @@ const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
         <p class="pet-card__detail-item">店舗：{pet.storeName}</p>
       </div>
     </div>
-  </div>
+    </div>
+  </a>
 </div>

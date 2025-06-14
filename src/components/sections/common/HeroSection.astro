@@ -9,9 +9,10 @@ export interface Props {
     label: string;
     href?: string;
   }>;
+  isPetImage?: boolean;
 }
 
-const { title, image, breadcrumbItems } = Astro.props;
+const { title, image, breadcrumbItems, isPetImage = false } = Astro.props;
 ---
 
 <section class="hero">
@@ -21,7 +22,7 @@ const { title, image, breadcrumbItems } = Astro.props;
         <h1 class="hero__title">{title}</h1>
       </div>
       <div class="hero__image">
-        <img src={image} alt={title} class="hero__img" />
+        <img src={image} alt={title} class={`hero__img ${isPetImage ? 'pet-image' : ''}`} />
       </div>
     </div>
     <div class="hero__breadcrumb--desktop">
@@ -53,7 +54,7 @@ const { title, image, breadcrumbItems } = Astro.props;
     flex-direction: column;
     gap: $spacing-lg;
 
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
@@ -89,10 +90,15 @@ const { title, image, breadcrumbItems } = Astro.props;
     order: 2;
     position: relative;
 
+    @include breakpoint-up(md) {
+      order: 2;
+      flex: 0 0 50%;
+    }
     @include breakpoint-up(lg) {
       order: 2;
       flex: 0 0 55%;
     }
+    max-width: rem(900);
 
     &::before {
       content: '';
@@ -117,12 +123,18 @@ const { title, image, breadcrumbItems } = Astro.props;
     width: 100%;
     height: 220px;
     object-fit: cover;
+    object-position: center center; // デフォルトは中央
     border-radius: $border-radius-md 0 0 $border-radius-md;
     position: relative;
     z-index: 1;
 
     @include breakpoint-up(lg) {
       height: 350px;
+    }
+    
+    // 個体画像の場合（ペット画像）の調整
+    &.pet-image {
+      object-position: center 20%; // 顔が見えるように上部重視
     }
   }
 

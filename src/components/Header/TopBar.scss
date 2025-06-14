@@ -55,12 +55,12 @@
   }
 }
 
-.action-buttons {
+.header-actions {
   display: flex;
   gap: rem(16);
 }
 
-.action-button {
+.header-action-button {
   padding: rem(8) rem(16);
   border: rem(1) solid $color-black;
   border-radius: rem(4);

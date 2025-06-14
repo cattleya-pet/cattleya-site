@@ -1,0 +1,48 @@
+---
+import './BreedTags.scss';
+
+interface Breed {
+  breedTypeJa: string;
+  breedTypeEn: string;
+  classification: string;
+}
+
+interface Props {
+  breeds: Breed[];
+  animalType: 'dog' | 'cat';
+}
+
+const { breeds, animalType } = Astro.props;
+
+console.log('BreedTags - breeds:', breeds);
+console.log('BreedTags - animalType:', animalType);
+
+// リンクURLを生成する関数
+function getBreedLink(breed: Breed, animalType: string): string {
+  const baseUrl = `/search/${animalType}s`;
+  if (breed.classification === 'MIX') {
+    return `${baseUrl}/mix/${breed.breedTypeEn}`;
+  } else {
+    return `${baseUrl}/${breed.breedTypeEn}`;
+  }
+}
+---
+
+<section class="breed-tags">
+  <div class="container">
+    <div class="breed-tags__list">
+      {breeds && breeds.length > 0 ? (
+        breeds.map((breed) => (
+          <a 
+            href={getBreedLink(breed, animalType)}
+            class="breed-tags__item"
+          >
+            #{breed.breedTypeJa}
+          </a>
+        ))
+      ) : (
+        <p>品種データがありません</p>
+      )}
+    </div>
+  </div>
+</section>

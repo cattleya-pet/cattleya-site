@@ -836,8 +836,9 @@ const mobileTopItems = [
         if (targetAnimalMixBreeds.length > 0) {
           // 犬ミックス品種のコンテナに品種を追加
           targetAnimalMixBreeds.forEach(breedData => {
-            // 既存のアイテムと重複がないか確認
-            const existingItem = dogMixContainer.querySelector(`a[href="${breedData.url}"]`);
+            // 既存のアイテムと重複がないか確認（name基準）
+            const existingItem = Array.from(dogMixContainer.querySelectorAll('.dog-mix-breed-item'))
+              .find(item => item.textContent.trim() === breedData.name);
             if (!existingItem) {
               const breedItem = document.createElement('a');
               breedItem.href = breedData.url;
@@ -864,8 +865,9 @@ const mobileTopItems = [
         if (targetAnimalMixBreeds.length > 0) {
           // 猫ミックス品種のコンテナに品種を追加
           targetAnimalMixBreeds.forEach(breedData => {
-            // 既存のアイテムと重複がないか確認
-            const existingItem = catMixContainer.querySelector(`a[href="${breedData.url}"]`);
+            // 既存のアイテムと重複がないか確認（name基準）
+            const existingItem = Array.from(catMixContainer.querySelectorAll('.cat-mix-breed-item'))
+              .find(item => item.textContent.trim() === breedData.name);
             if (!existingItem) {
               const breedItem = document.createElement('a');
               breedItem.href = breedData.url;

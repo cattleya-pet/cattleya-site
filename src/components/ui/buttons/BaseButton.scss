@@ -68,3 +68,20 @@ button.base-button {
   font-family: inherit;
   font-size: inherit;
 }
+
+// Short variant
+.base-button--short {
+  padding: rem(30) rem(75) rem(30) rem(55);
+  min-width: rem(230);
+  
+  .base-button__line {
+    left: rem(-30);
+    width: rem(40);
+  }
+  
+  &:hover {
+    .base-button__line {
+      transform: translateX(rem(15));
+    }
+  }
+}

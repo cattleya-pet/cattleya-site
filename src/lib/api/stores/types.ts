@@ -9,6 +9,7 @@ export interface Store extends MicroCMSContentId, MicroCMSDate {
   trafficInformation?: string;
   businessHours?: string;
   storePhoneNumber?: string;
+  storeLine?: string;
   description?: string;
 }
 

@@ -56,7 +56,7 @@
 ## ページ管理方針
 
 ### 検索ページの構造
-- 動的ルート `[animalTypeEn].astro` で血統証・ミックス両方を処理
+- 動的ルート `[breedTypeEn].astro` で血統証・ミックス両方を処理
 - ページ内で条件分岐により表示内容を切り替え
 - URL構造に合わせてヘッダーメニューのリンク構造と整合性を保つ
 - ペット詳細ページは `{コンテンツID}` をスラッグとして使用
@@ -67,22 +67,22 @@ search/
 ├── index.astro                                    # /search
 ├── dogs/
 │   ├── index.astro                               # /search/dogs/
-│   ├── [animalTypeEn]/
-│   │   ├── index.astro                           # /search/dogs/{animalTypeEn}
-│   │   └── [contentId].astro                     # /search/dogs/{animalTypeEn}/{contentId}
+│   ├── [breedTypeEn]/
+│   │   ├── index.astro                           # /search/dogs/{breedTypeEn}
+│   │   └── [contentId].astro                     # /search/dogs/{breedTypeEn}/{contentId}
 │   └── mix/
 │       ├── index.astro                           # /search/dogs/mix
-│       └── [animalTypeEn]/
-│           ├── index.astro                       # /search/dogs/mix/{animalTypeEn}
-│           └── [contentId].astro                 # /search/dogs/mix/{animalTypeEn}/{contentId}
+│       └── [breedTypeEn]/
+│           ├── index.astro                       # /search/dogs/mix/{breedTypeEn}
+│           └── [contentId].astro                 # /search/dogs/mix/{breedTypeEn}/{contentId}
 └── cats/
     ├── index.astro                               # /search/cats/
-    ├── [animalTypeEn]/
-    │   ├── index.astro                           # /search/cats/{animalTypeEn}
-    │   └── [contentId].astro                     # /search/cats/{animalTypeEn}/{contentId}
+    ├── [breedTypeEn]/
+    │   ├── index.astro                           # /search/cats/{breedTypeEn}
+    │   └── [contentId].astro                     # /search/cats/{breedTypeEn}/{contentId}
     └── mix/
         ├── index.astro                           # /search/cats/mix
-        └── [animalTypeEn]/
-            ├── index.astro                       # /search/cats/mix/{animalTypeEn}
-            └── [contentId].astro                 # /search/cats/mix/{animalTypeEn}/{contentId}
+        └── [breedTypeEn]/
+            ├── index.astro                       # /search/cats/mix/{breedTypeEn}
+            └── [contentId].astro                 # /search/cats/mix/{breedTypeEn}/{contentId}
 ```

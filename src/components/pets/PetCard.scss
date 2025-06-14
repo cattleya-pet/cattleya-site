@@ -18,6 +18,21 @@
   /* ===== ペットカードの共通スタイル ===== */
   /* 注: 幅の指定は各コンテキスト（グリッド/スライダー）で行う */
   /* margin: 0 auto; removed - width/alignment handled by parent grid/container */
+
+  &__link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+    
+    &:hover {
+      text-decoration: none;
+    }
+    
+    &:hover * {
+      text-decoration: none;
+    }
+  }
   
   /* タブレット以上: 境界線の調整 */
   @include breakpoint-up(md) {

@@ -1,45 +1,80 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import PetCard from '../../components/pets/PetCard.astro';
-import PetTabs from '../../components/pets/PetTabs.astro';
-import HeroSection from '../../components/sections/common/HeroSection.astro';
-import ViewMoreButton from '../../components/ui/buttons/ViewMoreButton.astro';
-import BannerSection from '../../components/sections/common/BannerSection.astro';
-import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
-import { getAllLatestPets, getLatestPetsByType } from '../../lib/api/pets/queries';
-import '../../styles/layout/pets-grid.scss';
+import Layout from '../../../layouts/Layout.astro';
+import PetCard from '../../../components/pets/PetCard.astro';
+import BreedTags from '../../../components/pets/BreedTags.astro';
+import HeroSection from '../../../components/sections/common/HeroSection.astro';
+import ViewMoreButton from '../../../components/ui/buttons/ViewMoreButton.astro';
+import BannerSection from '../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../components/sections/common/ContactCTASection.astro';
+import { getLatestPetsByType } from '../../../lib/api/pets/queries';
+import { getBreedsByAnimalType } from '../../../lib/api/pets';
+import { getMixBreedsByAnimalType } from '../../../lib/api/pets/navigation';
+import '../../../styles/layout/pets-grid.scss';
 
-// 初期表示は「すべて」タブで18匹の混合表示
-const allPets = await getAllLatestPets(18);
-const initialPets = allPets;
-// タブ切り替え用に犬と猫の18匹ずつのデータも取得
-const dogs = await getLatestPetsByType('dog', 18);
-const cats = await getLatestPetsByType('cat', 18);
+// 初期表示は18匹の犬のみ
+const initialDogs = await getLatestPetsByType('dog', 18);
+
+// Navigation.astroと全く同じロジックで犬の品種データを取得
+const { pureBreeds: dogBreeds, hasMix: dogHasMix } = await getBreedsByAnimalType('dog');
+const submenuItems = [{ type: 'dog', breeds: dogBreeds, hasMix: dogHasMix }];
+
+// Navigation.astroと同じ方式でミックス品種を取得
+const mixBreeds = await getMixBreedsByAnimalType(submenuItems);
+
+// 品種タグ用データを作成（ヘッダーと全く同じデータ）
+const finalDogBreeds = [];
+
+// ul.submenu-breedsのデータを追加
+dogBreeds.forEach(breed => {
+  finalDogBreeds.push({
+    breedTypeJa: breed.name,
+    breedTypeEn: breed.url.split('/').pop(),
+    classification: 'bloodline'
+  });
+});
+
+// ul.mix-breeds-submenuのデータを追加（重複除去）
+const dogMixBreeds = mixBreeds.find(mb => mb.type === 'dog');
+if (dogMixBreeds && dogMixBreeds.breeds) {
+  // 既に追加されたbreedTypeJaを追跡するSet
+  const addedBreedNames = new Set(finalDogBreeds.map(breed => breed.breedTypeJa));
+  
+  dogMixBreeds.breeds.forEach(mixBreed => {
+    // 重複チェック
+    if (!addedBreedNames.has(mixBreed.name)) {
+      const breedEn = mixBreed.url.split('/').pop();
+      finalDogBreeds.push({
+        breedTypeJa: mixBreed.name,
+        breedTypeEn: breedEn,
+        classification: 'MIX'
+      });
+      addedBreedNames.add(mixBreed.name);
+    }
+  });
+}
+
+console.log('ヘッダーと同じ犬品種データ:', finalDogBreeds);
 
 // パンくずリストのデータ
 const breadcrumbItems = [
   { label: 'ホーム', href: '/' },
-  { label: '子犬・子猫を探す' }
+  { label: '子犬・子猫を探す', href: '/search' },
+  { label: '子犬を探す' }
 ];
 ---
 
-<Layout title="ペットを探す | すべて">
+<Layout title="子犬を探す | カトレア">
   <main>
     <HeroSection 
-      title="子犬・子猫を探す"
-      image="/src/assets/images/backgrounds/img_bg-hero_search-01.webp"
+      title="子犬を探す"
+      image="/src/assets/images/backgrounds/img_bg-hero_search-dogs-01.webp"
       breadcrumbItems={breadcrumbItems}
     />
-    <section class="pets-section">
+    <BreedTags breeds={finalDogBreeds} animalType="dog" />
+    <section class="pets-section pets-section--with-breed-tags">
       <div class="container">
-        <PetTabs activeTab="all" />
-        <div
-          class="pets-grid"
-          data-all-pets={JSON.stringify(initialPets)}
-          data-dogs={JSON.stringify(dogs)}
-          data-cats={JSON.stringify(cats)}
-        >
-          {initialPets.map((pet) => <PetCard pet={pet} />)}
+        <div class="pets-grid">
+          {initialDogs.map((pet) => <PetCard pet={pet} />)}
         </div>
         <ViewMoreButton />
       </div>
@@ -50,38 +85,23 @@ const breadcrumbItems = [
   </main>
 </Layout>
 
-<script>
+<script define:vars={{ initialDogsCount: initialDogs.length }}>
   // 初期表示時のVIEW MOREボタン表示制御
-  const initialAllPets = JSON.parse(document.querySelector('.pets-grid')?.dataset.allPets || '[]');
-  const initialDogs = JSON.parse(document.querySelector('.pets-grid')?.dataset.dogs || '[]');
-  const initialCats = JSON.parse(document.querySelector('.pets-grid')?.dataset.cats || '[]');
-  
   const viewMoreButton = document.getElementById('viewMoreButton') as HTMLButtonElement;
   
   // 初期状態で18匹未満の場合はVIEW MOREボタンを非表示
   if (viewMoreButton) {
-    if (initialAllPets.length < 18) {
+    if (initialDogsCount < 18) {
       viewMoreButton.style.display = 'none';
     }
   }
 </script>
 
 <script>
-  import { getGoogleDriveImageUrl } from '../../lib/utils/image';
-  import { formatDate } from '../../lib/utils/date';
+  import { getGoogleDriveImageUrl } from '../../../lib/utils/image';
+  import { formatDate } from '../../../lib/utils/date';
 
-  // 初期データを再度取得
-  const initialAllPets = JSON.parse(document.querySelector('.pets-grid')?.dataset.allPets || '[]');
-  const initialDogs = JSON.parse(document.querySelector('.pets-grid')?.dataset.dogs || '[]');
-  const initialCats = JSON.parse(document.querySelector('.pets-grid')?.dataset.cats || '[]');
-
-  // タブごとのオフセット管理
-  let offsets = {
-    all: 18,
-    dog: 18,
-    cat: 18
-  };
-  let currentTab = 'all'; // 現在のタブ
+  let offset = 18; // 犬のオフセット
   let isLoading = false; // 読み込み状態
 
   const viewMoreButton = document.getElementById('viewMoreButton') as HTMLButtonElement;
@@ -96,13 +116,7 @@ const breadcrumbItems = [
       viewMoreButton.disabled = true;
 
       try {
-        let apiUrl = '';
-        if (currentTab === 'all') {
-          apiUrl = `/api/pets?offset=${offsets.all}&limit=18`;
-        } else {
-          apiUrl = `/api/pets?offset=${offsets[currentTab]}&limit=18&animalType=${currentTab}`;
-        }
-
+        const apiUrl = `/api/pets?offset=${offset}&limit=18&animalType=dog`;
         const response = await fetch(apiUrl);
         const newPets = await response.json();
 
@@ -141,7 +155,7 @@ const breadcrumbItems = [
             petsGrid.insertAdjacentHTML('beforeend', petCardHTML);
           });
 
-          offsets[currentTab] += 18;
+          offset += 18;
           
           // 取得したデータが18未満の場合、VIEW MOREボタンを非表示
           if (newPets.length < 18) {
@@ -152,7 +166,7 @@ const breadcrumbItems = [
           viewMoreButton.style.display = 'none';
         }
       } catch (error) {
-        console.error('Error loading more pets:', error);
+        console.error('Error loading more dogs:', error);
         // エラー時はボタンのテキストを変更
         viewMoreButton.querySelector('.view-more-text')!.textContent = 'エラーが発生しました';
         viewMoreButton.disabled = true;
@@ -163,40 +177,20 @@ const breadcrumbItems = [
       }
     });
   }
-
-  // タブ切り替え時のVIEW MOREボタン状態リセット
-  document.addEventListener('tabChanged', (event: any) => {
-    currentTab = event.detail.tab;
-    if (viewMoreButton) {
-      // タブごとの初期データ数を確認
-      let initialCount = 0;
-      if (currentTab === 'all') {
-        initialCount = initialAllPets.length;
-      } else if (currentTab === 'dog') {
-        initialCount = initialDogs.length;
-      } else if (currentTab === 'cat') {
-        initialCount = initialCats.length;
-      }
-      
-      // 18匹未満の場合はVIEW MOREボタンを非表示
-      if (initialCount < 18) {
-        viewMoreButton.style.display = 'none';
-      } else {
-        viewMoreButton.style.display = 'flex';
-        viewMoreButton.disabled = false;
-        viewMoreButton.querySelector('.view-more-text')!.textContent = 'VIEW MORE';
-      }
-    }
-  });
 </script>
 
 <style lang="scss">
-  @import '../../styles/variables';
-  @import '../../styles/mixins';
+  @import '../../../styles/variables';
+  @import '../../../styles/mixins';
 
   .pets-section {
     @include section-padding;
     background-color: $color-background;
     min-height: calc(100vh - 400px);
+  }
+  
+  // 品種タグがある場合のpadding-top調整
+  .pets-section--with-breed-tags {
+    padding-top: rem(50);
   }
 </style>

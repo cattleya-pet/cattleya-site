@@ -34,6 +34,57 @@
       transform: scale(1.05);
     }
   }
+  
+  // コンパクトバリアント（ペット詳細ページ用）
+  &.voice-card--compact {
+    margin: rem(10) 0;
+    flex: 1; // 高さを引き伸ばす
+    
+    // lg以降でのサイズ調整（2枚がコンテンツ幅内に収まるように）
+    @include breakpoint-up(lg) {
+      padding: rem(20);
+      gap: rem(30);
+      
+      .voice-card-img-wrap {
+        width: rem(140);
+        flex: 0 0 auto;
+      }
+      
+      .voice-card-body {
+        min-width: auto;
+        flex: 1;
+      }
+    }
+    
+    @include breakpoint-up(xl) {
+      // トップページのlg~xl区間と同じデザイン
+      padding: rem(30);
+      gap: rem(50);
+      max-width: rem(676);
+      
+      .voice-card-img-wrap {
+        width: rem(210);
+        flex: 0 0 auto;
+        align-self: flex-start;
+      }
+      
+      .voice-card-body {
+        min-width: rem(210);
+      }
+    }
+    
+    // 1500px以降で画像サイズを270x270に
+    @media (min-width: 1500px) {
+      .voice-card-img-wrap {
+        width: rem(270);
+      }
+      
+      .voice-card-body {
+        min-width: rem(270);
+      }
+    }
+    
+  }
 }
 .voice-card-img-wrap {
   width: 100%;
@@ -93,13 +144,13 @@
 }
 .voice-card-meta-table {
   display: grid;
-  grid-template-columns: rem(88) 1fr;
+  grid-template-columns: rem(60) 1fr;
   gap: rem(3.2) rem(19.2);
   width: 100%;
   margin-bottom: rem(15);
   
   @include breakpoint-up(sm) {
-    grid-template-columns: rem(104) 1fr;
+    grid-template-columns: rem(70) 1fr;
     font-size: rem(17.6);
   }
 }

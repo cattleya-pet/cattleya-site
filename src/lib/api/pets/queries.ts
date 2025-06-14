@@ -51,6 +51,34 @@ export async function getLatestPetsByType(animalType: string, limit?: number): P
   }
 }
 
+// breeds.tsで使用される関数を追加
+export async function getPetsByAnimalType(animalType: string): Promise<Pet[]> {
+  try {
+    const queries: any = {
+      filters: `animalType[equals]${animalType}`,
+      fields: [
+        'id',
+        'animalType',
+        'breedTypeJa',
+        'breedTypeEn',
+        'classification',
+        'mixFatherBreed',
+        'mixMotherBreed'
+      ].join(','),
+      limit: 1000 // 全データを取得
+    };
+
+    const response = await client.getList<Pet>({
+      endpoint: API_ENDPOINTS.PETS,
+      queries
+    });
+    return response.contents;
+  } catch (error) {
+    console.error(`Error fetching pets by animal type ${animalType}:`, error);
+    return [];
+  }
+}
+
 export async function getAllLatestPets(limit?: number): Promise<Pet[]> {
   try {
     // limitが指定されている場合は、統合後にlimitを適用するため多めに取得
@@ -77,6 +105,7 @@ export async function getAllLatestPets(limit?: number): Promise<Pet[]> {
     return [];
   }
 }
+
 
 // オフセット指定でペットを取得する関数
 export async function getPetsWithOffset(offset: number, limit: number = 18): Promise<Pet[]> {

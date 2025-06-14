@@ -1,0 +1,59 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.breed-tags {
+  background-color: $color-background;
+  padding: rem(20) 0 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30) 0 0;
+  }
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 0;
+  }
+}
+
+.breed-tags__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(10);
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: rem(1200);
+  margin: 0 auto;
+  
+  @include breakpoint-up(sm) {
+  }
+}
+
+.breed-tags__item {
+  display: inline-block;
+  padding: rem(5) rem(8);
+  background-color: $color-background-tertiary;
+  border: 1px solid $color-text-primary;
+  border-radius: rem(20);
+  text-decoration: none;
+  color: $color-text;
+  font-size: rem(10);
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(6) rem(10);
+    font-size: rem(12);
+  }
+  
+  &:hover {
+    background-color: $color-background-secondary;
+    text-decoration: none;
+  }
+  
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}

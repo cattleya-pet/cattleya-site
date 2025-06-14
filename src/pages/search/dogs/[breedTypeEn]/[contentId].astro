@@ -1,0 +1,698 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
+import { getBreedsByAnimalType } from '../../../../lib/api/pets';
+import { getStoreById } from '../../../../lib/api/stores';
+import { getVoices } from '../../../../lib/api/voice';
+import { getGoogleDriveImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../lib/utils/image';
+import { formatDate } from '../../../../lib/utils/date';
+import MaleIcon from '../../../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../../../assets/icons/icon_female.svg?raw';
+import BaseButton from '../../../../components/ui/buttons/BaseButton.astro';
+import ButtonWrapper from '../../../../components/ui/buttons/ButtonWrapper.astro';
+import VoiceCard from '../../../../components/voice/VoiceCard.astro';
+import BannerSection from '../../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../../components/sections/common/ContactCTASection.astro';
+import Breadcrumb from '../../../../components/ui/Breadcrumb.astro';
+import '../../../../styles/layout/pets-grid.scss';
+import '../../../../components/pets/PetCard.scss';
+import '../../../../styles/pages/pet-detail.scss';
+
+export async function getStaticPaths() {
+  try {
+    const allDogs = await getLatestPetsByType('dog', 100);
+    const bloodlineDogs = allDogs.filter(pet => pet.classification === 'bloodline');
+    
+    if (bloodlineDogs.length === 0) {
+      console.log('[getStaticPaths] 血統書付き犬が存在しません');
+      return [];
+    }
+    
+    const paths = bloodlineDogs.map((pet) => ({
+      params: { 
+        breedTypeEn: pet.breedTypeEn,
+        contentId: pet.id
+      }
+    }));
+    
+    console.log('[getStaticPaths] 生成される犬詳細ページ数:', paths.length);
+    return paths;
+  } catch (error) {
+    console.error('[getStaticPaths] 犬詳細ページエラー:', error);
+    return [];
+  }
+}
+
+const { breedTypeEn, contentId } = Astro.params;
+
+console.log('=== 犬詳細ページ開始 ===');
+console.log('breedTypeEn:', breedTypeEn);
+console.log('contentId:', contentId);
+
+// ペット詳細データを取得
+const allDogs = await getLatestPetsByType('dog', 100);
+const pet = allDogs.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
+
+if (!pet) {
+  console.error(`Pet not found: ${contentId}, breedTypeEn: ${breedTypeEn}`);
+  console.log('Available ids:', allDogs.map(p => p.id).slice(0, 10));
+  console.log('Available breedTypeEns:', [...new Set(allDogs.map(p => p.breedTypeEn))]);
+  return new Response('Pet not found', { status: 404 });
+}
+
+console.log('見つかったペット:', pet.breedTypeJa, pet.id);
+
+// 品種名を取得（日本語）
+const { pureBreeds } = await getBreedsByAnimalType('dog');
+const breedData = pureBreeds.find(breed => breed.url.split('/').pop() === breedTypeEn);
+const breedTypeJa = breedData ? breedData.name : pet.breedTypeJa;
+
+// 店舗情報を取得（IDで取得、失敗した場合は名前で検索）
+let storeInfo = await getStoreById(pet.storeId);
+
+// IDで取得できない場合は、全店舗から名前で検索
+if (!storeInfo) {
+  const { getAllStores } = await import('../../../../lib/api/stores');
+  const allStores = await getAllStores();
+  storeInfo = allStores.find(store => store.storeName === pet.storeName);
+}
+
+console.log('=== 店舗情報デバッグ ===');
+console.log('pet.storeId:', pet.storeId);
+console.log('pet.storeName:', pet.storeName);
+console.log('取得した店舗情報:', storeInfo);
+console.log('storeLine:', storeInfo?.storeLine);
+
+// 画像・動画URLを準備
+const mediaItems = [];
+const placeholderImage = '/src/assets/images/ui/img_loading-pet-image-01.webp';
+
+// 4つのスロットを固定で用意
+const mediaSlots = [
+  { url: pet.imageUrl01, type: 'image', label: '写真1' },
+  { url: pet.imageUrl02, type: 'image', label: '写真2' },
+  { url: pet.imageUrl03, type: 'image', label: '写真3' },
+  { url: pet.videoUrl, type: 'video', label: '動画' }
+];
+
+mediaSlots.forEach((slot, index) => {
+  if (slot.url) {
+    if (slot.type === 'image') {
+      mediaItems.push({
+        type: 'image',
+        url: getGoogleDriveImageUrl(slot.url, 800, 600),
+        thumbnail: getGoogleDriveImageUrl(slot.url, 150, 150),
+        alt: `${pet.breedTypeJa}の${slot.label}`
+      });
+    } else if (slot.type === 'video') {
+      const convertedVideoUrl = getGoogleDriveVideoUrl(slot.url);
+      const videoThumbnail = getGoogleDriveImageUrl(slot.url, 150, 150);
+      
+      mediaItems.push({
+        type: 'video',
+        url: convertedVideoUrl,
+        thumbnail: videoThumbnail,
+        alt: `${pet.breedTypeJa}の${slot.label}`
+      });
+    }
+  } else {
+    // 空のスロットにはプレースホルダー画像を使用
+    mediaItems.push({
+      type: 'image',
+      url: placeholderImage,
+      thumbnail: placeholderImage,
+      alt: `${pet.breedTypeJa}のプレースホルダー画像${index + 1}`,
+      isPlaceholder: true
+    });
+  }
+});
+
+console.log('メディア項目数:', mediaItems.length);
+
+// オススメペットを取得する関数
+function getRecommendedPets(currentPet: any, allPets: any[], count: number = 3) {
+  // 自分自身を除外
+  const otherPets = allPets.filter(p => p.id !== currentPet.id);
+  
+  // スコアリング関数
+  const scoreCalculator = (pet: any) => {
+    let score = 0;
+    
+    // 1. 共通のタグ（最高優先度）
+    if (currentPet.tags && pet.tags) {
+      // タグが配列でない場合は配列に変換
+      const currentTags = Array.isArray(currentPet.tags) ? currentPet.tags : [currentPet.tags];
+      const petTags = Array.isArray(pet.tags) ? pet.tags : [pet.tags];
+      const commonTags = currentTags.filter((tag: string) => petTags.includes(tag));
+      score += commonTags.length * 100; // タグ一致は高得点
+    }
+    
+    // 2. 誕生日の近さ（中優先度）
+    if (currentPet.birthday && pet.birthday) {
+      const currentDate = new Date(currentPet.birthday);
+      const petDate = new Date(pet.birthday);
+      const daysDiff = Math.abs((currentDate.getTime() - petDate.getTime()) / (1000 * 3600 * 24));
+      
+      if (daysDiff <= 30) {
+        score += 50; // 30日以内は高得点
+      } else if (daysDiff <= 90) {
+        score += 25; // 90日以内は中得点
+      } else if (daysDiff <= 180) {
+        score += 10; // 180日以内は低得点
+      }
+    }
+    
+    // 3. 同じ性別（低優先度）
+    if (currentPet.gender === pet.gender) {
+      score += 15;
+    }
+    
+    return score;
+  };
+  
+  // スコア付きでソートして上位を取得
+  return otherPets
+    .map(pet => ({ ...pet, score: scoreCalculator(pet) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, count);
+}
+
+// 現在のペットと同じ動物種のペットをすべて取得
+const allSameTypePets = await getLatestPetsByType(pet.animalType, 100);
+const allRecommendedPets = getRecommendedPets(pet, allSameTypePets, 3);
+
+// レスポンシブ表示用に分割（lg未満は2匹、lg以降は3匹）
+const recommendedPetsMobile = allRecommendedPets.slice(0, 2);
+const recommendedPetsDesktop = allRecommendedPets;
+
+console.log('オススメペット:', allRecommendedPets.map(p => ({ id: p.id, score: p.score, breedTypeJa: p.breedTypeJa })));
+
+// お客様の声データを取得
+const allVoices = await getVoices(10); // 多めに取得しておく
+const displayVoices = allVoices.slice(0, 2); // sm以降で最大2件表示
+
+console.log('お客様の声データ:', displayVoices.length, '件取得');
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '子犬・子猫を探す', href: '/search' },
+  { label: '子犬を探す', href: '/search/dogs' },
+];
+
+// ミックス犬の場合はミックスリンクを追加
+if (pet.classification === 'mix') {
+  breadcrumbItems.push(
+    { label: 'ミックス', href: '/search/dogs/mix' },
+    { label: breedTypeJa, href: `/search/dogs/mix/${breedTypeEn}` }
+  );
+} else {
+  breadcrumbItems.push(
+    { label: breedTypeJa, href: `/search/dogs/${breedTypeEn}` }
+  );
+}
+
+// 最後に個体情報を追加
+breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || pet.id}）` });
+---
+
+<Layout title={`${pet.breedTypeJa} | 子犬詳細 | カトレア`}>
+  <main>
+    <!-- パンくずリスト -->
+    <div class="breadcrumb-container">
+      <div class="container">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+    </div>
+    
+    <section class="pet-detail">
+      <div class="container">
+        <div class="pet-detail__content">
+          <!-- ペット名と性別 -->
+          <div class="pet-detail__header">
+            <h1 class="pet-detail__title">
+              {breedTypeJa}
+              {pet.gender === '男の子' && (
+                <span class="pet-detail__gender male">
+                  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 0V5H14V1.733L8.871 6.817C9.201 7.297 9.47167 7.80367 9.683 8.337C9.89433 8.87033 10 9.42467 10 10C10 11.394 9.51533 12.576 8.546 13.546C7.57667 14.516 6.39533 15.0007 5.002 15C3.60867 14.9993 2.42667 14.5147 1.456 13.546C0.485333 12.5773 0 11.396 0 10.002C0 8.608 0.485 7.426 1.455 6.456C2.425 5.486 3.60667 5.00067 5 5C5.576 5 6.12733 5.105 6.654 5.315C7.18067 5.52433 7.682 5.79567 8.158 6.129L13.287 1H10V0H15ZM4.997 6C3.89167 6 2.949 6.39067 2.169 7.172C1.38967 7.954 1 8.89767 1 10.003C1 11.109 1.39067 12.0517 2.172 12.831C2.954 13.6103 3.89767 14 5.003 14C6.109 14 7.05167 13.6093 7.831 12.828C8.61033 12.046 9 11.1023 9 9.997C9 8.89167 8.60933 7.949 7.828 7.169C7.04667 6.389 6.103 5.99933 4.997 6Z" fill="#7398D5"/>
+                  </svg>
+                </span>
+              )}
+              {pet.gender === '女の子' && (
+                <span class="pet-detail__gender female">
+                  <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.5 16V14H2.5V13H4.5V9.977C3.222 9.83367 2.15233 9.288 1.291 8.34C0.430334 7.39133 0 6.27433 0 4.989C0 3.60033 0.486333 2.42167 1.459 1.453C2.431 0.484333 3.61133 0 5 0C6.38867 0 7.569 0.484333 8.541 1.453C9.513 2.42167 9.99933 3.60033 10 4.989C10 6.27433 9.56967 7.391 8.709 8.339C7.84767 9.28767 6.778 9.83367 5.5 9.977V13H7.5V14H5.5V16H4.5ZM5.003 9C6.109 9 7.05167 8.60933 7.831 7.828C8.61033 7.046 9 6.10233 9 4.997C9 3.89167 8.60933 2.949 7.828 2.169C7.04667 1.389 6.103 0.999333 4.997 1C3.891 1.00067 2.94833 1.39133 2.169 2.172C1.38967 2.954 1 3.89767 1 5.003C1 6.109 1.39067 7.05167 2.172 7.831C2.954 8.61033 3.89767 9 5.003 9Z" fill="#D55665"/>
+                  </svg>
+                </span>
+              )}
+            </h1>
+          </div>
+
+          <div class="pet-detail__body">
+            <!-- カルーセル -->
+            <div class="pet-detail__carousel">
+              <div class="carousel">
+                <div class="carousel__main">
+                  <button class="carousel__nav carousel__nav--prev" id="prevBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <div class="carousel__container">
+                    {mediaItems.map((item, index) => (
+                      <div 
+                        class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
+                        data-index={index}
+                      >
+                        {item.type === 'image' ? (
+                          <img 
+                            src={item.url}
+                            alt={item.alt}
+                            class="carousel__image"
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                          />
+                        ) : (
+                          <iframe
+                            src={item.url}
+                            class="carousel__video"
+                            allow="autoplay; fullscreen"
+                            allowfullscreen
+                            frameborder="0"
+                            webkitallowfullscreen
+                            mozallowfullscreen
+                          ></iframe>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button class="carousel__nav carousel__nav--next" id="nextBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- サムネイル -->
+                <div class="carousel__thumbnails">
+                  {mediaItems.map((item, index) => (
+                    <button 
+                      class={`carousel__thumbnail ${index === 0 ? 'carousel__thumbnail--active' : ''}`}
+                      data-index={index}
+                    >
+                      {item.type === 'image' ? (
+                        <img 
+                          src={item.thumbnail}
+                          alt={item.alt}
+                          class="carousel__thumbnail-image"
+                        />
+                      ) : (
+                        <div class="carousel__thumbnail-video">
+                          <img 
+                            src={item.thumbnail}
+                            alt={item.alt}
+                            class="carousel__thumbnail-video-element"
+                          />
+                          <div class="carousel__thumbnail-play-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                              <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- サイドバー（ペット情報 + アクション） -->
+            <div class="pet-detail__sidebar">
+              <!-- タイトル（lg以上で表示） -->
+              <div class="pet-detail__sidebar-title">
+                <h1 class="pet-detail__title">
+                  {breedTypeJa}
+                  {pet.gender === '男の子' && (
+                    <span class="pet-detail__gender male">
+                      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 0V5H14V1.733L8.871 6.817C9.201 7.297 9.47167 7.80367 9.683 8.337C9.89433 8.87033 10 9.42467 10 10C10 11.394 9.51533 12.576 8.546 13.546C7.57667 14.516 6.39533 15.0007 5.002 15C3.60867 14.9993 2.42667 14.5147 1.456 13.546C0.485333 12.5773 0 11.396 0 10.002C0 8.608 0.485 7.426 1.455 6.456C2.425 5.486 3.60667 5.00067 5 5C5.576 5 6.12733 5.105 6.654 5.315C7.18067 5.52433 7.682 5.79567 8.158 6.129L13.287 1H10V0H15ZM4.997 6C3.89167 6 2.949 6.39067 2.169 7.172C1.38967 7.954 1 8.89767 1 10.003C1 11.109 1.39067 12.0517 2.172 12.831C2.954 13.6103 3.89767 14 5.003 14C6.109 14 7.05167 13.6093 7.831 12.828C8.61033 12.046 9 11.1023 9 9.997C9 8.89167 8.60933 7.949 7.828 7.169C7.04667 6.389 6.103 5.99933 4.997 6Z" fill="#7398D5"/>
+                      </svg>
+                    </span>
+                  )}
+                  {pet.gender === '女の子' && (
+                    <span class="pet-detail__gender female">
+                      <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.5 16V14H2.5V13H4.5V9.977C3.222 9.83367 2.15233 9.288 1.291 8.34C0.430334 7.39133 0 6.27433 0 4.989C0 3.60033 0.486333 2.42167 1.459 1.453C2.431 0.484333 3.61133 0 5 0C6.38867 0 7.569 0.484333 8.541 1.453C9.513 2.42167 9.99933 3.60033 10 4.989C10 6.27433 9.56967 7.391 8.709 8.339C7.84767 9.28767 6.778 9.83367 5.5 9.977V13H7.5V14H5.5V16H4.5ZM5.003 9C6.109 9 7.05167 8.60933 7.831 7.828C8.61033 7.046 9 6.10233 9 4.997C9 3.89167 8.60933 2.949 7.828 2.169C7.04667 1.389 6.103 0.999333 4.997 1C3.891 1.00067 2.94833 1.39133 2.169 2.172C1.38967 2.954 1 3.89767 1 5.003C1 6.109 1.39067 7.05167 2.172 7.831C2.954 8.61033 3.89767 9 5.003 9Z" fill="#D55665"/>
+                      </svg>
+                    </span>
+                  )}
+                </h1>
+              </div>
+
+              <!-- ペット情報 -->
+              <div class="pet-detail__info">
+                <div class="pet-info">
+                  <div class="pet-info__item">
+                    <dt class="pet-info__label">色</dt>
+                    <dd class="pet-info__value">{pet.color}</dd>
+                  </div>
+                  <div class="pet-info__item">
+                    <dt class="pet-info__label">誕生日</dt>
+                    <dd class="pet-info__value">{formatDate(pet.birthday)}</dd>
+                  </div>
+                  {(pet.mixFatherBreed || pet.mixMotherBreed) && (
+                    <div class="pet-info__item">
+                      <dt class="pet-info__label">両親情報</dt>
+                      <dd class="pet-info__value">
+                        {pet.mixFatherBreed && `父親：${pet.mixFatherBreed}`}
+                        {pet.mixFatherBreed && pet.mixMotherBreed && "　"}
+                        {pet.mixMotherBreed && `母親：${pet.mixMotherBreed}`}
+                      </dd>
+                    </div>
+                  )}
+                  {(pet.fatherWeight || pet.motherWeight) && (
+                    <div class="pet-info__item">
+                      <dt class="pet-info__label">両親体重</dt>
+                      <dd class="pet-info__value">
+                        {pet.fatherWeight && `父親：${pet.fatherWeight}kg`}
+                        {pet.fatherWeight && pet.motherWeight && "　"}
+                        {pet.motherWeight && `母親：${pet.motherWeight}kg`}
+                      </dd>
+                    </div>
+                  )}
+                  <div class="pet-info__item">
+                    <dt class="pet-info__label">お問い合わせ番号</dt>
+                    <dd class="pet-info__value">{pet.id.replace(/^0+/, '') || pet.id}</dd>
+                  </div>
+                  <div class="pet-info__item">
+                    <dt class="pet-info__label">店舗</dt>
+                    <dd class="pet-info__value">
+                      <a href={`/store/${pet.storeId}`} class="store-tag">
+                        #{pet.storeName}
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+              </div>
+
+              <!-- アクションボタン -->
+              <div class="pet-detail__actions">
+                <div class="action-buttons">
+                  <a 
+                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\nNo.${pet.id.replace(/^0+/, '') || pet.id}\nHP`)}` : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="action-button action-button--link"
+                  >
+                    <div class="action-button__icon">
+                      <img src="/src/assets/icons/icon_line-01.svg" alt="LINEアイコン" width="32" height="32" />
+                    </div>
+                    <div class="action-button__text">
+                      この子をLINEで<br>問い合わせる
+                    </div>
+                  </a>
+
+                  <button class="action-button">
+                    <div class="action-button__icon">
+                      <img src="/src/assets/icons/icon_store-mail-01.svg" alt="メールアイコン" width="32" height="32" />
+                    </div>
+                    <div class="action-button__text">
+                      この子をメールで<br>問い合わせる
+                    </div>
+                  </button>
+
+                  <button class="action-button">
+                    <div class="action-button__icon">
+                      <img src="/src/assets/icons/icon_store-phone-01.svg" alt="電話アイコン" width="32" height="32" />
+                    </div>
+                    <div class="action-button__text">
+                      この子を電話で<br>問い合わせる
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- シェアボタン -->
+              <div class="pet-detail__share">
+                <div class="share-header">
+                  ＼この子をみんなにシェアする／
+                </div>
+                <div class="share-buttons">
+                  <button class="share-button share-button--twitter">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </button>
+                  <button class="share-button share-button--line">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                      <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                    </svg>
+                  </button>
+                  <button class="share-button share-button--link">
+                    <img src="/src/assets/icons/icon_chain-01.svg" alt="リンクコピー" width="20" height="20" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 関連コンテンツセクション -->
+    <section class="related-content-section">
+      <div class="container">
+        <!-- この子に会いたいボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">この子に会いたい</h2>
+          <div class="content-box__buttons">
+            <a href="/flow" class="bg-button bg-button--flow">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">お迎えまでの流れ</span>
+              </div>
+            </a>
+            <a href="/reserve" class="bg-button bg-button--reserve">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">来店予約をする</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- あなたへのオススメセクション -->
+        <div class="content-box">
+          <h2 class="content-box__title">あなたへのオススメ</h2>
+          <div class="pets-grid">
+            {allRecommendedPets.map((recommendedPet, index) => (
+              <div class={`pet-card ${index >= 2 ? 'pet-card--lg-only' : ''}`} data-animal-type={recommendedPet.animalType}>
+                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${encodeURIComponent(recommendedPet.breedTypeEn?.toLowerCase() || '')}/${recommendedPet.id}`} class="pet-card__link">
+                  <div class="pet-card__inner">
+                    <div class="pet-card__image-container">
+                      <img
+                        class="pet-card__image"
+                        src={getGoogleDriveImageUrl(recommendedPet.imageUrl01, 600, 600)}
+                        alt={`${recommendedPet.breedTypeJa}の写真`}
+                        loading="lazy"
+                        width="600"
+                        height="600"
+                        onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
+                      />
+                    </div>
+                    <div class="pet-card__info">
+                      <h3 class="pet-card__title">
+                        {recommendedPet.breedTypeJa}
+                        {recommendedPet.gender === '男の子' && (
+                          <span 
+                            class="pet-card__gender male" 
+                            set:html={MaleIcon}
+                          />
+                        )}
+                        {recommendedPet.gender === '女の子' && (
+                          <span 
+                            class="pet-card__gender female" 
+                            set:html={FemaleIcon}
+                          />
+                        )}
+                      </h3>
+                      <div class="pet-card__details">
+                        <p class="pet-card__detail-item">色：{recommendedPet.color}</p>
+                        <p class="pet-card__detail-item">誕生日：{formatDate(recommendedPet.birthday)}</p>
+                        <p class="pet-card__detail-item">店舗：{recommendedPet.storeName}</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- ホームステイセクション -->
+        <div class="content-box homestay-content-box">
+          <h2 class="content-box__title">ホームステイ</h2>
+          <div class="homestay-section-inner">
+            <div class="homestay-img-wrap">
+              <img src="/src/assets/images/content/img_homestay_main-01.webp" alt="ホームステイ" class="homestay-img" loading="lazy" />
+            </div>
+            
+            <div class="homestay-content">
+              <div class="homestay-features">
+                <p class="homestay-feature">一律10,000円(税込)で選べる泊数</p>
+                <p class="homestay-feature">お泊まりセット無料でレンタル</p>
+              </div>
+              <p class="homestay-desc">カトレアでは、お客様とワンちゃん・ネコちゃんの相性や飼育不安を取り除くために、ホームステイサービスを行なっています。<br><br>ホームステイ中もスタッフが精一杯サポートいたします。<br>お気軽にお申し付けください。</p>
+              <ButtonWrapper>
+                <BaseButton href="/homestay" text="詳しくみる" variant="short" />
+              </ButtonWrapper>
+            </div>
+          </div>
+        </div>
+
+        <!-- お客様の声セクション -->
+        <div class="content-box voice-content-box">
+          <h2 class="content-box__title">お客様の声</h2>
+          <div class="voice-grid">
+            {displayVoices.map((voice, index) => (
+              <div class={`voice-card-wrapper ${index >= 1 ? 'voice-card--sm-only' : ''}`}>
+                <VoiceCard
+                  petName={voice.petName}
+                  petGender={voice.petGender}
+                  petThumbnail={voice.petThumbnail}
+                  ownerName={voice.ownerName}
+                  animalType={voice.animalType}
+                  store={voice.store}
+                  voiceContent={voice.voiceContent}
+                  class="voice-card--compact"
+                />
+              </div>
+            ))}
+          </div>
+          <ButtonWrapper>
+            <BaseButton href="/voice" text="もっとみる" variant="short" />
+          </ButtonWrapper>
+        </div>
+
+        <!-- カトレアの安心セクション -->
+        <div class="content-box relief-content-box">
+          <h2 class="content-box__title">カトレアの安心</h2>
+          <div class="relief-section-inner">
+            <div class="relief-img-wrap">
+              <img src="/src/assets/images/content/img_relief-main-01.webp" alt="カトレアの安心" class="relief-img" loading="lazy" />
+            </div>
+            
+            <div class="relief-content">
+              <p class="relief-desc">カトレアでは、専門獣医師による徹底した健康管理や、万が一の事態に備えた保証、そしてお迎え後も続くサポートを通じて、ペットとお客様が安心して過ごせる環境を提供しています。<br>健康状態の詳細な情報提供や、清潔な環境での飼育も心がけています。<br><br>ペットと家族が一生涯安心して一緒に過ごせるよう、全てのプロセスでサポートを続けています。</p>
+              <ButtonWrapper>
+                <BaseButton href="/relief" text="詳しくみる" variant="short" />
+              </ButtonWrapper>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- バナーセクション -->
+    <BannerSection />
+
+    <!-- お問い合わせCTAセクション -->
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<script define:vars={{ mediaItemsCount: mediaItems.length }}>
+  let currentSlide = 0;
+  
+  const slides = document.querySelectorAll('.carousel__slide');
+  const thumbnails = document.querySelectorAll('.carousel__thumbnail');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function showSlide(index) {
+    // スライドを切り替え
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('carousel__slide--active', i === index);
+    });
+
+    // サムネイルを切り替え
+    thumbnails.forEach((thumb, i) => {
+      thumb.classList.toggle('carousel__thumbnail--active', i === index);
+    });
+
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % mediaItemsCount;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
+    showSlide(prev);
+  }
+
+  // イベントリスナー
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+  // サムネイルクリック
+  thumbnails.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => showSlide(index));
+  });
+
+  // キーボードナビゲーション
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
+  });
+
+
+  // シェア機能
+  const shareButtons = document.querySelectorAll('.share-button');
+  
+  shareButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      const buttonType = button.className.split(' ').find(cls => cls.includes('--'));
+      const currentUrl = window.location.href;
+      const pageTitle = document.title;
+      
+      switch (buttonType) {
+        case 'share-button--twitter':
+          const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(pageTitle)}&url=${encodeURIComponent(currentUrl)}`;
+          window.open(twitterUrl, '_blank', 'width=600,height=400');
+          break;
+          
+        case 'share-button--line':
+          const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}`;
+          window.open(lineUrl, '_blank', 'width=600,height=400');
+          break;
+          
+        case 'share-button--link':
+          navigator.clipboard.writeText(currentUrl).then(() => {
+            // コピー成功時の視覚的フィードバック
+            const originalImg = button.innerHTML;
+            button.innerHTML = `
+              <div class="share-button__success">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                <span class="share-button__copied-text">Copied</span>
+              </div>
+            `;
+            button.style.backgroundColor = '#10B981';
+            
+            setTimeout(() => {
+              button.innerHTML = originalImg;
+              button.style.backgroundColor = '#6B7280';
+            }, 2000);
+          }).catch(() => {
+            prompt('URLをコピーしてください:', currentUrl);
+          });
+          break;
+      }
+    });
+  });
+</script>
+

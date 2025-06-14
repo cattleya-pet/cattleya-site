@@ -38,9 +38,11 @@ export async function getBreedsByAnimalType(animalType: string) {
       .filter(pet => pet.classification === 'bloodline')
       .map(pet => {
         console.log(`[breeds.ts] Pet sample - Ja: ${pet.breedTypeJa}, En: ${pet.breedTypeEn}`);
+        const generatedUrl = `/search/${animalType === 'dog' ? 'dogs' : animalType === 'cat' ? 'cats' : animalType + 's'}/${encodeURIComponent(pet.breedTypeEn.toLowerCase())}`;
+        console.log(`[breeds.ts] Generated URL for ${pet.breedTypeJa}:`, generatedUrl);
         return {
           name: pet.breedTypeJa,
-          url: `/search/${animalType}s/${encodeURIComponent(pet.breedTypeEn)}`
+          url: generatedUrl
         };
       });
     console.log(`[breeds.ts] ${animalType}の純血種数:`, pureBreeds.length);
@@ -59,7 +61,7 @@ export async function getBreedsByAnimalType(animalType: string) {
     // ミックス品種を抽出
     const mixBreedsData = mixPets.map(pet => ({
       name: pet.breedTypeJa,
-      url: `/search/${animalType}s/mix/${encodeURIComponent(pet.breedTypeEn)}`
+      url: `/search/${animalType === 'dog' ? 'dogs' : animalType === 'cat' ? 'cats' : animalType + 's'}/mix/${encodeURIComponent(pet.breedTypeEn)}`
     }));
     console.log(`[breeds.ts] ${animalType}のミックス品種データ:`, mixBreedsData);
 
@@ -68,24 +70,12 @@ export async function getBreedsByAnimalType(animalType: string) {
     const uniqueMixBreeds = filterUniqueBreeds(mixBreedsData);
     console.log(`[breeds.ts] ${animalType}の重複除去後のミックス品種数:`, uniqueMixBreeds.length);
 
-    // ダミーデータを追加（テスト用）
-    const dummyMixBreeds = animalType === 'dog'
-      ? [
-          { name: 'チワワミックス（テスト）', url: `/search/${animalType}s/mix/chihuahua-mix` },
-          { name: 'プードルミックス（テスト）', url: `/search/${animalType}s/mix/poodle-mix` }
-        ]
-      : [
-          { name: 'アメリカンショートヘアーミックス（テスト）', url: `/search/${animalType}s/mix/american-shorthair-mix` }
-        ];
-
-    // 実データがある場合はそれを使用し、なければダミーデータを使用
-    const finalMixBreeds = uniqueMixBreeds.length > 0 ? uniqueMixBreeds : dummyMixBreeds;
-    console.log(`[breeds.ts] ${animalType}の最終ミックス品種データ:`, finalMixBreeds);
+    console.log(`[breeds.ts] ${animalType}の最終ミックス品種データ:`, uniqueMixBreeds);
 
     return {
       pureBreeds: uniquePureBreeds,
-      hasMix: hasMix || dummyMixBreeds.length > 0,
-      mixBreeds: finalMixBreeds
+      hasMix: hasMix,
+      mixBreeds: uniqueMixBreeds
     };
   } catch (error) {
     console.error(`Error getting breeds for animal type ${animalType}:`, error);

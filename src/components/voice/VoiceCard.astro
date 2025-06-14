@@ -9,8 +9,9 @@ interface Props {
   animalType: string;
   store: string;
   voiceContent: string;
+  class?: string;
 }
-const { petName, petGender, petThumbnail = '', ownerName, animalType, store = '', voiceContent } = Astro.props;
+const { petName, petGender, petThumbnail = '', ownerName, animalType, store = '', voiceContent, class: className = '' } = Astro.props;
 
 function truncateText(text: string, max: number) {
   return text.length > max ? text.slice(0, max) + '...' : text;
@@ -20,7 +21,7 @@ const thumbnail = typeof petThumbnail === 'object' && petThumbnail !== null
   ? petThumbnail.url
   : (petThumbnail ? petThumbnail : '/noimage.webp');
 ---
-<div class="voice-card">
+<div class={`voice-card ${className}`}>
   <div class="voice-card-img-wrap">
     <img src={thumbnail} alt={petName} class="voice-card-img" loading="lazy" />
   </div>

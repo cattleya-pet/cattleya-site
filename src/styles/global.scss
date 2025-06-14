@@ -38,7 +38,7 @@ body {
   padding-top: rem(70); /* モバイルヘッダー高さ */
   
   @include breakpoint-up(xl) {
-    padding-top: rem(153); /* PC版ヘッダー高さ（TopBar + Navigation + padding）*/
+    padding-top: rem(153); /* PC版ヘッダー高さ（TopBar87px + padding20px + Navigation46px = 153px）*/
   }
 }
 

@@ -1,0 +1,28 @@
+---
+export async function getStaticPaths() {
+  console.log('[getStaticPaths] シンプルバージョン開始');
+  return [
+    { params: { breedTypeEn: 'pti' } },
+    { params: { breedTypeEn: 'chihuahua' } },
+    { params: { breedTypeEn: 'toy-poodle' } }
+  ];
+}
+
+const { breedTypeEn } = Astro.params;
+console.log('=== シンプル品種ページ開始 ===');
+console.log('breedTypeEn:', breedTypeEn);
+---
+
+<html>
+<head>
+  <title>品種ページ: {breedTypeEn}</title>
+</head>
+<body>
+  <h1>品種: {breedTypeEn}</h1>
+  <p>このページは正常に動作しています</p>
+</body>
+</html>
+
+<script>
+  console.log('シンプル品種ページのクライアントスクリプトが実行されました');
+</script>

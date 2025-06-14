@@ -1,0 +1,1017 @@
+@use '../_variables' as *;
+@use '../_mixins' as *;
+@use '../tokens/typography' as *;
+@use '../tokens/colors' as *;
+@use '../tokens/radius' as *;
+
+// パンくずリストコンテナ
+.breadcrumb-container {
+  background-color: $color-background;
+}
+
+.pet-detail {
+  padding: rem(20) 0 rem(40);
+
+  @include breakpoint-up(sm) {
+    padding: rem(40) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) 0;
+  }
+}
+
+.pet-detail__content {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.pet-detail__header {
+  margin-bottom: 0;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.pet-detail__title {
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  font-size: $font-size-ja-m;
+  font-weight: bold;
+  color: $color-text;
+  
+  @include breakpoint-up(lg) {
+    font-size: $font-size-ja-l;
+    gap: rem(16);
+    margin-bottom: 0;
+  }
+}
+
+.pet-detail__sidebar-title {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: block;
+  }
+}
+
+.pet-detail__gender {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.male {
+    color: #7398D5;
+    
+    svg {
+      width: rem(22);
+      height: rem(22);
+      
+      @include breakpoint-up(lg) {
+        width: rem(26);
+        height: rem(26);
+      }
+    }
+  }
+  
+  &.female {
+    color: #D55665;
+    
+    svg {
+      width: rem(21);
+      height: rem(21);
+      
+      @include breakpoint-up(lg) {
+        width: rem(25);
+        height: rem(25);
+      }
+    }
+  }
+}
+
+.pet-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    gap: rem(60);
+  }
+}
+
+.pet-detail__carousel {
+  flex: 1;
+  
+  @include breakpoint-up(lg) {
+    width: 50%;
+  }
+}
+
+.carousel__main {
+  position: relative;
+  margin-bottom: rem(20);
+}
+
+.carousel__container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: $radius-m;
+  overflow: hidden;
+  background-color: $color-background;
+}
+
+.carousel__slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  
+  &--active {
+    opacity: 1;
+  }
+}
+
+.carousel__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel__video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: $radius-m;
+}
+
+.carousel__video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: $radius-m;
+}
+
+.carousel__video-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel__video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: rem(80);
+  height: rem(80);
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(100);
+    height: rem(100);
+  }
+  
+  svg {
+    margin-left: rem(4);
+    
+    @include breakpoint-up(lg) {
+      width: rem(60);
+      height: rem(60);
+      margin-left: rem(6);
+    }
+  }
+}
+
+.carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: rem(36);
+  height: rem(36);
+  border-radius: 50%;
+  background-color: $color-background;
+  border: 1px solid $color-text-tertiary;
+  color: $color-text-tertiary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: $transition-base;
+  padding: 0;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    color: $color-text-primary;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  &--prev {
+    left: rem(-10);
+    
+    @include breakpoint-up(sm) {
+      left: rem(-20);
+    }
+  }
+  
+  &--next {
+    right: rem(-10);
+    
+    @include breakpoint-up(sm) {
+      right: rem(-20);
+    }
+  }
+  
+  @include breakpoint-up(sm) {
+    width: rem(40);
+    height: rem(40);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(44);
+    height: rem(44);
+  }
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.carousel__thumbnails {
+  display: flex;
+  gap: rem(6);
+  justify-content: center;
+  @include breakpoint-up(xl) {
+    gap: rem(16);
+  }
+}
+
+.carousel__thumbnail {
+  width: calc((100% - rem(6) * 3) / 4);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 2px solid transparent;
+  border-radius: $radius-s;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  @include breakpoint-up(lg) {
+    border-radius: $radius-m;
+  }
+  @include breakpoint-up(xl) {
+    width: calc((100% - rem(16) * 3) / 4);
+  }
+  
+  &:not(&--active)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+    border-radius: $radius-s;
+  }
+  
+  &:hover {
+    border-color: $color-primary;
+    opacity: 0.8;
+  }
+}
+
+.carousel__thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel__thumbnail-video {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-background;
+  overflow: hidden;
+}
+
+.carousel__thumbnail-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel__thumbnail-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: rem(32);
+  height: rem(32);
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  pointer-events: none;
+  
+  @include breakpoint-up(lg) {
+    width: rem(40);
+    height: rem(40);
+  }
+  
+  svg {
+    width: rem(16);
+    height: rem(16);
+    margin-left: rem(2);
+    
+    @include breakpoint-up(lg) {
+      width: rem(20);
+      height: rem(20);
+      margin-left: rem(3);
+    }
+  }
+}
+
+.pet-detail__sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  
+  @include breakpoint-up(lg) {
+    max-width: rem(680);
+    gap: rem(30);
+  }
+}
+
+.pet-detail__info {
+  // サイドバー内の要素なので flex は削除
+}
+
+.pet-info {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+}
+
+.pet-info__item {
+  display: flex;
+  flex-direction: row;
+  gap: rem(8);
+  padding: rem(8) rem(10) rem(8) rem(5);
+  background-color: $color-background;
+  border-bottom: 1px solid $color-border;
+  
+  @include breakpoint-up(sm) {
+    align-items: center;
+    gap: rem(20);
+  }
+}
+
+.pet-info__label {
+  color: $color-text;
+  @include typography-ja-s;
+  min-width: rem(140);
+  
+  @include breakpoint-up(sm) {
+    flex-shrink: 0;
+    min-width: rem(200);
+  }
+}
+
+.pet-info__value {
+  @include typography-ja-s;
+  color: $color-text;
+  margin: 0;
+}
+
+.store-tag {
+  display: inline-block;
+  padding: rem(5) rem(8);
+  background-color: $color-background-primary;
+  border: 1px solid #262626;
+  border-radius: rem(20);
+  text-decoration: none;
+  color: $color-text;
+  font-size: rem(10);
+  font-weight: 600;
+  line-height: 1.2;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(6) rem(10);
+    font-size: rem(12);
+  }
+  
+  &:hover {
+    background-color: #ece9e7;
+    text-decoration: none;
+  }
+  
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.pet-detail__actions {
+  // margin-top は .pet-detail__sidebar の gap で制御
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: rem(12);
+  max-width: rem(400);
+  @include breakpoint-up(sm) {
+    margin: 0 auto;
+  } 
+  
+  @include breakpoint-up(lg) {
+    gap: rem(16);
+    margin-left: 0;
+  }
+}
+
+.pet-detail__actions .action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: rem(10) rem(5);
+  background-color: $color-background;
+  border: 1px solid $color-text-primary;
+  border-radius: $radius-m;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(12);
+  }
+  @include breakpoint-up(xl) {
+    width: rem(176);
+    height: rem(176);
+  }
+
+  
+  &:hover {
+    background-color: $color-background-secondary;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &--link {
+    border-color: #00B900;
+    
+    &:hover {
+      border-color: #009900;
+    }
+  }
+}
+
+.pet-detail__actions .action-button__icon {
+  margin-bottom: rem(8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(12);
+  }
+  
+  img {
+    width: rem(36);
+    height: rem(36);
+    
+    @include breakpoint-up(lg) {
+      width: rem(50);
+      height: rem(50);
+    }
+  }
+}
+
+.pet-detail__actions .action-button__text {
+  font-size: rem(12);
+  font-weight: 600;
+  color: $color-text;
+  line-height: 1.4;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(12);
+  }
+}
+
+.pet-detail__share {
+  // margin-top は .pet-detail__sidebar の gap で制御
+  
+  @include breakpoint-up(lg) {
+    align-self: flex-start;
+  }
+}
+
+.share-header {
+  text-align: center;
+  font-size: rem(14);
+  font-weight: 600;
+  color: $color-text;
+  margin-bottom: rem(16);
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(16);
+    margin-bottom: rem(20);
+    text-align: left;
+  }
+}
+
+.share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: rem(12);
+  flex-wrap: wrap;
+  
+  @include breakpoint-up(lg) {
+    gap: rem(16);
+  }
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(48);
+  height: rem(48);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
+  @include breakpoint-up(lg) {
+    width: rem(56);
+    height: rem(56);
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg, img {
+    width: rem(20);
+    height: rem(20);
+    
+    @include breakpoint-up(lg) {
+      width: rem(24);
+      height: rem(24);
+    }
+  }
+  
+  &--twitter {
+    background-color: #000000;
+    color: white;
+    
+    &:hover {
+      background-color: #1a1a1a;
+    }
+  }
+  
+  &--line {
+    background-color: #00B900;
+    color: white;
+    
+    &:hover {
+      background-color: #009900;
+    }
+  }
+  
+  &--link {
+    background-color: #6B7280;
+    color: white;
+    
+    &:hover {
+      background-color: #4B5563;
+    }
+  }
+}
+
+.share-button__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(1);
+}
+
+.share-button__copied-text {
+  font-size: rem(7);
+  font-weight: 600;
+  line-height: 1;
+  color: white;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(9);
+  }
+}
+
+// 関連コンテンツセクション
+.related-content-section {
+  background-color: $color-background-tertiary;
+  padding: rem(40) 0;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) 0;
+  }
+}
+
+.content-box {
+  background-color: $color-background-primary;
+  border-radius: $radius-m;
+  padding: rem(40) rem(15) rem(50);
+  margin-bottom: rem(30);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(60) rem(25) rem(60);
+    margin-bottom: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) rem(40) rem(60);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.content-box__title {
+  text-align: center;
+  font-size: rem(21);
+  font-weight: bold;
+  color: $color-text;
+  margin-bottom: rem(60);
+  position: relative;
+  
+  @include breakpoint-up(lg) {
+    font-size: $font-size-ja-l;
+  }
+  
+  // タイトル下の装飾線
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: rem(-15);
+    left: 50%;
+    transform: translateX(-50%);
+    width: rem(50);
+    height: rem(1);
+    background: linear-gradient(to right, $color-border-secondary 0%, $color-border-secondary 50%, $color-border-tertiary 50%, $color-border-tertiary 100%);
+  }
+}
+
+.content-box__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    justify-content: center;
+    gap: rem(24);
+  }
+}
+
+// 背景画像付きボタン（再利用可能）
+.bg-button {
+  display: block;
+  text-decoration: none;
+  border-radius: $radius-s;
+  transition: all 0.3s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: rem(102);
+  border: 1px solid $color-text-primary;
+  position: relative;
+  overflow: hidden;
+  max-width: rem(480);
+  
+  @include breakpoint-up(sm) {
+
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  // 各ボタンの背景画像
+  &--flow {
+    background-image: url('/src/assets/images/ui/bg_button-flow-link-01.webp');
+  }
+  
+  &--reserve {
+    background-image: url('/src/assets/images/ui/bg_button-reserve-link-01.webp');
+  }
+}
+
+.bg-button__overlay {
+  background: rgba(255, 255, 255, 0.5);
+  padding: rem(40) rem(80);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: rem(102);
+  
+  @include breakpoint-up(lg) {
+    padding: rem(20) rem(40);
+  }
+}
+
+.bg-button__text {
+  color: $color-text-primary;
+  font-weight: $font-weight-bold;
+  font-size: rem(12);
+  text-align: center;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(18);
+  }
+}
+
+// オススメセクション内のpets-gridレイアウト調整
+.content-box .pets-grid {
+  // content-boxのpadding内側に完全に収まるように調整
+  margin: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  
+  // pets-gridの通常のvw指定を上書きしてcontent-box内に制限
+  grid-template-columns: repeat(2, 1fr);
+  gap: rem(12);
+  
+  @include breakpoint-up(lg) {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: rem(1200);
+    margin: 0 auto;
+    gap: rem(16);
+    justify-content: center;
+  }
+  
+  @include breakpoint-up(xl) {
+    // 通常のpets-gridと同様のレイアウトに戻す
+    grid-template-columns: repeat(3, minmax(rem(300), 1fr));
+    gap: rem(24);
+    justify-content: center;
+  }
+  
+  // 3匹目のペットはlg未満では非表示
+  .pet-card--lg-only {
+    display: none;
+    
+    @include breakpoint-up(lg) {
+      display: block;
+    }
+  }
+}
+
+// ホームステイセクション
+.homestay-content-box {
+  // タイトルは表示する
+}
+
+// カトレアの安心セクション（ホームステイと同じ構造）
+.relief-content-box {
+  // タイトルは表示する
+}
+
+.relief-section-inner {
+  display: flex;
+  flex-direction: column;
+  gap: rem(30);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(40);
+    align-items: flex-start;
+  }
+}
+
+.relief-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: $radius-m;
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    max-width: 50%;
+  }
+}
+
+.relief-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relief-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    gap: rem(24);
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(30);
+  }
+}
+
+.relief-desc {
+  font-size: rem(12);
+  font-weight: $font-weight-regular;
+  color: $color-text;
+  line-height: 1.5;
+  margin: 0;
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-s($font-weight-regular);
+  }
+}
+
+// お客様の声セクション
+.voice-content-box {
+  // タイトルとボタンは既存のスタイルを使用
+}
+
+.voice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: rem(20);
+  margin-bottom: rem(40);
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: rem(24);
+    align-items: stretch; // カードの高さを揃える
+  }
+  
+  @include breakpoint-up(xl) {
+    grid-template-columns: repeat(2, minmax(auto, rem(676)));
+    justify-content: center; // グリッド全体を中央揃え
+  }
+  
+  // 2枚目のカードはsm未満では非表示
+  .voice-card--sm-only {
+    display: none;
+    
+    @include breakpoint-up(sm) {
+      display: block;
+    }
+  }
+}
+
+.voice-card-wrapper {
+  width: 100%;
+  display: flex; // フレックスコンテナにしてカードを引き伸ばす
+  
+  @include breakpoint-up(sm) {
+    height: 100%; // グリッドアイテムの高さを100%に
+  }
+}
+
+
+.homestay-section-inner {
+  display: flex;
+  flex-direction: column;
+  gap: rem(30);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(40);
+    align-items: flex-start;
+  }
+}
+
+.homestay-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: $radius-m;
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    max-width: 50%;
+  }
+}
+
+.homestay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.homestay-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    gap: rem(24);
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(30);
+  }
+}
+
+.homestay-features {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+}
+
+.homestay-feature {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  margin: 0;
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-s($font-weight-semibold);
+  }
+}
+
+.homestay-desc {
+  font-size: rem(12);
+  font-weight: $font-weight-regular;
+  color: $color-text;
+  line-height: 1.5;
+  margin: 0;
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-s($font-weight-regular);
+  }
+}

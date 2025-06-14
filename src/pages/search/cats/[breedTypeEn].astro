@@ -1,0 +1,282 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import PetCard from '../../../components/pets/PetCard.astro';
+import HeroSection from '../../../components/sections/common/HeroSection.astro';
+import ViewMoreButton from '../../../components/ui/buttons/ViewMoreButton.astro';
+import BannerSection from '../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../components/sections/common/ContactCTASection.astro';
+import { getLatestPetsByType } from '../../../lib/api/pets/queries';
+import { getBreedsByAnimalType } from '../../../lib/api/pets';
+import { getGoogleDriveImageUrl } from '../../../lib/utils/image';
+import '../../../styles/layout/pets-grid.scss';
+
+export async function getStaticPaths() {
+  try {
+    // 猫の品種データを取得
+    const { pureBreeds } = await getBreedsByAnimalType('cat');
+    console.log('[getStaticPaths] 猫の品種数:', pureBreeds.length);
+    
+    if (!pureBreeds || pureBreeds.length === 0) {
+      console.log('[getStaticPaths] 猫の品種データがありません');
+      return [];
+    }
+    
+    const paths = pureBreeds.map((breed) => {
+      const breedTypeEn = breed.url.split('/').pop();
+      console.log('[getStaticPaths] 生成する猫パス:', breedTypeEn, '品種名:', breed.name);
+      return {
+        params: { 
+          breedTypeEn: breedTypeEn 
+        }
+      };
+    });
+    
+    console.log('[getStaticPaths] 生成される猫パス数:', paths.length);
+    return paths;
+  } catch (error) {
+    console.error('[getStaticPaths] 猫エラー:', error);
+    return [];
+  }
+}
+
+const { breedTypeEn } = Astro.params;
+
+console.log('=== 猫品種ページ開始 ===');
+console.log('breedTypeEn:', breedTypeEn);
+
+// この品種の猫を取得（全フィールド）
+const allCats = await getLatestPetsByType('cat', 100);
+console.log(`[${breedTypeEn}] 全猫データ数:`, allCats.length);
+console.log(`[${breedTypeEn}] 探している品種:`, breedTypeEn);
+
+// データサンプルを確認
+if (allCats.length > 0) {
+  console.log(`[${breedTypeEn}] 猫データサンプル:`, {
+    breedTypeEn: allCats[0].breedTypeEn,
+    breedTypeJa: allCats[0].breedTypeJa,
+    classification: allCats[0].classification
+  });
+  
+  // 最初の数件の品種を確認
+  const firstFewBreeds = allCats.slice(0, 5).map(pet => ({
+    breedTypeEn: pet.breedTypeEn,
+    breedTypeJa: pet.breedTypeJa,
+    classification: pet.classification
+  }));
+  console.log(`[${breedTypeEn}] 最初の5件の品種データ:`, firstFewBreeds);
+  
+  // 血統書付きの品種一覧を確認
+  const bloodlineBreeds = [...new Set(allCats
+    .filter(pet => pet.classification === 'bloodline')
+    .map(pet => pet.breedTypeEn)
+  )];
+  console.log(`[${breedTypeEn}] 血統書付き品種一覧:`, bloodlineBreeds);
+}
+
+const breedCats = allCats.filter(pet => 
+  pet.classification === 'bloodline' && 
+  pet.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase()
+);
+
+console.log(`[${breedTypeEn}] フィルタ後の猫数:`, breedCats.length);
+
+// もしフィルタ結果が0なら、部分一致も試してみる
+if (breedCats.length === 0) {
+  const partialMatches = allCats.filter(pet => 
+    pet.classification === 'bloodline' && 
+    pet.breedTypeEn?.toLowerCase().includes(breedTypeEn.toLowerCase())
+  );
+  console.log(`[${breedTypeEn}] 部分一致結果:`, partialMatches.length);
+  
+  const exactClassificationOnly = allCats.filter(pet => 
+    pet.classification === 'bloodline'
+  );
+  console.log(`[${breedTypeEn}] 血統書付きのみ:`, exactClassificationOnly.length);
+}
+
+// 初期表示は18匹
+const initialCats = breedCats.slice(0, 18);
+
+// 品種名を取得（日本語）
+// まず品種データから日本語名を探す
+const { pureBreeds } = await getBreedsByAnimalType('cat');
+const breedData = pureBreeds.find(breed => breed.url.split('/').pop() === breedTypeEn);
+const breedTypeJa = breedData ? breedData.name : (initialCats.length > 0 ? initialCats[0].breedTypeJa : breedTypeEn);
+
+// HeroSection用の画像（先頭の個体の画像）
+const heroImage = initialCats.length > 0 
+  ? getGoogleDriveImageUrl(initialCats[0].imageUrl01, 800, 600)
+  : '/src/assets/images/backgrounds/img_bg-hero_search-cats-01.webp';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '子犬・子猫を探す', href: '/search' },
+  { label: '子猫を探す', href: '/search/cats' },
+  { label: breedTypeJa }
+];
+---
+
+<Layout title={`${breedTypeJa} | 子猫を探す | カトレア`}>
+  <main>
+    <HeroSection 
+      title={breedTypeJa}
+      image={heroImage}
+      breadcrumbItems={breadcrumbItems}
+      isPetImage={initialCats.length > 0}
+    />
+    <section class="pets-section">
+      <div class="container">
+        {initialCats.length > 0 ? (
+          <>
+            <div class="pets-grid">
+              {initialCats.map((pet) => <PetCard pet={pet} />)}
+            </div>
+            {breedCats.length > 18 && <ViewMoreButton />}
+          </>
+        ) : (
+          <div class="no-pets-message">
+            <p>現在、{breedTypeJa}の子猫はおりません。</p>
+            <p><a href="/search/cats">他の子猫を見る</a></p>
+          </div>
+        )}
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<script define:vars={{ 
+  initialCatsCount: initialCats.length,
+  totalCatsCount: breedCats.length,
+  breedTypeEn: breedTypeEn 
+}}>
+  // 初期表示時のVIEW MOREボタン表示制御
+  const viewMoreButton = document.getElementById('viewMoreButton');
+  
+  // 初期状態で18匹未満またはデータがない場合はVIEW MOREボタンを非表示
+  if (viewMoreButton) {
+    if (totalCatsCount <= 18) {
+      viewMoreButton.style.display = 'none';
+    }
+  }
+</script>
+
+<script>
+  import { getGoogleDriveImageUrl } from '../../../lib/utils/image';
+  import { formatDate } from '../../../lib/utils/date';
+
+  let offset = 18; // オフセット
+  let isLoading = false; // 読み込み状態
+
+  const viewMoreButton = document.getElementById('viewMoreButton');
+  const petsGrid = document.querySelector('.pets-grid');
+
+  if (viewMoreButton && petsGrid) {
+    viewMoreButton.addEventListener('click', async () => {
+      if (isLoading) return;
+      
+      isLoading = true;
+      viewMoreButton.classList.add('loading');
+      viewMoreButton.disabled = true;
+
+      try {
+        const apiUrl = `/api/pets?offset=${offset}&limit=18&animalType=cat&breedTypeEn=${breedTypeEn}&classification=bloodline`;
+        const response = await fetch(apiUrl);
+        const newPets = await response.json();
+
+        if (newPets && newPets.length > 0) {
+          // 新しいペットカードを追加
+          newPets.forEach((pet) => {
+            const petCardHTML = `
+              <div class="pet-card" data-animal-type="${pet.animalType}">
+                <div class="pet-card__inner">
+                  <div class="pet-card__image-container">
+                    <img
+                      class="pet-card__image"
+                      src="${getGoogleDriveImageUrl(pet.imageUrl01, 600, 600)}"
+                      alt="${pet.breedTypeJa}の写真"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                      onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
+                    />
+                  </div>
+                  <div class="pet-card__info">
+                    <h3 class="pet-card__title">
+                      ${pet.breedTypeJa}
+                      ${pet.gender === '男の子' ? '<span class="pet-card__gender male"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2M21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9H21Z"/></svg></span>' : ''}
+                      ${pet.gender === '女の子' ? '<span class="pet-card__gender female"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4A4 4 0 0 1 16 8A4 4 0 0 1 12 12A4 4 0 0 1 8 8A4 4 0 0 1 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"/></svg></span>' : ''}
+                    </h3>
+                    <div class="pet-card__details">
+                      <p class="pet-card__detail-item">色：${pet.color}</p>
+                      <p class="pet-card__detail-item">誕生日：${formatDate(pet.birthday)}</p>
+                      <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+            petsGrid.insertAdjacentHTML('beforeend', petCardHTML);
+          });
+
+          offset += 18;
+          
+          // 取得したデータが18未満の場合、VIEW MOREボタンを非表示
+          if (newPets.length < 18) {
+            viewMoreButton.style.display = 'none';
+          }
+        } else {
+          // データがない場合はボタンを非表示
+          viewMoreButton.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading more breed cats:', error);
+        // エラー時はボタンのテキストを変更
+        viewMoreButton.querySelector('.view-more-text').textContent = 'エラーが発生しました';
+        viewMoreButton.disabled = true;
+      } finally {
+        isLoading = false;
+        viewMoreButton.classList.remove('loading');
+        viewMoreButton.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style lang="scss">
+  @import '../../../styles/variables';
+  @import '../../../styles/mixins';
+
+  .pets-section {
+    @include section-padding;
+    background-color: $color-background;
+    min-height: calc(100vh - 400px);
+  }
+
+  .no-pets-message {
+    text-align: center;
+    padding: rem(60) rem(20);
+    
+    p {
+      margin-bottom: rem(20);
+      font-size: rem(18);
+      color: $color-text;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      a {
+        color: $color-primary;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+</style>

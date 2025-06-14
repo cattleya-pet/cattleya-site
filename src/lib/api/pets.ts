@@ -60,7 +60,7 @@ export async function getBreedsByAnimalType(animalType: string) {
       .filter(pet => pet.classification === 'bloodline')
       .map(pet => ({
         name: pet.breedTypeJa,
-        url: `/search/${animalType}/${encodeURIComponent(pet.breedTypeEn.toLowerCase())}`
+        url: `/search/${animalType === 'dog' ? 'dogs' : animalType === 'cat' ? 'cats' : animalType + 's'}/${encodeURIComponent(pet.breedTypeEn.toLowerCase())}`
       }));
 
     // ミックスの存在確認
