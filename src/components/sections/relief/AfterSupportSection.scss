@@ -1,0 +1,249 @@
+@use '../../../styles/tokens/colors' as *;
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/tokens/typography' as *;
+@use '../../../styles/tokens/radius' as *;
+
+.after-support-section {
+  background: $color-background-primary;
+  padding: rem(90) 0 rem(110) 0;
+  position: relative;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.after-support-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.after-support-heading--mobile {
+  display: block;
+  margin-bottom: rem(40);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+.after-support-heading--desktop {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: block;
+    margin-bottom: rem(30);
+  }
+}
+
+.after-support-section-title {
+  font-size: rem(21);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.after-support-layout {
+  display: flex;
+  flex-direction: column;
+  gap: rem(30);
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: rem(40);
+    margin-bottom: rem(60);
+  }
+}
+
+.after-support-content {
+  @include breakpoint-up(sm) {
+    flex: 1;
+    order: 1;
+    z-index: 1;
+    padding-top: rem(40);
+  }
+  
+  @include breakpoint-up(xl) {
+    padding-top: rem(90);
+  }
+}
+
+.after-support-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    flex: 0 0 45%;
+    order: 2;
+  }
+}
+
+.after-support-img-bg {
+  position: absolute;
+  top: rem(5);
+  left: rem(-5);
+  width: 100%;
+  height: 100%;
+  background: $color-background-tertiary;
+  border-radius: $radius-m;
+  z-index: 0;
+  
+  @include breakpoint-up(sm) {
+    top: 25%;
+    left: -50%;
+  }
+}
+
+.after-support-img {
+  width: 100%;
+  height: 100%;
+  border-radius: $radius-m;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+.after-support-desc {
+  @include typography-ja-s;
+  color: $color-text;
+  line-height: 1.7;
+  margin: 0 0 rem(20) 0;
+}
+
+.after-support-worries {
+  margin-bottom: rem(20);
+}
+
+.after-support-worry-wrap {
+  padding: 0 rem(20);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: 0 0 0 rem(40);
+    text-align: left;
+  }
+}
+
+.after-support-worry {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-secondary;
+  margin: 0 0 rem(8) 0;
+  line-height: 1.5;
+}
+
+.after-support-solution {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  background: $color-background-secondary;
+  padding: rem(2) rem(4);
+  margin: rem(15) 0 0 0;
+  line-height: 1.5;
+  display: inline-block;
+}
+
+.after-support-items {
+  display: flex;
+  flex-direction: column;
+  gap: rem(35);
+  z-index: 2;
+  @include breakpoint-up(sm) {
+    gap: rem(45);
+  }
+  @include breakpoint-up(xl) {
+    max-width: rem(1400);
+    margin: 0 auto;
+  }
+}
+
+.after-support-item {
+  display: flex;
+  flex-direction: column;
+  gap: rem(5);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: rem(20);
+    width: 85%;
+  }
+  @include breakpoint-up(lg) {
+    align-items: center;
+  }
+  @include breakpoint-up(xl) {
+    // width: 65%;
+  }
+}
+
+.after-support-item-icon-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 77%;
+  height: auto;
+  aspect-ratio: 11 / 5;
+  flex-shrink: 0;
+  align-self: center;
+  
+  @include breakpoint-up(sm) {
+    align-self: flex-start;
+    width: 44%;
+  }
+  
+  @include breakpoint-up(lg) {
+    align-self: center;
+    max-width: rem(400);
+  }
+}
+
+.after-support-item-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.after-support-item-content {
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    text-align: left;
+    flex: 1;
+  }
+}
+
+.after-support-item-desc {
+  @include typography-ja-s;
+  color: $color-text;
+  line-height: 1.7;
+  margin: 0;
+  text-align: left;
+  white-space: pre-line;
+}
+
+.after-support-subtitle {
+  position: absolute;
+  top: rem(120);
+  left: rem(20);
+  transform: rotate(90deg) translateX(-50%);
+  transform-origin: left center;
+  font-size: rem(48);
+  font-weight: $font-weight-bold;
+  color: rgba($color-text-disabled, 0.4);
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(100);
+    left: rem(40);
+    top: rem(240);
+  }
+}

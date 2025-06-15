@@ -1,0 +1,85 @@
+---
+import './MedicalCheckSection.scss';
+import SectionHeading from '../../ui/SectionHeading.astro';
+
+const mainImg = '/src/assets/images/content/img_relief-main-01.webp';
+
+const medicalCheckItems = [
+  {
+    icon: '/src/assets/icons/icon_relief-01.svg',
+    title: '獣医師による健康チェック',
+    description: '獣医師による健康チェックを徹底しています。チェック内容は、基礎項目に沿って全身の健康チェックを行っており、異常の早期発見と適切な対応を心がけています。'
+  },
+  {
+    icon: '/src/assets/icons/icon_relief-04.svg',
+    title: '混合ワクチン・ケンネルコフワクチン接種済み',
+    description: '免疫力が弱い子犬・子猫にとって、ワクチン接種は命を守るために必要不可欠です。カトレアでは、感染リスクが高い病気に対応するため、適切なタイミングでワクチンを接種しています。'
+  },
+  {
+    icon: '/src/assets/icons/icon_relief-05.svg',
+    title: 'パルボウイルスチェック',
+    description: 'すべてのワンちゃん・ネコちゃんにパルボウィルスチェックを行っております。致死率が高く、非常に感染力の強いパルボウィルスに対する安全対策を行っております。'
+  },
+  {
+    icon: '/src/assets/icons/icon_relief-06.svg',
+    title: '駆虫プログラム',
+    description: 'すべてのワンちゃん・ネコちゃんに駆虫プログラムを実施しています。駆虫薬を投与し、内部寄生虫の除去を行っております。'
+  },
+  {
+    icon: '/src/assets/icons/icon_relief-07.svg',
+    title: '血統書発行',
+    description: '純血種のワンちゃん・ネコちゃんをお迎えいただく際には、その血統を証明するための血統書を発行しています。お迎え後、6ヶ月を目安にお客様のご自宅に発送させていただきます。'
+  }
+];
+---
+
+<section class="medical-check-section">
+  <div class="container medical-check-container">
+    <!-- モバイル用ヘッダー -->
+    <div class="medical-check-heading--mobile">
+      <h2 class="medical-check-section-title">メディカルチェック</h2>
+    </div>
+    
+    <div class="medical-check-layout">
+      <div class="medical-check-content">
+        <!-- デスクトップ用ヘッダー -->
+        <div class="medical-check-heading--desktop">
+          <h2 class="medical-check-section-title">メディカルチェック</h2>
+        </div>
+        
+        <p class="medical-check-desc">
+          カトレアでは、すべてのワンちゃん・ネコちゃんが安心して新しい生活をスタートできるよう、徹底した健康管理を行っています。入舎時には獣医師が徹底した健康チェックを実施し、体調や健康状態に異常がないことを確認しています。<br><br>
+          また、必要なワクチン接種や、駆虫プログラムを実施しています。お客様には健康状態の詳細を正確にお伝えし、安心して家族に迎えられるようサポートします。
+        </p>
+      </div>
+      
+      <div class="medical-check-img-wrap">
+        <div class="medical-check-img-bg"></div>
+        <img src={mainImg} alt="メディカルチェック" class="medical-check-img" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="medical-check-items">
+      {medicalCheckItems.map((item) => (
+        <div class="medical-check-item">
+          <div class="medical-check-item-icon-wrap">
+            <img src={item.icon} alt={item.title} class="medical-check-item-icon" loading="lazy" />
+          </div>
+          <div class="medical-check-item-content">
+            <h3 class="medical-check-item-title">
+              {item.title === '混合ワクチン・ケンネルコフワクチン接種済み' ? (
+                <span>混合ワクチン・<span class="mobile-break">ケンネルコフワクチン接種済み</span></span>
+              ) : (
+                item.title
+              )}
+            </h3>
+            <p class="medical-check-item-desc">{item.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <!-- 回転したサブタイトル -->
+    <div class="medical-check-subtitle">Medical check</div>
+  </div>
+</section>

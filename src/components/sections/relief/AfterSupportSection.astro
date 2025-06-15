@@ -1,0 +1,61 @@
+---
+import './AfterSupportSection.scss';
+
+const mainImg = '/src/assets/images/content/img_relief-main-03.webp';
+
+const afterSupportItem = {
+  icon: '/src/assets/icons/icon_relief-09.svg',
+  description: 'お迎えしてから、初めてのことで不安なことや、分からないことが出てくるかもしれません。\n\nその際は安心してペットと過ごせるように、カトレアスタッフがサポートコール(電話)やLINEにて精一杯サポートさせていただきます。'
+};
+---
+
+<section class="after-support-section">
+  <div class="container after-support-container">
+    <!-- モバイル用ヘッダー -->
+    <div class="after-support-heading--mobile">
+      <h2 class="after-support-section-title">アフターサポート</h2>
+    </div>
+    
+    <div class="after-support-layout">
+      <div class="after-support-content">
+        <!-- デスクトップ用ヘッダー -->
+        <div class="after-support-heading--desktop">
+          <h2 class="after-support-section-title">アフターサポート</h2>
+        </div>
+        
+        <p class="after-support-desc">
+          カトレアでは、ペットをお迎えいただいた後も、お客様とペットが安心して過ごせるようにアフターサポートを行なっています。
+        </p>
+        
+        <!-- 悩み要素 -->
+        <div class="after-support-worries">
+          <div class="after-support-worry-wrap">
+            <p class="after-support-worry">しつけがうまくできない...</p>
+            <p class="after-support-worry">わからないことが起きたらどうしよう...</p>
+            <p class="after-support-worry">相談できる人がいない...</p>
+            <p class="after-support-solution">そんな不安を解消します</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="after-support-img-wrap">
+        <div class="after-support-img-bg"></div>
+        <img src={mainImg} alt="アフターサポート" class="after-support-img" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="after-support-items">
+      <div class="after-support-item">
+        <div class="after-support-item-icon-wrap">
+          <img src={afterSupportItem.icon} alt="アフターサポート" class="after-support-item-icon" loading="lazy" />
+        </div>
+        <div class="after-support-item-content">
+          <p class="after-support-item-desc">{afterSupportItem.description}</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 回転したサブタイトル -->
+    <div class="after-support-subtitle">After support</div>
+  </div>
+</section>
