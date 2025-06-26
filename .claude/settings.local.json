@@ -22,7 +22,8 @@
       "Bash(mv:*)",
       "Bash(curl:*)",
       "Bash(timeout:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "WebFetch(domain:document.microcms.io)"
     ],
     "deny": []
   },

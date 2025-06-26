@@ -1,0 +1,21 @@
+---
+import StoreCard from './StoreCard.astro';
+import './StoresSection.scss';
+
+const { stores } = Astro.props;
+---
+
+<section class="stores-section">
+  <div class="container stores-container">
+    <div class="stores-viewport">
+      <!-- 店舗カード表示エリア -->
+      <div class="stores-grid">
+        {stores.map((store, i) => (
+          <div class="stores-card" data-index={i}>
+            <StoreCard {...store} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

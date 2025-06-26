@@ -1,0 +1,196 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getVoiceById } from '../../lib/api/voice';
+import { getStoreById } from '../../lib/api/stores';
+import MaleIcon from '../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import '../../styles/pages/voice-detail.scss';
+
+export async function getStaticPaths() {
+  try {
+    const { getVoices } = await import('../../lib/api/voice');
+    const allVoices = await getVoices(100);
+    
+    if (allVoices.length === 0) {
+      console.log('[getStaticPaths] お客様の声が存在しません');
+      return [];
+    }
+    
+    const paths = allVoices.map((voice) => ({
+      params: { 
+        contentId: voice.id
+      }
+    }));
+    
+    console.log('[getStaticPaths] 生成されるお客様の声詳細ページ数:', paths.length);
+    return paths;
+  } catch (error) {
+    console.error('[getStaticPaths] お客様の声詳細ページエラー:', error);
+    return [];
+  }
+}
+
+const { contentId } = Astro.params;
+
+console.log('=== お客様の声詳細ページ開始 ===');
+console.log('contentId:', contentId);
+
+// お客様の声詳細データを取得
+const voice = await getVoiceById(contentId!);
+
+if (!voice) {
+  console.error(`Voice not found: ${contentId}`);
+  return new Response('Voice not found', { status: 404 });
+}
+
+console.log('見つかったお客様の声:', voice.petName, voice.id);
+
+// 店舗情報を取得
+let storeInfo = null;
+if (typeof voice.store === 'object' && voice.store !== null) {
+  storeInfo = voice.store;
+} else if (typeof voice.store === 'string') {
+  try {
+    const { getAllStores } = await import('../../lib/api/stores');
+    const allStores = await getAllStores();
+    storeInfo = allStores.find(store => store.storeName === voice.store);
+  } catch (error) {
+    console.error('Error fetching store info:', error);
+  }
+}
+
+// 画像URL準備
+const thumbnailUrl = typeof voice.petThumbnail === 'object' && voice.petThumbnail !== null
+  ? voice.petThumbnail.url
+  : (voice.petThumbnail || '/src/assets/images/ui/img_loading-pet-image-01.webp');
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'お客様の声', href: '/voice' },
+  { label: voice.petName }
+];
+---
+
+<Layout title={`${voice.petName}のお客様の声 | カトレア`} description={`${voice.petName}をお迎えいただいたお客様からの声をご紹介します。`}>
+  <main>
+    <!-- パンくずリスト -->
+    <div class="breadcrumb-container">
+      <div class="container">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+    </div>
+    
+    <section class="voice-detail">
+      <div class="container">
+        <div class="voice-detail__content">
+          <!-- モバイル用ヘッダー -->
+          <header class="voice-detail__header voice-detail__header--mobile">
+            <div class="voice-label">Voice</div>
+            <h1 class="voice-detail__title">
+              {voice.petName}
+              {Array.isArray(voice.petGender) && voice.petGender[0] === '男の子' && (
+                <span class="pet-detail__gender male">
+                  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 0V5H14V1.733L8.871 6.817C9.201 7.297 9.47167 7.80367 9.683 8.337C9.89433 8.87033 10 9.42467 10 10C10 11.394 9.51533 12.576 8.546 13.546C7.57667 14.516 6.39533 15.0007 5.002 15C3.60867 14.9993 2.42667 14.5147 1.456 13.546C0.485333 12.5773 0 11.396 0 10.002C0 8.608 0.485 7.426 1.455 6.456C2.425 5.486 3.60667 5.00067 5 5C5.576 5 6.12733 5.105 6.654 5.315C7.18067 5.52433 7.682 5.79567 8.158 6.129L13.287 1H10V0H15ZM4.997 6C3.89167 6 2.949 6.39067 2.169 7.172C1.38967 7.954 1 8.89767 1 10.003C1 11.109 1.39067 12.0517 2.172 12.831C2.954 13.6103 3.89767 14 5.003 14C6.109 14 7.05167 13.6093 7.831 12.828C8.61033 12.046 9 11.1023 9 9.997C9 8.89167 8.60933 7.949 7.828 7.169C7.04667 6.389 6.103 5.99933 4.997 6Z" fill="#7398D5"/>
+                  </svg>
+                </span>
+              )}
+              {Array.isArray(voice.petGender) && voice.petGender[0] === '女の子' && (
+                <span class="pet-detail__gender female">
+                  <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.5 16V14H2.5V13H4.5V9.977C3.222 9.83367 2.15233 9.288 1.291 8.34C0.430334 7.39133 0 6.27433 0 4.989C0 3.60033 0.486333 2.42167 1.459 1.453C2.431 0.484333 3.61133 0 5 0C6.38867 0 7.569 0.484333 8.541 1.453C9.513 2.42167 9.99933 3.60033 10 4.989C10 6.27433 9.56967 7.391 8.709 8.339C7.84767 9.28767 6.778 9.83367 5.5 9.977V13H7.5V14H5.5V16H4.5ZM5.003 9C6.109 9 7.05167 8.60933 7.831 7.828C8.61033 7.046 9 6.10233 9 4.997C9 3.89167 8.60933 2.949 7.828 2.169C7.04667 1.389 6.103 0.999333 4.997 1C3.891 1.00067 2.94833 1.39133 2.169 2.172C1.38967 2.954 1 3.89767 1 5.003C1 6.109 1.39067 7.05167 2.172 7.831C2.954 8.61033 3.89767 9 5.003 9Z" fill="#D55665"/>
+                  </svg>
+                </span>
+              )}
+            </h1>
+            <div class="voice-detail__owner">
+              <span class="voice-detail__owner-slash">/</span>
+              <span class="voice-detail__owner-name">{voice.ownerName} 様</span>
+            </div>
+          </header>
+
+          <div class="voice-detail__body">
+            <!-- 画像セクション -->
+            <div class="voice-detail__image-section">
+              <div class="voice-image">
+                <img
+                  src={thumbnailUrl}
+                  alt={`${voice.petName}の写真`}
+                  class="voice-image__main"
+                  loading="eager"
+                />
+              </div>
+            </div>
+
+            <!-- サイドバー -->
+            <div class="voice-detail__sidebar">
+              <!-- デスクトップ用ヘッダー -->
+              <header class="voice-detail__header voice-detail__header--desktop">
+                <div class="voice-label">Voice</div>
+                <h1 class="voice-detail__title">
+                  {voice.petName}
+                  {Array.isArray(voice.petGender) && voice.petGender[0] === '男の子' && (
+                    <span class="pet-detail__gender male">
+                      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 0V5H14V1.733L8.871 6.817C9.201 7.297 9.47167 7.80367 9.683 8.337C9.89433 8.87033 10 9.42467 10 10C10 11.394 9.51533 12.576 8.546 13.546C7.57667 14.516 6.39533 15.0007 5.002 15C3.60867 14.9993 2.42667 14.5147 1.456 13.546C0.485333 12.5773 0 11.396 0 10.002C0 8.608 0.485 7.426 1.455 6.456C2.425 5.486 3.60667 5.00067 5 5C5.576 5 6.12733 5.105 6.654 5.315C7.18067 5.52433 7.682 5.79567 8.158 6.129L13.287 1H10V0H15ZM4.997 6C3.89167 6 2.949 6.39067 2.169 7.172C1.38967 7.954 1 8.89767 1 10.003C1 11.109 1.39067 12.0517 2.172 12.831C2.954 13.6103 3.89767 14 5.003 14C6.109 14 7.05167 13.6093 7.831 12.828C8.61033 12.046 9 11.1023 9 9.997C9 8.89167 8.60933 7.949 7.828 7.169C7.04667 6.389 6.103 5.99933 4.997 6Z" fill="#7398D5"/>
+                      </svg>
+                    </span>
+                  )}
+                  {Array.isArray(voice.petGender) && voice.petGender[0] === '女の子' && (
+                    <span class="pet-detail__gender female">
+                      <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.5 16V14H2.5V13H4.5V9.977C3.222 9.83367 2.15233 9.288 1.291 8.34C0.430334 7.39133 0 6.27433 0 4.989C0 3.60033 0.486333 2.42167 1.459 1.453C2.431 0.484333 3.61133 0 5 0C6.38867 0 7.569 0.484333 8.541 1.453C9.513 2.42167 9.99933 3.60033 10 4.989C10 6.27433 9.56967 7.391 8.709 8.339C7.84767 9.28767 6.778 9.83367 5.5 9.977V13H7.5V14H5.5V16H4.5ZM5.003 9C6.109 9 7.05167 8.60933 7.831 7.828C8.61033 7.046 9 6.10233 9 4.997C9 3.89167 8.60933 2.949 7.828 2.169C7.04667 1.389 6.103 0.999333 4.997 1C3.891 1.00067 2.94833 1.39133 2.169 2.172C1.38967 2.954 1 3.89767 1 5.003C1 6.109 1.39067 7.05167 2.172 7.831C2.954 8.61033 3.89767 9 5.003 9Z" fill="#D55665"/>
+                      </svg>
+                    </span>
+                  )}
+                </h1>
+                <div class="voice-detail__owner">
+                  <span class="voice-detail__owner-slash">/</span>
+                  <span class="voice-detail__owner-name">{voice.ownerName} 様</span>
+                </div>
+              </header>
+
+              <!-- ペット情報 -->
+              <div class="voice-info">
+                <div class="voice-info__item">
+                  <dt class="voice-info__label">品種</dt>
+                  <dd class="voice-info__value">{voice.animalType}</dd>
+                </div>
+                
+                <div class="voice-info__item">
+                  <dt class="voice-info__label">お迎え店舗</dt>
+                  <dd class="voice-info__value">
+                    {storeInfo ? (
+                      <a href={`/stores/${storeInfo.storeId}`} class="store-tag">
+                        #{storeInfo.storeName}
+                      </a>
+                    ) : (
+                      <span class="store-tag">
+                        #{typeof voice.store === 'object' ? voice.store.name : voice.store}
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- お客様の声内容 -->
+        <div class="voice-content-section bg-tertiary">
+          <div class="voice-content">
+            <div class="voice-content__body" set:html={voice.voiceContent} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>

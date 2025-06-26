@@ -1,0 +1,593 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import DataTable from '../../components/ui/DataTable.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '会社情報' }
+];
+
+// 会社情報テーブルデータ
+const companyData = [
+  { label: '会社名', value: '株式会社 Cattleya' },
+  { label: '所在地', value: '本社<br>〒170-0013<br>東京都豊島区東池袋1-9-8東葉ビル3F' },
+  { label: '代表取締役', value: '木村 亮' },
+  { label: '電話番号', value: '03-6912-5693' },
+  { label: '営業時間', value: '11:00~20:00' }
+];
+
+// 動物取扱業申請情報テーブル1データ
+const animalHandlingTable1 = [
+  { label: '事業所の名称', value: 'Cattleya 新宿店' },
+  { label: '事業所の所在地', value: '〒160-0022<br>東京都新宿区新宿三丁目24番7号 第6ウイザードセブンビル' },
+  { label: '動物取扱業の種別<br>及び登録番号', value: '販売　<br class="sm-down-only">23東京都販第008033号<br><br class="sm-down-only">貸出し　<br class="sm-down-only">23東京都貸第008033号' },
+  { label: '登録年月日', value: '令和6年2月5日' },
+  { label: '有効期間の末尾', value: '令和11年2月4日' },
+  { label: '動物取扱責任者', value: '佐藤 寧々' }
+];
+
+// 動物取扱業申請情報テーブル2データ
+const animalHandlingTable2 = [
+{ label: '事業所の名称', value: 'Cattleya 池袋店' },
+  { label: '事業所の所在地', value: '〒170-0013<br>東京都豊島区東池袋一丁目14番11号 小松ビル1F2F' },
+  { label: '動物取扱業の種別<br>及び登録番号', value: '販売　<br class="sm-down-only">23東京都販第007783号<br><br class="sm-down-only">貸出し　<br class="sm-down-only">23東京都貸第007783号' },
+  { label: '登録年月日', value: '令和5年6月19日' },
+  { label: '有効期間の末尾', value: '令和10年6月18日' },
+  { label: '動物取扱責任者', value: '井戸 美奈' }
+];
+---
+
+<Layout title="会社情報" description="カトレアの会社情報をご紹介します。代表挨拶、事業内容、会社概要などをご確認いただけます。">
+  <main>
+    <HeroSection 
+      title="会社情報"
+      image="/src/assets/images/backgrounds/img_bg-hero_company-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+    
+    <!-- 1. Visionセクション -->
+    <section class="vision-section">
+      <div class="vision-container">
+        <!-- 前半：ConceptSectionと同様の構造 -->
+        <div class="vision-main">
+          <!-- セクションラベル -->
+          <div class="vision-label">Vision</div>
+          
+          <!-- メインコンテンツエリア -->
+          <div class="vision-content">
+            <!-- タイトル -->
+            <div class="vision-title-section">
+              <h2 class="vision-title">
+                すべてのペットと<br>
+                飼い主様の安心を繋ぐ
+              </h2>
+            </div>
+            
+            <!-- 説明文 -->
+            <div class="vision-description-section">
+              <div class="vision-description">
+                <p>
+                  Cattleya ではすべてのペットと飼い主様の安心を繋ぐをコンセプトに、命を扱う企業として責任を持ち、ペットとお客様のご縁を大切にしています。<br>
+                  すべてのワンちゃん・ネコちゃんとお客様の出会いをサポートし、幸せな未来へと繋げていきます。<br>
+                  この想いを実現するために、私たちは３つの気持ちを常に持ち続けています。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 後半：3つのコンテンツボックス -->
+        <div class="vision-boxes">
+          <div class="vision-box">
+            <h3 class="vision-box-title">愛情溢れる気持ち</h3>
+            <div class="vision-box-divider vision-box-divider--red"></div>
+            <div class="vision-box-content">
+              <p>
+                カトレアはすべてのワンちゃん・ネコちゃんと飼い主様一人ひとりに、愛情を持って接することを約束します。<br>
+                ペットたちの健康管理に細心の注意を払いながら、ペットとお客様の快適な時間を提供致します。<br>
+                そして、カトレアで働く仲間、提携ブリーダー様、カトレアを支えて頂いているすべての方達に愛情を持ち続けます。<br>
+                これからも愛情溢れるペットショップを目指していきます——。
+              </p>
+            </div>
+          </div>
+          
+          <div class="vision-box">
+            <h3 class="vision-box-title">夢を叶えたい気持ち</h3>
+            <div class="vision-box-divider vision-box-divider--purple"></div>
+            <div class="vision-box-content">
+              <p>
+                カトレアはすべてのワンちゃん・ネコちゃんと夢を持った飼い主様の素晴らしい出会いの場所を提供します。ぜひ、カトレアを訪れて、特別な出会いを感じてみてください。<br>
+                愛するペットと飼い主様の夢の実現を私たちは全力でサポートします。<br>
+                カトレアに関わった全ての方達の夢を叶えられるようなペットショップをこれからも目指していきます——。
+              </p>
+            </div>
+          </div>
+          
+          <div class="vision-box">
+            <h3 class="vision-box-title">幸せ溢れる気持ち</h3>
+            <div class="vision-box-divider vision-box-divider--yellow"></div>
+            <div class="vision-box-content">
+              <p>
+                カトレアはすべてのワンちゃん・ネコちゃんと飼い主様の幸せ溢れる日々を築いていきます。<br>
+                愛するペットと飼い主様が幸せな日々を末長く送れるように、お迎え前だけではなくお迎え後もカトレアが全力でサポートします。<br>
+                カトレアでの特別な出会いから、たくさんの幸せを紡いでいけるように、これからも幸せ溢れるペットショップを目指していきます——。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Top Message セクション -->
+    <section class="top-message-section">
+      <div class="top-message-container">
+        <div class="top-message-main">
+          <!-- セクションラベル -->
+          <div class="top-message-label">Top Message</div>
+          
+          <!-- メインコンテンツエリア -->
+          <div class="top-message-content">
+            <!-- タイトル -->
+            <div class="top-message-title-section">
+              <h2 class="top-message-title">
+                特別な出会いが、<br>
+                人生を変える力になる。
+              </h2>
+            </div>
+            
+            <!-- メッセージ文 -->
+            <div class="top-message-description-section">
+              <div class="top-message-description">
+                <p>
+                  私が最初にペットショップに勤めた理由は、<br>
+                  ペットショップで働くのが夢だったから、<br>
+                  ペットに関わる仕事に就きたい、<br>
+                  など、そんな気持ちはありませんでした———。<br><br>
+                  目標も夢もないその中で、<br class="md-up-only">
+                  ペットショップに出会い、ペットと飼い主様を繋ぐ、そんな特別な仕事に魅了され、<br class="md-up-only">私の人生が変わりました。<br><br>
+                  ペットショップという、<br class="md-up-only">ペットと飼い主様の特別な出会いが日々訪れる、こんな特別な場所は他にはないと思っています。<br>
+                  小さく尊い命には私たちの生活を変える大きな力があります。<br class="md-up-only">
+                  時には心を救ってくれる大きな力があります。<br><br>
+                  尊い命を繋ぐ特別なお仕事だからこそ、<br class="md-up-only">ペットショップは決して簡単な役目ではないこと、<br class="md-up-only">この難しい役目を果たすためには多くの仲間が必要だと私は思っています。<br>ペットショップを通じて、仲間の大切さを私は多く学びました。<br>可愛らしく、愛おしいペットたちと飼い主様を繋ぐ特別なお仕事を、<br class="md-up-only">信頼できる仲間たちと出来ていることに、日々感謝と初心を忘れない気持ちを私は大切にしています。<br><br>
+                  Cattleyaに携わっていただいてる全ての方々に感謝の気持ちを強く持ち、恩返しをしていけるように私たちはこれからも成長していきます——。<br><br>
+                  "すべてのペットと飼い主様の安心を繋ぐ"<br>
+                  私たちの成長がすべてのペットと飼い主様の力になれるように、私たちはこれからもチャレンジしていきます。<br><br>
+                  そして、<br class="md-up-only">
+                  Cattleyaに関わったすべてのペットと飼い主様、仲間、提携ブリーダー様、提携獣医師様、提携会社様たちを幸せにできるように、<br class="md-up-only">
+                  私はこれからも覚悟を持って挑戦を続けます。<br>
+                  今後もCattleyaの歩みを見守っていてください。
+                </p>
+                <div class="top-message-signature">
+                  代表取締役社長　木村亮
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- 3. 会社概要セクション -->
+    <section class="company-info-section">
+      <div class="company-info-container">
+        <SectionTitle title="会社概要" />
+        <DataTable data={companyData} />
+      </div>
+    </section>
+    <!-- 4. 動物取扱業申請情報セクション -->
+    <section class="animal-handling-section">
+      <div class="animal-handling-container">
+        <SectionTitle title="動物取扱業申請情報" />
+        
+        <div class="animal-handling-tables">
+          <!-- テーブル1 -->
+          <div class="animal-handling-table-wrapper">
+            <DataTable data={animalHandlingTable1} />
+          </div>
+          
+          <!-- テーブル2 -->
+          <div class="animal-handling-table-wrapper">
+            <DataTable data={animalHandlingTable2} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <BannerSection />
+    
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+
+// 1. Visionセクション
+.vision-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-primary; // bg-primary
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .vision-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: rem(60);
+    
+    @include breakpoint-up(sm) {
+      gap: rem(100);
+    }
+    @include breakpoint-up(lg) {
+      gap: rem(140);
+    }
+  }
+}
+
+.vision-main {
+  display: flex;
+  flex-direction: column;
+  gap: rem(10);
+  
+  @include breakpoint-up(sm) {
+    position: relative;
+    align-items: flex-end;
+    gap: rem(40);
+  }
+}
+
+.vision-label {
+  font-family: $font-family-en;
+  font-size: rem(90);
+  font-weight: $font-weight-regular;
+  color: rgba($color-text-disabled,0.3);
+  letter-spacing: rem(4);
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  
+  @include breakpoint-up(sm) {
+    position: absolute;
+    top: rem(-20);
+    left: rem(-10);
+    z-index: 0;
+  }
+  @include breakpoint-up(xl) {
+    font-size: rem(180);
+  }
+  
+}
+
+.vision-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: rem(32);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    padding-top: rem(30);
+    flex: 0 0 auto;
+    gap: rem(40);
+    width: 70%;
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(90);
+  }
+}
+
+.vision-title-section {
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+.vision-title {
+  font-size: rem(22);
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.4;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  
+  @include breakpoint-up(sm) {
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.vision-description-section {
+  width: 100%;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    padding-left: 0;
+  }
+}
+
+.vision-description {
+  @include breakpoint-up(sm) {
+    max-width: rem(760);
+  }
+  
+  p {
+    font-size: rem(16);
+    color: $color-text-primary;
+    line-height: 1.8;
+    margin: 0;
+    text-align: left;
+  }
+}
+
+// 3つのコンテンツボックス（縦列レイアウト）
+.vision-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: rem(50);
+  
+  @include breakpoint-up(lg) {
+    width: 85%;
+    margin: 0 auto;
+    max-width: rem(1030);
+    gap: rem(60);
+  }
+  @include breakpoint-up(xl) {
+    gap: rem(70);
+  }
+}
+
+.vision-box {
+  
+  
+  @include breakpoint-up(sm) {
+    
+  }
+}
+
+.vision-box-title {
+  font-size: rem(22);
+  color: $color-text-primary;
+  margin: 0 0 rem(10) 0;
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.vision-box-divider {
+  width: 100%;
+  height: rem(1);
+  margin: 0 auto rem(20) auto;
+  
+  &--red {
+    background-color: #CF3D4F;
+  }
+  
+  &--purple {
+    background-color: #BB3DCE;
+  }
+  
+  &--yellow {
+    background-color: #F4BE50;
+  }
+}
+
+.vision-box-content {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0;
+  }
+}
+
+// 2. Top Message セクション
+.top-message-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-secondary; // bg-secondary
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .top-message-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: rem(60);
+    
+    @include breakpoint-up(sm) {
+      gap: rem(100);
+    }
+    @include breakpoint-up(lg) {
+      gap: rem(140);
+    }
+  }
+}
+
+.top-message-main {
+  display: flex;
+  flex-direction: column;
+  gap: rem(10);
+  
+  @include breakpoint-up(sm) {
+    position: relative;
+    align-items: flex-end;
+    gap: rem(40);
+  }
+}
+
+.top-message-label {
+  font-family: $font-family-en;
+  font-size: rem(65);
+  font-weight: $font-weight-regular;
+  color: rgba($color-text-white, 0.5);
+  letter-spacing: rem(4);
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  
+  @include breakpoint-up(sm) {
+    position: absolute;
+    top: rem(-20);
+    left: rem(-10);
+    z-index: 0;
+    font-size: rem(80);
+  }
+  @include breakpoint-up(xl) {
+    font-size: rem(180);
+  }
+}
+
+.top-message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: rem(32);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    padding-top: rem(30);
+    flex-direction: row; // sm以降で左右分割
+    gap: 5%;
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(90);
+    gap: min(rem(80), 5%);
+    justify-content: center;
+  }
+}
+
+.top-message-title-section {
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    // flex: 1; // 左側
+    width: 35%;
+    max-width: rem(540);
+  }
+}
+
+.top-message-title {
+  font-size: rem(22);
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.8;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-2l($font-weight-semibold);
+    line-height: 1.8 !important;
+    padding-left: 10%;
+  }
+}
+
+.top-message-description-section {
+  width: 100%;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    // flex: 1; // 右側
+    padding-left: 0;
+    width: 60%;
+    max-width: rem(760);
+  }
+}
+
+.top-message-description {
+  @include breakpoint-up(sm) {
+    max-width: rem(760);
+    padding-top: rem(50);
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(150);
+  }
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.8;
+    margin: 0;
+    text-align: left;
+  }
+}
+
+.top-message-signature {
+  margin-top: rem(30);
+  text-align: right;
+  
+  @include typography-ja-s;
+  color: $color-text-primary;
+}
+
+// レスポンシブ改行制御はglobal.scssで管理
+
+// 3. 会社概要セクション
+.company-info-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-tertiary; // bg-tertiary
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .company-info-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    
+    @include breakpoint-up(sm) {
+    }
+  }
+}
+
+// 4. 動物取扱業申請情報セクション
+.animal-handling-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-primary; // bg-primary
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .animal-handling-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    
+    @include breakpoint-up(sm) {
+    }
+  }
+}
+
+.animal-handling-tables {
+  display: flex;
+  flex-direction: column;
+  gap: rem(60);
+  
+  @include breakpoint-up(sm) {
+    gap: rem(80);
+  }
+}
+
+.animal-handling-table-wrapper {
+  // 各テーブルラッパーのスタイル（必要に応じて追加）
+}
+
+// SectionTitleとDataTableコンポーネントのスタイルは別ファイルで管理
+</style>

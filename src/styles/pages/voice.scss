@@ -1,0 +1,40 @@
+@use '../mixins' as *;
+@use '../tokens/_colors' as *;
+
+.voice-section {
+  padding: rem(90) 0 rem(110) 0;
+  background-color: $color-background-primary;
+  min-height: calc(100vh - 400px);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.voice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: rem(20);
+  margin-bottom: rem(40);
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: rem(24);
+    row-gap: 0;
+    align-items: stretch;
+  }
+  
+  @include breakpoint-up(xl) {
+    grid-template-columns: repeat(2, minmax(auto, rem(676)));
+    justify-content: center;
+  }
+}
+
+.voice-card-wrapper {
+  width: 100%;
+  display: flex;
+  
+  @include breakpoint-up(sm) {
+    height: 100%;
+  }
+}

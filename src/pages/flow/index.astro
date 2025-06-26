@@ -1,0 +1,407 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import heroImage from '../../assets/images/backgrounds/img_bg-hero_flow-01.webp';
+import stepIcon1 from '../../assets/icons/icon_step-menu-01.svg';
+import stepIcon2 from '../../assets/icons/icon_step-menu-02.svg';
+import footprintIcon from '../../assets/icons/icon_step-cat-footprints-01.svg';
+import flowStep1 from '../../assets/images/content/img_flow_step-01.webp';
+import flowStep2 from '../../assets/images/content/img_flow_step-02.webp';
+import flowStep3 from '../../assets/images/content/img_flow_step-03.webp';
+import flowStep4 from '../../assets/images/content/img_flow_step-04.webp';
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+import lineIcon from '../../assets/icons/icon_line-01.svg';
+import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
+import cardVisa from '../../assets/icons/icon_card-logo-visa.svg';
+import cardMastercard from '../../assets/icons/icon_card-logo-mastercard.svg';
+import cardJcb from '../../assets/icons/icon_card-logo-jcb.svg';
+import cardAmex from '../../assets/icons/icon_card-logo-amex.svg';
+import cardDiners from '../../assets/icons/icon_card-logo-dinersclub.svg';
+import homestayGoods from '../../assets/images/content/img_homestay-goods-01.webp';
+import bubbleWhite from '../../assets/icons/icon_bubbles-white-01.svg';
+import bubbleBeige from '../../assets/icons/icon_bubbles-begie-01.svg';
+import { getAllStores } from '../../lib/api/stores';
+import BaseButton from '../../components/ui/buttons/BaseButton.astro';
+import ButtonWrapper from '../../components/ui/buttons/ButtonWrapper.astro';
+import '../../styles/pages/flow.scss';
+
+// 店舗データを取得
+const stores = await getAllStores();
+
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'お迎えまでの流れ' }
+];
+---
+
+<Layout title="お迎えまでの流れ | カトレア" description="カトレアでペットをお迎えいただくまでの流れをご紹介します。">
+  <main>
+    <!-- ヒーローセクション -->
+    <section class="hero-section hero-section--flow">
+      <div class="hero-background">
+        <img 
+          src={heroImage.src} 
+          alt="お迎えまでの流れ" 
+          class="hero-background__image"
+          loading="eager"
+        />
+      </div>
+      
+      <!-- ページタイトルエリア -->
+      <div class="hero-content">
+        <div class="hero-content__semicircle"></div>
+        <div class="container">
+          <div class="hero-content__inner">
+            <h1 class="hero-title">お迎えまでの流れ</h1>
+            
+            <!-- パンくずリスト -->
+            <div class="hero-breadcrumb">
+              <Breadcrumb items={breadcrumbItems} />
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- スクロールリンクボタンセクション -->
+    <section class="step-links-section">
+      <div class="container">
+        <div class="step-links">
+          <a href="#step1" class="step-link">
+            <div class="step-link__inner">
+              <div class="step-link__icon">
+                <img src={stepIcon1.src} alt="" />
+              </div>
+              <div class="step-link__text">
+                当サイトから気になる子を<br>見つけた方
+              </div>
+              <div class="step-link__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#step2" class="step-link">
+            <div class="step-link__inner">
+              <div class="step-link__icon">
+                <img src={stepIcon2.src} alt="" />
+              </div>
+              <div class="step-link__text">
+                お店でお迎えしたい子に<br>出会った方
+              </div>
+              <div class="step-link__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- お迎えまでの流れセクション -->
+    <section class="flow-steps-section">
+
+      <!-- ステップ1（奇数・bg-tertiary） -->
+      <div class="flow-step flow-step--odd" id="step1">
+        <div class="flow-step__content">
+            <div class="flow-step__header">
+              <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">1</span></div>
+              <h3 class="flow-step__title">気になった子を電話・LINE・メールでお問い合わせ</h3>
+            </div>
+            <div class="flow-step__body">
+              <div class="flow-step__description">
+                <p class="flow-step__intro">
+                  気になるワンちゃん・ネコちゃんがいたら、下記の方法からお問い合わせください。<br>
+                  お問い合わせの際は、お問い合わせ番号をお伝えください。<br>
+                  お問い合わせの際に、来店予約していただくと、待ち時間なく担当スタッフがご案内します。
+                </p>
+
+                <div class="contact-sections">
+                  <!-- 電話でのお問い合わせ -->
+                  <div class="contact-section contact-section--phone">
+                    <h4 class="contact-section__title">電話でのお問い合わせ</h4>
+                    <div class="contact-buttons">
+                      {stores.map((store) => (
+                        <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
+                          <span class="contact-button__line"></span>
+                          <div class="contact-button__content">
+                            <span class="contact-button__text">{store.storeName}</span>
+                            <span class="contact-button__detail">{store.storePhoneNumber}</span>
+                          </div>
+                          <img src={phoneIcon.src} alt="" class="contact-button__icon" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                  <!-- LINEでのお問い合わせ -->
+                  <div class="contact-section contact-section--line">
+                    <h4 class="contact-section__title">LINEでのお問い合わせ</h4>
+                    <div class="contact-buttons">
+                      {stores.map((store) => (
+                        <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+                          <span class="contact-button__line"></span>
+                          <div class="contact-button__content">
+                            <span class="contact-button__text">{store.storeName}</span>
+                            <span class="contact-button__detail">LINE</span>
+                          </div>
+                          <img src={lineIcon.src} alt="" class="contact-button__icon" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- メールでのお問い合わせ -->
+                <div class="contact-section contact-section--mail">
+                  <h4 class="contact-section__title">メールでのお問い合わせ</h4>
+                  <div class="contact-buttons">
+                    <a href="/contact" class="contact-button contact-button--mail">
+                      <span class="contact-button__line"></span>
+                      <div class="contact-button__content">
+                        <span class="contact-button__text">メールお問い合わせ</span>
+                      </div>
+                      <img src={mailIcon.src} alt="" class="contact-button__icon" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step__image">
+                <img src={flowStep1.src} alt="ステップ1" class="flow-step__img" />
+                <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
+              </div>
+            </div>
+            <div class="flow-step__supplement">
+              <!-- 補足内容ボックス -->
+              <div class="supplement-box">
+                <h4>ご購入をご希望の方</h4>
+                <p>ご購入が確定していれば、お振込み(ペット価格の10%)でご売約ができます。入金日から1週間お預かりができます。</p>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- ステップ間の肉球アイコン -->
+      <div class="step-divider">
+        <img src={footprintIcon.src} alt="" class="step-divider__icon" />
+      </div>
+
+      <!-- ステップ2（偶数・bg-secondary） -->
+      <div class="flow-step flow-step--even" id="step2">
+        <div class="flow-step__content">
+            <div class="flow-step__header">
+              <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">2</span></div>
+              <h3 class="flow-step__title">ご来店＆ご対面</h3>
+            </div>
+            <div class="flow-step__body">
+              <div class="flow-step__description">
+                <p class="flow-step__intro">
+                  実際にご来店いただき、ワンちゃん・ネコちゃんを抱っこしたり触れ合っていただけます。<br><br>
+                  お客様がパートナーを迎えるにあたって抱かれる不安や悩みが少しでも解消できるよう、スタッフが真心を持って対応いたします。<br>
+                  お客様の環境に合わせたお世話の仕方等もレクチャーしますので、お気軽に質問してください。
+                </p>
+              </div>
+              <div class="flow-step__image">
+                <img src={flowStep2.src} alt="ステップ2" class="flow-step__img" />
+                <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even flow-step__bubble--step2" />
+              </div>
+            </div>
+            <div class="flow-step__supplement">
+              <div class="supplement-box">
+                <h4>ホームステイ</h4>
+                <div class="homestay-section-inner">
+                  <div class="homestay-img-wrap">
+                    <img src="/src/assets/images/content/img_homestay_main-01.webp" alt="ホームステイ" class="homestay-img" loading="lazy" />
+                  </div>
+                  
+                  <div class="homestay-content">
+                    <p class="homestay-desc">
+                      カトレアでは、お客様とワンちゃん・ネコちゃんの相性や飼育不安を取り除くために、ホームステイサービスを行なっています。<br><br>
+                      ホームステイ中もスタッフが精一杯サポートいたします。<br>
+                      お気軽にお申し付けください。
+                    </p>
+                    <ButtonWrapper>
+                      <BaseButton href="/homestay" text="詳しくみる" variant="short" />
+                    </ButtonWrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- ステップ間の肉球アイコン -->
+      <div class="step-divider">
+        <img src={footprintIcon.src} alt="" class="step-divider__icon" />
+      </div>
+
+      <!-- ステップ3（奇数・bg-tertiary） -->
+      <div class="flow-step flow-step--odd">
+        <div class="flow-step__content">
+            <div class="flow-step__header">
+              <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">3</span></div>
+              <h3 class="flow-step__title">ご契約＆お支払い</h3>
+            </div>
+            <div class="flow-step__body">
+              <div class="flow-step__description">
+                <p class="flow-step__intro">
+                  実際にワンちゃん・ネコちゃんを迎え入れていただくことになった場合、ご契約させていただきます。
+                </p>
+
+                <div class="contract-sections">
+                  <!-- ご契約時の説明内容 -->
+                  <div class="contract-section">
+                    <h4 class="contract-section__title">ご契約時の説明内容</h4>
+                    <ul class="contract-list">
+                      <li>お迎えするワンちゃん・ネコちゃんに必要な手続きをご案内いたします。また、お迎え後の飼育方法やお手入れ方法等のご説明もさせていただきます。</li>
+                      <li>お迎え日からご利用可能なペット保険を各種ご用意しております。</li>
+                    </ul>
+                    <p class="contract-note"><strong>※当日のお迎えが難しい場合はお迎え日の調整が可能です。</strong></p>
+                  </div>
+
+                  <!-- お支払い方法 -->
+                  <div class="contract-section">
+                    <h4 class="contract-section__title">お支払い方法</h4>
+                    <div class="payment-methods">
+                      <div class="payment-method">
+                        <h5 class="payment-method__title">現金</h5>
+                      </div>
+                      <div class="payment-method">
+                        <h5 class="payment-method__title">クレジットカード</h5>
+                        <div class="card-logos">
+                          <img src={cardVisa.src} alt="Visa" class="card-logo" />
+                          <img src={cardMastercard.src} alt="Mastercard" class="card-logo" />
+                          <img src={cardJcb.src} alt="JCB" class="card-logo" />
+                          <img src={cardAmex.src} alt="American Express" class="card-logo" />
+                          <img src={cardDiners.src} alt="Diners Club" class="card-logo" />
+                        </div>
+                      </div>
+                      <div class="payment-method">
+                        <h5 class="payment-method__title">ショッピングローン</h5>
+                        <p class="payment-method__desc">
+                          お客様のご要望に沿ったローン会社様をご提案させていただきます。<br>
+                          ※1回～84回までお支払い回数をお選びいただけます。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step__image">
+                <img src={flowStep3.src} alt="ステップ3" class="flow-step__img" />
+                <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
+              </div>
+            </div>
+            <div class="flow-step__supplement">
+              <div class="supplement-box">
+                <h4>ペット用品をお考えの方</h4>
+                <div class="homestay-section-inner">
+                  <div class="homestay-img-wrap">
+                    <img src={homestayGoods.src} alt="ペット用品" class="homestay-img" loading="lazy" />
+                  </div>
+                  
+                  <div class="homestay-content">
+                    <p class="homestay-desc">
+                      カトレアでは、ごはん、ケージ、トイレ、おもちゃ、お手入れ用品等のお迎えに必要な各種セットご用意しておりますので、事前の準備は必要ありません。<br>
+                      ショッピングローンに上記全てを組み込むことも可能です。<br><br>
+                      不明点などありましたら、お気軽にスタッフにお申し付けください。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- ステップ間の肉球アイコン -->
+      <div class="step-divider">
+        <img src={footprintIcon.src} alt="" class="step-divider__icon" />
+      </div>
+
+      <!-- ステップ4（偶数・bg-secondary） -->
+      <div class="flow-step flow-step--even">
+        <div class="flow-step__content">
+            <div class="flow-step__header">
+              <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">4</span></div>
+              <h3 class="flow-step__title">アフターサポート</h3>
+            </div>
+            <div class="flow-step__body">
+              <div class="flow-step__description">
+                <p class="flow-step__intro">
+                  お迎えしてから、初めてのことで不安なことや、分からないことが出てくるかもしれません。<br><br>
+                  その際は安心してペットと過ごせるように、カトレアスタッフがサポートコール(電話)やLINEにて精一杯サポートさせていただきます。
+                </p>
+              </div>
+              <div class="flow-step__image">
+                <img src={flowStep4.src} alt="ステップ4" class="flow-step__img" />
+                <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even" />
+              </div>
+            </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 付随セクション -->
+    <section class="related-content-section">
+      <div class="container">
+        
+        <!-- お問い合わせボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">お問い合わせ</h2>
+          <div class="contact-buttons-grid">
+            {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
+              <>
+                <!-- 電話ボタン -->
+                <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">{store.storePhoneNumber}</span>
+                  </div>
+                  <img src={phoneIcon.src} alt="" class="contact-button__icon" />
+                </a>
+                <!-- LINEボタン -->
+                <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">LINE</span>
+                  </div>
+                  <img src={lineIcon.src} alt="" class="contact-button__icon" />
+                </a>
+              </>
+            ))}
+          </div>
+        </div>
+        
+        <!-- 会いたい子を探すボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">会いたい子を探す</h2>
+          <div class="content-box__buttons">
+            <a href="/search/dogs" class="bg-button bg-button--search-dogs">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子犬を探す</span>
+              </div>
+            </a>
+            <a href="/search/cats" class="bg-button bg-button--search-cats">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子猫を探す</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>

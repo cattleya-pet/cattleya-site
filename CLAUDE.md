@@ -55,6 +55,14 @@
 
 ## ページ管理方針
 
+### ページルーティング構造
+**重要**: すべての下層ページは `ディレクトリ名/index.astro` の構造で作成する
+
+- ✅ 正しい: `/src/pages/company/index.astro` → `/company`
+- ❌ 間違い: `/src/pages/company.astro` → `/company`
+
+この構造により、将来的にサブページの追加が容易になり、ファイル構造が整理される。
+
 ### 検索ページの構造
 - 動的ルート `[breedTypeEn].astro` で血統証・ミックス両方を処理
 - ページ内で条件分岐により表示内容を切り替え
@@ -85,4 +93,44 @@ search/
         └── [breedTypeEn]/
             ├── index.astro                       # /search/cats/mix/{breedTypeEn}
             └── [contentId].astro                 # /search/cats/mix/{breedTypeEn}/{contentId}
+```
+
+## レスポンシブ改行制御
+
+HTMLで画面サイズに応じた改行制御を行う汎用クラスが用意されています（global.scssで定義）。
+
+### 使用可能なクラス
+
+```html
+<!-- sm未満でのみ表示 -->
+<br class="sm-down-only">
+
+<!-- sm以降でのみ表示 -->
+<br class="sm-up-only">
+
+<!-- md未満でのみ表示 -->
+<br class="md-down-only">
+
+<!-- md以降でのみ表示 -->
+<br class="md-up-only">
+
+<!-- lg未満でのみ表示 -->
+<br class="lg-down-only">
+
+<!-- lg以降でのみ表示 -->
+<br class="lg-up-only">
+
+<!-- xl未満でのみ表示 -->
+<br class="xl-down-only">
+
+<!-- xl以降でのみ表示 -->
+<br class="xl-up-only">
+```
+
+### 使用例
+```html
+<p>
+  モバイルでは改行なし、<br class="sm-up-only">
+  タブレット以降で改行が入ります。
+</p>
 ```

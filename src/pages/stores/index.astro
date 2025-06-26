@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import StoresSectionNoTitle from '../../components/stores/StoresSectionNoTitle.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import { getAllStores } from '../../lib/api/stores/queries';
+
+// 店舗情報を取得
+const allStores = await getAllStores();
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '店舗情報' }
+];
+---
+
+<Layout title="店舗情報" description="カトレアの店舗情報をご紹介します。各店舗へのアクセス方法や営業時間をご確認いただけます。">
+  <main>
+    <HeroSection 
+      title="店舗情報"
+      image="/src/assets/images/backgrounds/img_bg-hero_relief-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+    
+    <StoresSectionNoTitle stores={allStores} />
+    
+    <BannerSection />
+    
+    <ContactCTASection />
+  </main>
+</Layout>

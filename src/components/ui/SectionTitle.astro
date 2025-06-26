@@ -1,0 +1,29 @@
+---
+interface Props {
+  title: string;
+  withLine?: boolean;
+  size?: 'small' | 'normal' | 'large';
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  class?: string;
+}
+
+const { 
+  title, 
+  withLine = false, 
+  size = 'normal', 
+  tag: Tag = 'h2',
+  class: className = '' 
+} = Astro.props;
+
+const sizeClass = size !== 'normal' ? `section-title--${size}` : '';
+const lineClass = withLine ? 'section-title--with-line' : '';
+const classes = `section-title ${sizeClass} ${lineClass} ${className}`.trim();
+---
+
+<Tag class={classes}>
+  {title}
+</Tag>
+
+<style lang="scss">
+@use '../../styles/components/SectionTitle.scss';
+</style>

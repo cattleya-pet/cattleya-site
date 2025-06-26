@@ -1,0 +1,47 @@
+@use '../tokens/_typography' as *;
+@use '../tokens/_colors' as *;
+@use '../mixins' as *;
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: $color-background-primary;
+  
+  @include breakpoint-up(sm) {
+    // タブレット以上のスタイル
+  }
+}
+
+.data-table__row {
+  border-bottom: 1px solid $color-border-secondary;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.data-table__label {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  padding: rem(15) rem(20);
+  background-color: $color-background-secondary;
+  vertical-align: top;
+  width: 30%;
+  
+  @include breakpoint-up(sm) {
+    width: 25%;
+    padding: rem(20) rem(30);
+  }
+}
+
+.data-table__value {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  padding: rem(15) rem(20);
+  background-color: $color-background-primary;
+  vertical-align: top;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(20) rem(30);
+  }
+}

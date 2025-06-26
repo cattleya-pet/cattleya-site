@@ -1,24 +1,34 @@
 /**
  * Google DriveのURLからファイルIDを抽出する
+ * セキュリティ強化版（2024年更新）
  */
 export function extractGoogleDriveFileId(url: string): string | null {
-  if (!url) return null;
+  if (!url || typeof url !== 'string') return null;
   
-  // IDだけが渡された場合はそのまま返す
-  if (url.match(/^[a-zA-Z0-9_-]{25,}$/)) {
+  // セキュリティチェック：危険な文字列が含まれている場合は処理を停止
+  if (url.includes('<') || url.includes('>') || url.includes('..') || url.toLowerCase().includes('script')) {
+    console.warn('Potentially unsafe URL detected:', url);
+    return null;
+  }
+  
+  // IDだけが渡された場合：有効なGoogle Drive File IDの形式をチェック
+  // Google Drive File IDは通常28-33文字程度で、英数字、ハイフン、アンダースコアのみを含む
+  if (url.match(/^[a-zA-Z0-9_-]{25,50}$/)) {
     return url;
   }
   
-  // Google DriveのURLからファイルIDを抽出する正規表現パターンを更新
+  // Google DriveのURLからファイルIDを抽出する正規表現パターン（セキュリティ強化）
   const patterns = [
-    /\/d\/(.*?)\/view/,  // 通常のビューURL
-    /id=(.*?)(&|$)/,     // 共有URL
-    /\/file\/d\/(.*?)\//  // 直接リンク
+    /\/d\/([a-zA-Z0-9_-]{25,50})\/view/,     // 通常のビューURL
+    /\/d\/([a-zA-Z0-9_-]{25,50})\/edit/,     // 編集URL
+    /\/d\/([a-zA-Z0-9_-]{25,50})\//,         // 直接リンク
+    /id=([a-zA-Z0-9_-]{25,50})(&|$)/,        // 共有URL
+    /\/file\/d\/([a-zA-Z0-9_-]{25,50})\//    // ファイル直接リンク
   ];
 
   for (const pattern of patterns) {
     const match = url.match(pattern);
-    if (match && match[1]) {
+    if (match && match[1] && match[1].length >= 25 && match[1].length <= 50) {
       return match[1];
     }
   }
@@ -29,12 +39,12 @@ export function extractGoogleDriveFileId(url: string): string | null {
  * Google DriveのURLを直接表示可能な画像URLに変換する
  */
 export function getGoogleDriveImageUrl(url: string, width: number = 800, height: number = 600): string {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
   
   const fileId = extractGoogleDriveFileId(url);
   if (!fileId) return url;
 
-  // Google DriveのURL形式を変更
+  // 従来の方式を維持（lh3.googleusercontent.com）
   return `https://lh3.googleusercontent.com/d/${fileId}`;
 }
 
@@ -42,7 +52,7 @@ export function getGoogleDriveImageUrl(url: string, width: number = 800, height:
  * Google DriveのURLから埋め込み再生可能な動画URLを生成する
  */
 export function getGoogleDriveVideoUrl(url: string): string {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
   
   const fileId = extractGoogleDriveFileId(url);
   if (!fileId) return url;
@@ -55,7 +65,7 @@ export function getGoogleDriveVideoUrl(url: string): string {
  * Google DriveのURLから直接ダウンロード用URLを生成する（代替手段）
  */
 export function getGoogleDriveDirectUrl(url: string): string {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
   
   const fileId = extractGoogleDriveFileId(url);
   if (!fileId) return url;
@@ -68,7 +78,7 @@ export function getGoogleDriveDirectUrl(url: string): string {
  * Google Drive動画の最初のフレームをサムネイル画像として取得する
  */
 export function getGoogleDriveVideoThumbnail(url: string, width: number = 150, height: number = 150): string {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
   
   const fileId = extractGoogleDriveFileId(url);
   if (!fileId) return url;

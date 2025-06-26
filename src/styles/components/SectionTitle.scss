@@ -1,0 +1,45 @@
+@use '../tokens/_typography' as *;
+@use '../tokens/_colors' as *;
+@use '../mixins' as *;
+
+.section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    margin: 0 0 rem(80) 0;
+  }
+  
+  &--small {
+    @include typography-ja-m($font-weight-semibold);
+    margin: 0 0 rem(40) 0;
+    
+    @include breakpoint-up(sm) {
+      margin: 0 0 rem(60) 0;
+    }
+  }
+  
+  &--large {
+    @include typography-ja-2l($font-weight-semibold);
+    margin: 0 0 rem(80) 0;
+    
+    @include breakpoint-up(sm) {
+      margin: 0 0 rem(100) 0;
+    }
+  }
+  
+  &--with-line {
+    position: relative;
+    
+    &::after {
+      content: '';
+      display: block;
+      width: rem(60);
+      height: rem(2);
+      background-color: $color-brand-primary;
+      margin: rem(20) auto 0;
+    }
+  }
+}

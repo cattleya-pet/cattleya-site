@@ -1,9 +1,17 @@
 import type { MicroCMSContentId, MicroCMSDate, MicroCMSImage } from 'microcms-js-sdk';
 
+// MicroCMSファイル型定義
+export interface MicroCMSFile {
+  url: string;
+  fileSize: number;
+}
+
 // 店舗情報の型定義
 export interface Store extends MicroCMSContentId, MicroCMSDate {
+  storeId: string;
   storeName: string;
   storeImages?: MicroCMSImage[];
+  storeMovie?: string | MicroCMSFile;
   storePostCode?: string;
   storeAddress?: string;
   trafficInformation?: string;

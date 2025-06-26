@@ -1,0 +1,1068 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getStoreByStoreId } from '../../lib/api/stores';
+import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+import { formatDate } from '../../lib/utils/date';
+import MaleIcon from '../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
+import BaseButton from '../../components/ui/buttons/BaseButton.astro';
+import ButtonWrapper from '../../components/ui/buttons/ButtonWrapper.astro';
+import VoiceCard from '../../components/voice/VoiceCard.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import '../../styles/layout/pets-grid.scss';
+import '../../components/pets/PetCard.scss';
+import '../../styles/pages/pet-detail.scss';
+
+export async function getStaticPaths() {
+  try {
+    const { getAllStores } = await import('../../lib/api/stores');
+    const stores = await getAllStores();
+    
+    const paths = stores.map((store) => ({
+      params: { 
+        storeId: store.storeId
+      }
+    }));
+    
+    console.log('[getStaticPaths] 生成される店舗詳細ページ数:', paths.length);
+    return paths;
+  } catch (error) {
+    console.error('[getStaticPaths] 店舗詳細ページエラー:', error);
+    return [];
+  }
+}
+
+const { storeId } = Astro.params;
+
+console.log('=== 店舗詳細ページ開始 ===');
+console.log('storeId:', storeId);
+
+// 店舗詳細データを取得
+const storeInfo = await getStoreByStoreId(storeId);
+
+if (!storeInfo) {
+  console.error(`Store not found: ${storeId}`);
+  return Astro.redirect('/stores?error=not-found');
+}
+
+console.log('見つかった店舗:', storeInfo.storeName);
+console.log('店舗画像数:', storeInfo.storeImages?.length || 0);
+console.log('店舗動画URL:', storeInfo.storeMovie);
+
+// 必須情報のバリデーション
+if (!storeInfo.storeName) {
+  console.warn('店舗名が設定されていません');
+}
+if (!storeInfo.storeAddress && !storeInfo.storePostCode) {
+  console.warn('店舗の住所情報が設定されていません');
+}
+
+// 画像・動画URLを準備
+const mediaItems = [];
+const placeholderImage = '/src/assets/images/ui/img_loading-pet-image-01.webp';
+
+// メディアスロットの準備（最大4つ：画像3枚 + 動画1つ）
+const maxImages = 3;
+const mediaSlots = [
+  ...Array.from({ length: maxImages }, (_, i) => ({ 
+    url: storeInfo.storeImages?.[i]?.url, 
+    type: 'image', 
+    label: `写真${i + 1}` 
+  })),
+  { url: storeInfo.storeMovie, type: 'video', label: '動画' }
+];
+
+mediaSlots.forEach((slot, index) => {
+  if (slot.url) {
+    if (slot.type === 'image') {
+      mediaItems.push({
+        type: 'image',
+        url: getGoogleDriveImageUrl(slot.url, 800, 600),
+        thumbnail: getGoogleDriveImageUrl(slot.url, 150, 150),
+        alt: `${storeInfo.storeName}の${slot.label}`
+      });
+    } else if (slot.type === 'video') {
+      console.log('=== 店舗動画処理デバッグ ===');
+      console.log('店舗動画データ型:', typeof slot.url);
+      console.log('店舗動画データ:', slot.url);
+      
+      // 動画URLの正規化処理
+      let videoUrl = null;
+      
+      if (!slot.url) {
+        console.log('動画データが存在しません');
+      } else if (typeof slot.url === 'string') {
+        // 文字列の場合（従来のGoogle Driveまたはファイルパス）
+        videoUrl = slot.url;
+        console.log('文字列URL:', videoUrl);
+        
+        // 相対パスの場合は絶対パスに変換
+        if (!videoUrl.startsWith('http') && !videoUrl.startsWith('/')) {
+          videoUrl = `/${videoUrl}`;
+        }
+      } else if (typeof slot.url === 'object' && slot.url?.url) {
+        // MicroCMSファイルフィールドの場合
+        videoUrl = slot.url.url;
+        console.log('MicroCMSファイルURL:', videoUrl);
+        console.log('ファイルサイズ:', slot.url.fileSize);
+      }
+      
+      console.log('最終的な動画URL:', videoUrl);
+      
+      if (videoUrl) {
+        // テスト用動画URL（フォールバック用）
+        const testVideoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+        
+        mediaItems.push({
+          type: 'video',
+          url: videoUrl,
+          thumbnail: videoUrl, // 動画URLをサムネイル用にも使用
+          alt: `${storeInfo.storeName}の${slot.label}`,
+          testUrl: testVideoUrl // デバッグ用
+        });
+      } else {
+        console.log('有効な動画URLが見つからないため、プレースホルダーを使用');
+        mediaItems.push({
+          type: 'image',
+          url: placeholderImage,
+          thumbnail: placeholderImage,
+          alt: `${storeInfo.storeName}のプレースホルダー動画`,
+          isPlaceholder: true
+        });
+      }
+    }
+  } else {
+    // 空のスロットにはプレースホルダー画像を使用
+    mediaItems.push({
+      type: 'image',
+      url: placeholderImage,
+      thumbnail: placeholderImage,
+      alt: `${storeInfo.storeName}のプレースホルダー画像${index + 1}`,
+      isPlaceholder: true
+    });
+  }
+});
+
+console.log('メディア項目数:', mediaItems.length);
+console.log('メディア項目詳細:', mediaItems.map(item => ({ type: item.type, hasUrl: !!item.url, hasThumbnail: !!item.thumbnail })));
+
+// 店舗のペットデータを取得（犬猫問わず最大36体をランダム表示）
+const { getLatestPetsByType } = await import('../../lib/api/pets/queries');
+try {
+  const [allDogs, allCats] = await Promise.all([
+    getLatestPetsByType('dog', 50),
+    getLatestPetsByType('cat', 50)
+  ]);
+  
+  // 当該店舗のペットをフィルタリング
+  const storeDogs = allDogs.filter(pet => pet.storeName === storeInfo.storeName);
+  const storeCats = allCats.filter(pet => pet.storeName === storeInfo.storeName);
+  
+  // 犬猫を合わせてランダムソートし、6体を選択
+  const allStorePets = [...storeDogs, ...storeCats];
+  const shuffledStorePets = allStorePets.sort(() => Math.random() - 0.5);
+  var displayStorePets = shuffledStorePets.slice(0, 6);
+} catch (error) {
+  console.error('ペットデータの取得に失敗しました:', error);
+  var displayStorePets = [];
+}
+
+console.log('店舗ペット数:', displayStorePets?.length || 0, '件取得');
+
+// お客様の声データを取得（最大2件を表示）
+let displayVoices = [];
+try {
+  const { getVoices } = await import('../../lib/api/voice');
+  const allVoices = await getVoices(3); // 余裕を持たせて3件取得
+  displayVoices = allVoices.slice(0, 2);
+  console.log('お客様の声データ:', displayVoices.length, '件取得');
+} catch (error) {
+  console.error('お客様の声データの取得に失敗しました:', error);
+  displayVoices = [];
+}
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '店舗一覧', href: '/stores' },
+  { label: `${storeInfo.storeName}` }
+];
+---
+
+<Layout title={`${storeInfo.storeName} | 店舗詳細 | カトレア`}>
+  <main>
+    <!-- パンくずリスト -->
+    <div class="breadcrumb-container">
+      <div class="container">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+    </div>
+    
+    <section class="pet-detail store-detail">
+      <div class="container">
+        <div class="pet-detail__content">
+          <!-- 店舗名 -->
+          <div class="pet-detail__header">
+            <h1 class="pet-detail__title">
+              Cattleya {storeInfo.storeName}
+            </h1>
+          </div>
+
+          <div class="pet-detail__body">
+            <!-- カルーセル -->
+            <div class="pet-detail__carousel">
+              <div class="carousel">
+                <div class="carousel__main">
+                  <button class="carousel__nav carousel__nav--prev" id="prevBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <div class="carousel__container">
+                    {mediaItems.map((item, index) => (
+                      <div 
+                        class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
+                        data-index={index}
+                      >
+                        {item.type === 'image' ? (
+                          <img 
+                            src={item.url}
+                            alt={item.alt}
+                            class="carousel__image"
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                            onload="this.style.opacity='1'"
+                            style="opacity: 0; transition: opacity 0.3s ease;"
+                          />
+                        ) : (
+                          <div class="carousel__video-container">
+                            <video
+                              src={item.url}
+                              class="carousel__video"
+                              preload="metadata"
+                              muted
+                              playsinline
+                              data-video-player="true"
+                              poster={item.thumbnail}
+                            >
+                              <source src={item.url} type="video/mp4">
+                              <p>お使いのブラウザは動画再生に対応していません。</p>
+                            </video>
+                            <div class="carousel__video-overlay" data-video-overlay="true">
+                              <button class="carousel__video-play-btn" data-video-play="true">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+                                  <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                                </svg>
+                              </button>
+                            </div>
+                            <div class="carousel__video-fallback" style="display: none;">
+                              <p>動画の読み込みに失敗しました</p>
+                              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                                動画ファイルを直接開く
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button class="carousel__nav carousel__nav--next" id="nextBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- サムネイル -->
+                <div class="carousel__thumbnails">
+                  {mediaItems.map((item, index) => (
+                    <button 
+                      class={`carousel__thumbnail ${index === 0 ? 'carousel__thumbnail--active' : ''}`}
+                      data-index={index}
+                    >
+                      {item.type === 'image' ? (
+                        <img 
+                          src={item.thumbnail}
+                          alt={item.alt}
+                          class="carousel__thumbnail-image"
+                        />
+                      ) : (
+                        <div class="carousel__thumbnail-video">
+                          <video 
+                            src={item.thumbnail}
+                            class="carousel__thumbnail-video-element"
+                            muted
+                            preload="metadata"
+                            data-video-thumbnail="true"
+                          ></video>
+                          <div class="carousel__thumbnail-play-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                              <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- サイドバー（店舗情報） -->
+            <div class="pet-detail__sidebar">
+              <!-- タイトル（lg以上で表示） -->
+              <div class="pet-detail__sidebar-title">
+                <h1 class="pet-detail__title">
+                  Cattleya {storeInfo.storeName}
+                </h1>
+              </div>
+
+              <!-- 店舗情報 -->
+              <div class="pet-detail__info">
+                <div class="pet-info store-info">
+                  <div class="pet-info__item">
+                    <dt class="pet-info__label">住所</dt>
+                    <dd class="pet-info__value">
+                      {storeInfo.storePostCode && `〒${storeInfo.storePostCode}`}
+                      {storeInfo.storeAddress && (
+                        <div>{storeInfo.storeAddress}</div>
+                      )}
+                      {storeInfo.trafficInformation && (
+                        <div class="traffic-info">{storeInfo.trafficInformation}</div>
+                      )}
+                    </dd>
+                  </div>
+                  
+                  {storeInfo.businessHours && (
+                    <div class="pet-info__item">
+                      <dt class="pet-info__label">営業時間</dt>
+                      <dd class="pet-info__value business-hours">{storeInfo.businessHours}</dd>
+                    </div>
+                  )}
+                  
+                  {storeInfo.storePhoneNumber && (
+                    <div class="pet-info__item">
+                      <dt class="pet-info__label">電話番号</dt>
+                      <dd class="pet-info__value">
+                        <a href={`tel:${storeInfo.storePhoneNumber.replace(/[^0-9]/g, '')}`} class="phone-link">
+                          {storeInfo.storePhoneNumber}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                  
+                  {storeInfo.storeLine && (
+                    <div class="pet-info__item pet-info__item--line">
+                      <dt class="pet-info__label">店舗LINE</dt>
+                      <dd class="pet-info__value">
+                        <a 
+                          href={`https://lin.ee/${storeInfo.storeLine}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="line-button"
+                        >
+                          <span class="line-button__line"></span>
+                          <span class="line-button__text">{storeInfo.storeName}LINE</span>
+                          <span class="line-button__icon">
+                            <img src="/src/assets/icons/icon_line-01.svg" alt="LINE" />
+                          </span>
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Googleマップ -->
+          {storeInfo.storeMapHtml && (
+            <div class="pet-detail__map">
+              <div class="map-container" set:html={storeInfo.storeMapHtml}></div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    {displayStorePets.length === 0 && (
+      <section class="no-pets-section">
+        <div class="container">
+          <div class="no-pets-message">
+            <p>この店舗には現在、表示できるペットがいません。</p>
+            <p>最新情報については直接店舗にお問い合わせください。</p>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 関連コンテンツセクション -->
+    <section class="related-content-section">
+      <div class="container">
+        <!-- ワンちゃん・ネコちゃんに会いたいボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">ワンちゃん・ネコちゃんに<br class="mobile-break">会いたい</h2>
+          <div class="content-box__buttons">
+            <a href="/flow" class="bg-button bg-button--flow">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">お迎えまでの流れ</span>
+              </div>
+            </a>
+            <a href="/reserve" class="bg-button bg-button--reserve">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">来店予約をする</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- 店舗のDogs&Catsセクション -->
+        <div class="content-box">
+          <h2 class="content-box__title">{storeInfo.storeName}のDogs&Cats</h2>
+          <div class="pets-grid">
+            {displayStorePets.map((storePet, index) => (
+              <div class="pet-card" data-animal-type={storePet.animalType}>
+                <a href={`/search/${storePet.animalType === 'dog' ? 'dogs' : 'cats'}/${encodeURIComponent(storePet.breedTypeEn?.toLowerCase() || '')}/${storePet.id}`} class="pet-card__link">
+                  <div class="pet-card__inner">
+                    <div class="pet-card__image-container">
+                      <img
+                        class="pet-card__image"
+                        src={getGoogleDriveImageUrl(storePet.imageUrl01, 600, 600)}
+                        alt={`${storePet.breedTypeJa}の写真`}
+                        loading="lazy"
+                        width="600"
+                        height="600"
+                        onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'" 
+                        onload="this.style.opacity='1'"
+                        style="opacity: 0; transition: opacity 0.3s ease;"
+                      />
+                    </div>
+                    <div class="pet-card__info">
+                      <h3 class="pet-card__title">
+                        {storePet.breedTypeJa}
+                        {storePet.gender === '男の子' && (
+                          <span 
+                            class="pet-card__gender male" 
+                            set:html={MaleIcon}
+                          />
+                        )}
+                        {storePet.gender === '女の子' && (
+                          <span 
+                            class="pet-card__gender female" 
+                            set:html={FemaleIcon}
+                          />
+                        )}
+                      </h3>
+                      <div class="pet-card__details">
+                        <p class="pet-card__detail-item">色：{storePet.color}</p>
+                        <p class="pet-card__detail-item">誕生日：{formatDate(storePet.birthday)}</p>
+                        <p class="pet-card__detail-item">店舗：{storePet.storeName}</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- お客様の声セクション -->
+        <div class="content-box voice-content-box">
+          <h2 class="content-box__title">お客様の声</h2>
+          <div class="voice-grid">
+            {displayVoices.map((voice, index) => (
+              <div class={`voice-card-wrapper ${index >= 1 ? 'voice-card--sm-only' : ''}`}>
+                <VoiceCard
+                  petName={voice.petName}
+                  petGender={voice.petGender}
+                  petThumbnail={voice.petThumbnail}
+                  ownerName={voice.ownerName}
+                  animalType={voice.animalType}
+                  store={voice.store}
+                  voiceContent={voice.voiceContent}
+                  class="voice-card--compact"
+                />
+              </div>
+            ))}
+          </div>
+          <ButtonWrapper>
+            <BaseButton href="/voice" text="もっとみる" variant="short" />
+          </ButtonWrapper>
+        </div>
+
+        <!-- カトレアの安心セクション -->
+        <div class="content-box relief-content-box">
+          <h2 class="content-box__title">カトレアの安心</h2>
+          <div class="relief-section-inner">
+            <div class="relief-img-wrap">
+              <img src="/src/assets/images/content/img_relief-main-01.webp" alt="カトレアの安心" class="relief-img" loading="lazy" />
+            </div>
+            
+            <div class="relief-content">
+              <p class="relief-desc">カトレアでは、専門獣医師による徹底した健康管理や、万が一の事態に備えた保証、そしてお迎え後も続くサポートを通じて、ペットとお客様が安心して過ごせる環境を提供しています。<br>健康状態の詳細な情報提供や、清潔な環境での飼育も心がけています。<br><br>ペットと家族が一生涯安心して一緒に過ごせるよう、全てのプロセスでサポートを続けています。</p>
+              <ButtonWrapper>
+                <BaseButton href="/relief" text="詳しくみる" variant="short" />
+              </ButtonWrapper>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- バナーセクション -->
+    <BannerSection />
+
+    <!-- お問い合わせCTAセクション -->
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<script define:vars={{ mediaItemsCount: mediaItems.length }}>
+  let currentSlide = 0;
+  
+  const slides = document.querySelectorAll('.carousel__slide');
+  const thumbnails = document.querySelectorAll('.carousel__thumbnail');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  // 動画初期化とエラーハンドリング
+  function initializeVideos() {
+    // メインカルーセルの動画
+    document.querySelectorAll('[data-video-player="true"]').forEach(video => {
+      const container = video.closest('.carousel__video-container');
+      const overlay = container?.querySelector('[data-video-overlay="true"]');
+      const playButton = container?.querySelector('[data-video-play="true"]');
+      
+      if (!container || !overlay || !playButton) return;
+      
+      // 動画エラーハンドリング
+      video.addEventListener('error', (e) => {
+        console.error('動画の読み込みに失敗しました:', video.src);
+        console.error('エラー詳細:', e);
+        console.error('Video error code:', video.error?.code);
+        console.error('Video error message:', video.error?.message);
+        
+        // テスト動画URLでのフォールバック試行
+        const slide = video.closest('.carousel__slide');
+        const slideIndex = slide?.dataset.index;
+        if (slideIndex && !video.hasAttribute('data-fallback-tried')) {
+          console.log('テスト動画でフォールバック試行');
+          video.setAttribute('data-fallback-tried', 'true');
+          video.src = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+          video.load();
+          return;
+        }
+        
+        const fallback = container.querySelector('.carousel__video-fallback');
+        if (fallback) {
+          video.style.display = 'none';
+          overlay.style.display = 'none';
+          fallback.style.display = 'block';
+        }
+      });
+      
+      // 動画読み込み完了時の処理
+      video.addEventListener('loadedmetadata', () => {
+        console.log('動画メタデータの読み込み完了:', video.src);
+        overlay.style.display = 'flex'; // オーバーレイを表示
+      });
+      
+      video.addEventListener('canplay', () => {
+        console.log('動画再生可能:', video.src);
+      });
+      
+      // 再生ボタンクリック時の処理
+      playButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (video.paused) {
+          video.play().then(() => {
+            overlay.style.display = 'none'; // 再生開始時にオーバーレイを非表示
+          }).catch(error => {
+            console.error('動画再生エラー:', error);
+          });
+        }
+      });
+      
+      // 動画再生終了時の処理
+      video.addEventListener('ended', () => {
+        overlay.style.display = 'flex'; // 再生終了時にオーバーレイを再表示
+        video.currentTime = 0; // 先頭に戻す
+      });
+      
+      // 動画一時停止時の処理
+      video.addEventListener('pause', () => {
+        if (!video.ended) {
+          overlay.style.display = 'flex'; // 一時停止時にオーバーレイを表示
+        }
+      });
+      
+      // 動画クリック時の再生/一時停止切り替え
+      video.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (video.paused) {
+          playButton.click();
+        } else {
+          video.pause();
+        }
+      });
+    });
+    
+    // サムネイル動画の初期化
+    document.querySelectorAll('[data-video-thumbnail="true"]').forEach(thumbnailVideo => {
+      thumbnailVideo.addEventListener('loadeddata', () => {
+        // 最初のフレームで停止
+        thumbnailVideo.currentTime = 0.1;
+        console.log('サムネイル動画初期化完了:', thumbnailVideo.src);
+      });
+      
+      thumbnailVideo.addEventListener('error', () => {
+        console.error('サムネイル動画の読み込みに失敗:', thumbnailVideo.src);
+        // エラー時はプレースホルダー画像を表示
+        const container = thumbnailVideo.closest('.carousel__thumbnail-video');
+        if (container) {
+          thumbnailVideo.style.display = 'none';
+          container.style.backgroundColor = '#f0f0f0';
+        }
+      });
+      
+      // サムネイル動画の再生を防ぐ
+      thumbnailVideo.addEventListener('play', (e) => {
+        e.preventDefault();
+        thumbnailVideo.pause();
+      });
+    });
+  }
+  
+  // ページ読み込み完了後に初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeVideos);
+  } else {
+    initializeVideos();
+  }
+
+  function showSlide(index) {
+    // 現在のスライドの動画を停止
+    const currentActiveSlide = document.querySelector('.carousel__slide--active');
+    if (currentActiveSlide) {
+      const currentVideo = currentActiveSlide.querySelector('[data-video-player="true"]');
+      const currentOverlay = currentActiveSlide.querySelector('[data-video-overlay="true"]');
+      
+      if (currentVideo && currentVideo.tagName === 'VIDEO') {
+        currentVideo.pause();
+        currentVideo.currentTime = 0;
+        
+        // オーバーレイを再表示
+        if (currentOverlay) {
+          currentOverlay.style.display = 'flex';
+        }
+      }
+    }
+    
+    // スライドを切り替え
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('carousel__slide--active', i === index);
+    });
+
+    // サムネイルを切り替え
+    thumbnails.forEach((thumb, i) => {
+      thumb.classList.toggle('carousel__thumbnail--active', i === index);
+    });
+
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % mediaItemsCount;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
+    showSlide(prev);
+  }
+
+  // イベントリスナー
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+  // サムネイルクリック
+  thumbnails.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => showSlide(index));
+  });
+
+  // キーボードナビゲーション
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
+  });
+  
+  // Googleマップのiframeサイズを強制調整
+  function adjustMapSize() {
+    const mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      const iframe = mapContainer.querySelector('iframe');
+      if (iframe) {
+        iframe.style.width = '100%';
+        iframe.style.height = '360px';
+        iframe.style.maxWidth = '100%';
+        iframe.style.maxHeight = '360px';
+        iframe.style.minWidth = '100%';
+        iframe.style.minHeight = '360px';
+        iframe.style.border = 'none';
+        iframe.style.display = 'block';
+        
+        // width/height属性も設定
+        iframe.setAttribute('width', '100%');
+        iframe.setAttribute('height', '360');
+      }
+    }
+  }
+  
+  // ページ読み込み完了後とタイマーで実行
+  setTimeout(adjustMapSize, 100);
+  setTimeout(adjustMapSize, 500);
+  setTimeout(adjustMapSize, 1000);
+  
+  // モバイル用タッチスワイプサポート
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  const carouselContainer = document.querySelector('.carousel__container');
+  if (carouselContainer) {
+    carouselContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    carouselContainer.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+    
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const swipeDistance = touchStartX - touchEndX;
+      
+      if (Math.abs(swipeDistance) > swipeThreshold) {
+        if (swipeDistance > 0) {
+          nextSlide(); // 左スワイプで次のスライド
+        } else {
+          prevSlide(); // 右スワイプで前のスライド
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/tokens/typography' as *;
+
+  .store-detail .pet-info__value .traffic-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+  
+  .phone-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .phone-link:hover {
+    text-decoration: underline;
+  }
+  
+  .business-hours {
+    white-space: pre-line;
+  }
+  
+  /* LINEボタン専用スタイル（BaseButton shortデザイン準拠） */
+  .line-button {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #00C300;
+    border-radius: 4px;
+    padding: rem(30) rem(75) rem(30) rem(55);
+    text-decoration: none;
+    color: #00C300;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    min-width: rem(230);
+    background-color: #fff;
+    
+    &:hover {
+      text-decoration: none;
+      
+      .line-button__line {
+        transform: translateX(rem(15));
+      }
+    }
+  }
+  
+  .line-button__line {
+    position: absolute;
+    left: rem(-30);
+    width: rem(40);
+    height: 1px;
+    background-color: #00C300;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  .line-button__text {
+    @include typography-ja-s($font-weight-semibold);
+    color: #00C300;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+  }
+  
+  .line-button__icon {
+    position: absolute;
+    right: rem(30);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(20);
+    height: rem(20);
+    
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  /* 店舗LINE項目のモバイル専用レイアウト */
+  .pet-info__item--line {
+    flex-direction: column;
+    gap: rem(30);
+    padding-bottom: rem(20);
+    
+    @include breakpoint-up(sm) {
+      flex-direction: row;
+      gap: initial;
+    }
+    
+    .pet-info__label {
+      align-self: flex-start;
+      
+      @include breakpoint-up(sm) {
+        align-self: initial;
+      }
+    }
+    
+    .pet-info__value {
+      display: flex;
+      justify-content: center;
+      
+      @include breakpoint-up(sm) {
+        display: initial;
+        justify-content: initial;
+      }
+    }
+  }
+  
+  /* Googleマップ */
+  .pet-detail__map {
+    width: 100%;
+    margin-top: rem(40);
+    
+    @include breakpoint-up(sm) {
+      margin-top: rem(60);
+    }
+  }
+  
+  .map-container {
+    width: 100%;
+    height: rem(360);
+    border-radius: rem(8);
+    overflow: hidden;
+    
+    > iframe {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: rem(360) !important;
+      min-width: 100% !important;
+      min-height: rem(360) !important;
+      border: none !important;
+      display: block !important;
+    }
+  }
+  
+  /* より強力なセレクタでiframeを対象 */
+  .pet-detail__map .map-container iframe {
+    width: 100% !important;
+    height: rem(360) !important;
+    max-width: 100% !important;
+    max-height: rem(360) !important;
+    min-width: 100% !important;
+    min-height: rem(360) !important;
+    border: none !important;
+    display: block !important;
+  }
+  
+  /* モバイル専用改行 */
+  .mobile-break {
+    @include breakpoint-up(sm) {
+      display: none;
+    }
+  }
+  
+  .carousel__video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .carousel__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  
+  .carousel__video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .carousel__video-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    
+    @include breakpoint-up(sm) {
+      width: 80px;
+      height: 80px;
+    }
+  }
+  
+  .carousel__video-play-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .carousel__video-play-btn svg {
+    margin-left: 4px;
+    width: 24px;
+    height: 24px;
+    
+    @include breakpoint-up(sm) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+  
+  .carousel__thumbnail-video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none; /* サムネイル動画はクリック不可 */
+  }
+  
+  .carousel__video-fallback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .carousel__video-fallback a {
+    color: #00C300;
+    text-decoration: none;
+  }
+  
+  .carousel__video-fallback a:hover {
+    text-decoration: underline;
+  }
+  
+  /* No pets section */
+  .no-pets-section {
+    padding: rem(40) 0;
+    background: #f8f7f5;
+    
+    @include breakpoint-up(sm) {
+      padding: rem(60) 0;
+    }
+  }
+  
+  .no-pets-message {
+    text-align: center;
+    max-width: rem(600);
+    margin: 0 auto;
+    padding: rem(20);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    @include breakpoint-up(sm) {
+      padding: rem(40);
+    }
+  }
+  
+  .no-pets-message p {
+    margin: 0 0 rem(16) 0;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .no-pets-message p:last-child {
+    margin: 0;
+  }
+  
+  /* Loading animation for images */
+  .carousel__image,
+  .pet-card__image {
+    transition: opacity 0.3s ease;
+  }
+  
+  .carousel__image[style*="opacity: 0"],
+  .pet-card__image[style*="opacity: 0"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+  
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+</style>
+</Layout>

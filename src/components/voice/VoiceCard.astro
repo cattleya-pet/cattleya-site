@@ -2,6 +2,7 @@
 import './VoiceCard.scss';
 
 interface Props {
+  id: string;
   petName: string;
   petGender: string;
   petThumbnail: string;
@@ -11,17 +12,17 @@ interface Props {
   voiceContent: string;
   class?: string;
 }
-const { petName, petGender, petThumbnail = '', ownerName, animalType, store = '', voiceContent, class: className = '' } = Astro.props;
+const { id, petName, petGender, petThumbnail = '', ownerName, animalType, store = '', voiceContent, class: className = '' } = Astro.props;
 
 function truncateText(text: string, max: number) {
   return text.length > max ? text.slice(0, max) + '...' : text;
 }
-// public配下のnoimage.webpを参照
+// assets配下の画像を参照
 const thumbnail = typeof petThumbnail === 'object' && petThumbnail !== null
   ? petThumbnail.url
-  : (petThumbnail ? petThumbnail : '/noimage.webp');
+  : (petThumbnail ? petThumbnail : '/src/assets/images/ui/img_loading-pet-image-01.webp');
 ---
-<div class={`voice-card ${className}`}>
+<a href={`/voice/${id}`} class={`voice-card ${className}`}>
   <div class="voice-card-img-wrap">
     <img src={thumbnail} alt={petName} class="voice-card-img" loading="lazy" />
   </div>
@@ -42,6 +43,6 @@ const thumbnail = typeof petThumbnail === 'object' && petThumbnail !== null
           : store || ''
       }</div>
     </div>
-    <div class="voice-card-content">{truncateText(voiceContent.replace(/<[^>]+>/g, ''), 40)}</div>
+    <div class="voice-card-content">{truncateText((voiceContent || '').replace(/<[^>]+>/g, ''), 40)}</div>
   </div>
-</div> 
+</a> 

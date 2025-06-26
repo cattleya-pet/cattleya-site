@@ -1,0 +1,32 @@
+---
+interface TableRow {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  data: TableRow[];
+  class?: string;
+}
+
+const { data, class: className = '' } = Astro.props;
+---
+
+<div class={`data-table-wrapper ${className}`}>
+  <table class="data-table">
+    {data.map((row, index) => (
+      <tr class="data-table-row">
+        <td class={`data-table-label ${index === 0 ? 'data-table-label--first' : ''} ${index === data.length - 1 ? 'data-table-label--last' : ''}`}>
+          <Fragment set:html={row.label} />
+        </td>
+        <td class={`data-table-value ${index === 0 ? 'data-table-value--first' : ''} ${index === data.length - 1 ? 'data-table-value--last' : ''}`}>
+          <Fragment set:html={row.value} />
+        </td>
+      </tr>
+    ))}
+  </table>
+</div>
+
+<style lang="scss">
+@use '../../styles/components/DataTable.scss';
+</style>

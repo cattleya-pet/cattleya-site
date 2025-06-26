@@ -37,3 +37,23 @@ export async function getStoreById(id: string): Promise<Store | null> {
     return null;
   }
 }
+
+/**
+ * 特定のstoreIdの店舗情報を取得する
+ */
+export async function getStoreByStoreId(storeId: string): Promise<Store | null> {
+  try {
+    const response = await client.get<StoreListResponse>({
+      endpoint: API_ENDPOINTS.STORES,
+      queries: {
+        filters: `storeId[equals]${storeId}`,
+        limit: 1
+      }
+    });
+    
+    return response.contents.length > 0 ? response.contents[0] : null;
+  } catch (error) {
+    console.error(`storeId: ${storeId}の店舗情報の取得に失敗しました:`, error);
+    return null;
+  }
+}

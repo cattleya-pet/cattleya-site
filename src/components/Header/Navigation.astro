@@ -54,9 +54,9 @@ const mainMenuItems = [
   { title: 'カトレアの安心', href: siteConfig.links.about },
   { title: 'ホームステイ', href: '/homestay' },
   { title: '完成予約', href: '/reservation' },
-  { title: 'お迎えまでの流れ', href: '/process' },
+  { title: 'お迎えまでの流れ', href: '/flow' },
   { title: '会社情報', href: siteConfig.links.company },
-  { title: 'お客様の声', href: '/reviews' }
+  { title: 'お客様の声', href: '/voice' }
 ];
 
 // モバイルとデスクトップで表示するメニュー項目を分離
@@ -178,7 +178,7 @@ const mobileTopItems = [
             {stores.map((store) => (
               <li>
                 <a 
-                  href={`/stores/${store.id}`}
+                  href={`/stores/${store.storeId}`}
                   class="menu-item store-item"
                 >
                   {store.storeName}

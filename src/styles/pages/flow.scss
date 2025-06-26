@@ -1,0 +1,78 @@
+@use '../mixins' as *;
+@use '../tokens/_colors' as *;
+@use '../tokens/_typography' as *;
+
+// ヒーローセクション
+.hero-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-background {
+  width: 100%;
+  height: rem(220);
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    height: rem(360);
+  }
+  
+  @include breakpoint-up(lg) {
+    height: rem(440);
+  }
+}
+
+.hero-background__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-content {
+  position: relative;
+  background-color: $color-background-primary;
+  margin-top: rem(-40);
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(-60);
+  }
+}
+
+.hero-content__semicircle {
+  width: 100%;
+  height: rem(40);
+  background-color: $color-background-primary;
+  border-radius: rem(40) rem(40) 0 0;
+  
+  @include breakpoint-up(sm) {
+    height: rem(60);
+    border-radius: rem(60) rem(60) 0 0;
+  }
+}
+
+.hero-content__inner {
+  padding: rem(20) 0 rem(40);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30) 0 rem(60);
+  }
+}
+
+.hero-title {
+  @include typography-ja-l($font-weight-semibold);
+  text-align: center;
+  color: $color-text-primary;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-2l($font-weight-semibold);
+    margin-bottom: rem(30);
+  }
+}
+
+.hero-breadcrumb {
+  display: flex;
+  justify-content: center;
+}

@@ -1,0 +1,54 @@
+@use '../mixins' as *;
+@use '../tokens/_colors' as *;
+@use '../tokens/_typography' as *;
+
+.voice-detail {
+  padding: rem(40) 0 rem(60);
+  background-color: $color-background-primary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(60) 0 rem(80);
+  }
+}
+
+.voice-detail__container {
+  @include container;
+}
+
+.voice-detail__header {
+  text-align: center;
+  margin-bottom: rem(40);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+}
+
+.voice-detail__title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-2l($font-weight-semibold);
+  }
+}
+
+.voice-detail__meta {
+  @include typography-ja-s;
+  color: $color-text-secondary;
+}
+
+.voice-detail__content {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  
+  p {
+    margin-bottom: rem(20);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

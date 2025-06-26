@@ -9,6 +9,7 @@ interface Props extends Store {}
 
 const { 
   id,
+  storeId,
   storeName,
   storeImages,
   storePostCode,
@@ -27,7 +28,7 @@ const storeImage = storeImages && storeImages.length > 0
 const fullAddress = `${storePostCode ? `〒${storePostCode} ` : ''}${storeAddress || ''}`;
 
 // 店舗詳細ページのURL
-const storeDetailUrl = `/store/${id}`;
+const storeDetailUrl = `/stores/${storeId}`;
 ---
 
 <a href={storeDetailUrl} class="store-card">
