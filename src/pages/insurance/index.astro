@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import '../../styles/pages/insurance.scss';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'ペット保険' }
+];
+---
+
+<Layout title="ペット保険 | カトレア" description="カトレアのペット保険についてご紹介します。">
+  <main>
+    <HeroSection 
+      title="ペット保険"
+      image="/src/assets/images/backgrounds/img_bg-hero_insurance-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- ペット保険取り扱いセクション -->
+    <section class="insurance-content-section">
+      <div class="container">
+        <h2 class="section-title">
+          カトレアで取り扱う<br class="sm-down-only">ペット保険
+        </h2>
+        
+        <div class="insurance-description">
+          <p>
+            家族の一員である、ワンちゃん・ネコちゃんが安心して過ごせるように、万一のケガや病気に備えて、当社ではペット保険をご用意しています。カトレアでは、お客様のニーズに合わせて選べる2つのペット保険をご用意しています。
+          </p>
+        </div>
+
+        <div class="insurance-banners">
+          <a href="#" class="insurance-banner">
+            <img src="/src/assets/images/banners/banner_insurance_outlink-01.webp" alt="ペット保険1" class="insurance-banner__image" />
+          </a>
+          <a href="#" class="insurance-banner">
+            <img src="/src/assets/images/banners/banner_insurance_outlink-02.webp" alt="ペット保険2" class="insurance-banner__image" />
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>

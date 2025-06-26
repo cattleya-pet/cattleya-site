@@ -166,3 +166,68 @@ p {
 .text-new { color: $color-text-new; }
 .text-brand-primary { color: $color-brand-primary; }
 .text-brand-secondary { color: $color-brand-secondary; }
+
+/* レスポンシブ改行制御クラス */
+/* sm未満でのみ表示 */
+.sm-down-only {
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+/* sm以降でのみ表示 */
+.sm-up-only {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: inline;
+  }
+}
+
+/* md未満でのみ表示 */
+.md-down-only {
+  @include breakpoint-up(md) {
+    display: none;
+  }
+}
+
+/* md以降でのみ表示 */
+.md-up-only {
+  display: none;
+  
+  @include breakpoint-up(md) {
+    display: inline;
+  }
+}
+
+/* lg未満でのみ表示 */
+.lg-down-only {
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+/* lg以降でのみ表示 */
+.lg-up-only {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: inline;
+  }
+}
+
+/* xl未満でのみ表示 */
+.xl-down-only {
+  @include breakpoint-up(xl) {
+    display: none;
+  }
+}
+
+/* xl以降でのみ表示 */
+.xl-up-only {
+  display: none;
+  
+  @include breakpoint-up(xl) {
+    display: inline;
+  }
+}
