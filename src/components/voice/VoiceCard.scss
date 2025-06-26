@@ -17,18 +17,23 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   margin: rem(30) 0;
+  text-decoration: none;
+  color: inherit;
   
   @include breakpoint-up(lg) {
     flex-direction: row;
     // align-items: stretch;
     padding: rem(30);
-    gap: rem(50);
-    width: auto;
+    gap: rem(30);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
   
   &:hover {
     transform: translateY(rem(-6));
     box-shadow: 0 8px 24px -2px rgba(0,0,0,0.12);
+    text-decoration: none;
     
     .voice-card-img {
       transform: scale(1.05);
@@ -94,7 +99,7 @@
   overflow: hidden;
   
   @include breakpoint-up(lg) {
-    width: rem(210);
+    width: rem(150);
     flex: 0 0 auto;
     align-self: flex-start;
   }
@@ -116,7 +121,8 @@
   align-items: flex-start;
   min-width: 0;
   @include breakpoint-up(lg) {
-    min-width: rem(210);
+    min-width: 0;
+    flex: 1;
   }
   @include breakpoint-up(xl) {
     min-width: rem(270);
@@ -157,14 +163,17 @@
 .voice-card-meta-label {
   @include typography-ja-2s();
   text-align: left;
+  color: $color-text-primary;
 }
 .voice-card-meta-value {
   @include typography-ja-s();
   text-align: left;
+  color: $color-text-primary;
 }
 .voice-card-content {
   @include typography-ja-s();
   word-break: break-all;
+  color: $color-text-primary;
 }
 
  

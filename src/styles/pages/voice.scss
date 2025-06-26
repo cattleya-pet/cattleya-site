@@ -24,6 +24,12 @@
     align-items: stretch;
   }
   
+  @include breakpoint-up(lg) {
+    max-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: rem(30);
+  }
+  
   @include breakpoint-up(xl) {
     grid-template-columns: repeat(2, minmax(auto, rem(676)));
     justify-content: center;
@@ -36,5 +42,12 @@
   
   @include breakpoint-up(sm) {
     height: 100%;
+  }
+  
+  @include breakpoint-up(lg) {
+    .voice-card {
+      max-width: 100%;
+      width: 100%;
+    }
   }
 }
