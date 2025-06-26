@@ -53,7 +53,9 @@ const breadcrumbItems = [
       
       <!-- ページタイトルエリア -->
       <div class="hero-content">
-        <div class="hero-content__semicircle"></div>
+        <div class="hero-content__semicircle">
+          <div class="hero-content__circle"></div>
+        </div>
         <div class="container">
           <div class="hero-content__inner">
             <h1 class="hero-title">お迎えまでの流れ</h1>
@@ -110,6 +112,7 @@ const breadcrumbItems = [
       <!-- ステップ1（奇数・bg-tertiary） -->
       <div class="flow-step flow-step--odd" id="step1">
         <div class="flow-step__content">
+          <div class="flow-step__background">
             <div class="flow-step__header">
               <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">1</span></div>
               <h3 class="flow-step__title">気になった子を電話・LINE・メールでお問い合わせ</h3>
@@ -184,6 +187,7 @@ const breadcrumbItems = [
                 <p>ご購入が確定していれば、お振込み(ペット価格の10%)でご売約ができます。入金日から1週間お預かりができます。</p>
               </div>
             </div>
+          </div>
         </div>
       </div>
 
@@ -195,6 +199,7 @@ const breadcrumbItems = [
       <!-- ステップ2（偶数・bg-secondary） -->
       <div class="flow-step flow-step--even" id="step2">
         <div class="flow-step__content">
+          <div class="flow-step__background">
             <div class="flow-step__header">
               <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">2</span></div>
               <h3 class="flow-step__title">ご来店＆ご対面</h3>
@@ -244,6 +249,7 @@ const breadcrumbItems = [
       <!-- ステップ3（奇数・bg-tertiary） -->
       <div class="flow-step flow-step--odd">
         <div class="flow-step__content">
+          <div class="flow-step__background">
             <div class="flow-step__header">
               <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">3</span></div>
               <h3 class="flow-step__title">ご契約＆お支払い</h3>
@@ -316,6 +322,7 @@ const breadcrumbItems = [
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
 
@@ -327,6 +334,7 @@ const breadcrumbItems = [
       <!-- ステップ4（偶数・bg-secondary） -->
       <div class="flow-step flow-step--even">
         <div class="flow-step__content">
+          <div class="flow-step__background">
             <div class="flow-step__header">
               <div class="flow-step__number"><span class="flow-step__step">Step</span><span class="flow-step__digit">4</span></div>
               <h3 class="flow-step__title">アフターサポート</h3>
@@ -343,6 +351,7 @@ const breadcrumbItems = [
                 <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even" />
               </div>
             </div>
+          </div>
         </div>
       </div>
 
@@ -355,9 +364,9 @@ const breadcrumbItems = [
         <!-- お問い合わせボックス -->
         <div class="content-box">
           <h2 class="content-box__title">お問い合わせ</h2>
-          <div class="contact-buttons-grid">
+          <div class="contact-buttons-wrapper">
             {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
-              <>
+              <div class="store-contact-group">
                 <!-- 電話ボタン -->
                 <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
                   <span class="contact-button__line"></span>
@@ -376,7 +385,7 @@ const breadcrumbItems = [
                   </div>
                   <img src={lineIcon.src} alt="" class="contact-button__icon" />
                 </a>
-              </>
+              </div>
             ))}
           </div>
         </div>
