@@ -15,11 +15,11 @@ const { data, class: className = '' } = Astro.props;
 <div class={`data-table-wrapper ${className}`}>
   <table class="data-table">
     {data.map((row, index) => (
-      <tr class="data-table-row">
-        <td class={`data-table-label ${index === 0 ? 'data-table-label--first' : ''} ${index === data.length - 1 ? 'data-table-label--last' : ''}`}>
+      <tr class="data-table__row">
+        <td class="data-table__label">
           <Fragment set:html={row.label} />
         </td>
-        <td class={`data-table-value ${index === 0 ? 'data-table-value--first' : ''} ${index === data.length - 1 ? 'data-table-value--last' : ''}`}>
+        <td class="data-table__value">
           <Fragment set:html={row.value} />
         </td>
       </tr>

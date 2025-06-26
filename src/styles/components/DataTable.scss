@@ -1,47 +1,85 @@
 @use '../tokens/_typography' as *;
 @use '../tokens/_colors' as *;
+@use '../tokens/_radius' as *;
 @use '../mixins' as *;
 
 .data-table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: $color-background-primary;
+  border-collapse: separate;
+  border-spacing: rem(3);
+  background-color: transparent;
   
-  @include breakpoint-up(sm) {
-    // タブレット以上のスタイル
+  @include breakpoint-up(lg) {
+    max-width: rem(900);
+    margin: rem(40) auto 0;
   }
 }
 
 .data-table__row {
-  border-bottom: 1px solid $color-border-secondary;
+  &:first-child {
+    .data-table__label {
+      border-top-left-radius: $radius-s;
+    }
+    .data-table__value {
+      border-top-right-radius: $radius-s;
+    }
+  }
   
   &:last-child {
-    border-bottom: none;
+    .data-table__label {
+      border-bottom-left-radius: $radius-s;
+    }
+    .data-table__value {
+      border-bottom-right-radius: $radius-s;
+    }
   }
 }
 
 .data-table__label {
-  @include typography-ja-s($font-weight-semibold);
+  @include typography-ja-s;
   color: $color-text-primary;
-  padding: rem(15) rem(20);
-  background-color: $color-background-secondary;
+  padding: rem(10);
+  background-color: rgba($color-background-select, 0.1);
   vertical-align: top;
-  width: 30%;
   
   @include breakpoint-up(sm) {
-    width: 25%;
-    padding: rem(20) rem(30);
+    padding: rem(20) rem(20) rem(20) rem(10);
+  }
+  
+  @include breakpoint-up(md) {
+    max-width: rem(150);
   }
 }
 
 .data-table__value {
   @include typography-ja-s;
   color: $color-text-primary;
-  padding: rem(15) rem(20);
-  background-color: $color-background-primary;
+  padding: rem(10);
+  background-color: rgba($color-background-secondary, 0.4);
   vertical-align: top;
+  line-height: 1.8;
+  width: calc(100% - rem(150));
   
   @include breakpoint-up(sm) {
-    padding: rem(20) rem(30);
+    padding: rem(20) rem(20) rem(20) rem(10);
+  }
+  
+  // 改行タグの処理
+  br {
+    &.sm-down-only {
+      @include breakpoint-up(sm) {
+        display: none;
+      }
+    }
+    
+    &.sm-up-only {
+      display: none;
+      
+      @include breakpoint-up(sm) {
+        display: block;
+      }
+    }
   }
 }
+
+// ボーダーは削除（個別セルに角丸を適用）
