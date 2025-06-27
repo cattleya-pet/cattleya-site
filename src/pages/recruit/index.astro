@@ -1,0 +1,208 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import { Image } from 'astro:assets';
+import logoImage from '../../assets/logos/logo_main-color.svg';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '採用情報' }
+];
+---
+
+<Layout title="採用情報 | カトレア" description="カトレアの採用情報をご紹介します。一緒にペットと飼い主様の幸せを届けるお仕事をしませんか。">
+  <main>
+    <HeroSection 
+      title="採用情報"
+      image="/src/assets/images/backgrounds/img_bg-hero_recruit-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- 採用メインセクション -->
+    <section class="recruit-section">
+      <div class="recruit-container">
+        <div class="recruit-main">
+          <!-- セクションラベル -->
+          <div class="recruit-label">
+            <Image src={logoImage} alt="Cattleya" class="recruit-logo" width={240} height={60} />
+          </div>
+          
+          <!-- メインコンテンツエリア -->
+          <div class="recruit-content">
+            <!-- タイトル -->
+            <div class="recruit-title-section">
+              <h2 class="recruit-title">
+                あなたの個性・経験・好き(犬、猫、接客…)を<br class="sm-up-only">カトレアで活かしませんか？
+              </h2>
+            </div>
+            
+            <!-- 説明文 -->
+            <div class="recruit-description-section">
+              <div class="recruit-description">
+                <p>
+                  カトレアでは、ワンちゃん・ネコちゃんとお客様をつなぐ大切な役割を担うスタッフを募集しています。ペットを通じてお客様の生活に幸せと笑顔を届けること。<br>
+                  それが私たちの使命です。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+// 採用メインセクション
+.recruit-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-primary; // bg-primary
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+  
+  .recruit-container {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: rem(60);
+    
+    @include breakpoint-up(sm) {
+      gap: rem(100);
+    }
+    @include breakpoint-up(lg) {
+      gap: rem(140);
+    }
+  }
+}
+
+.recruit-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: rem(10);
+  padding-top: rem(60);
+  
+  @include breakpoint-up(sm) {
+    align-items: flex-end;
+    gap: rem(40);
+  }
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}
+
+.recruit-label {
+  position: absolute;
+  top: rem(-30);
+  right: 0;
+  z-index: 0;
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  
+  @include breakpoint-up(sm) {
+    top: rem(-20);
+    left: rem(-10);
+    right: auto;
+    left: 10%;
+    width: 30%;
+    justify-content: flex-start;
+  }
+  @include breakpoint-up(lg) {
+    width: 20%;
+    position: static;
+  }
+}
+
+.recruit-logo {
+  width: 100%;
+  height: auto;
+  opacity: 0.15;
+  
+  @include breakpoint-up(sm) {
+
+  }
+  @include breakpoint-up(xl) {
+  }
+}
+
+.recruit-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: rem(32);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    padding-top: rem(30);
+    flex: 0 0 auto;
+    gap: rem(40);
+    width: 70%;
+    max-width: rem(770);
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(40);
+  }
+}
+
+.recruit-title-section {
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+.recruit-title {
+  font-size: rem(22);
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.4;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.recruit-description-section {
+  width: 100%;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    padding-left: 0;
+  }
+}
+
+.recruit-description {
+  @include breakpoint-up(sm) {
+    max-width: rem(760);
+  }
+  
+  p {
+    font-size: rem(16);
+    color: $color-text-primary;
+    line-height: 1.8;
+    margin: 0;
+    text-align: left;
+  }
+}
+</style>
