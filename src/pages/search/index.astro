@@ -67,7 +67,7 @@ const breadcrumbItems = [
 </script>
 
 <script>
-  import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+  import { getImageUrl } from '../../lib/utils/image';
   import { formatDate } from '../../lib/utils/date';
 
   // 初期データを再度取得
@@ -115,7 +115,7 @@ const breadcrumbItems = [
                   <div class="pet-card__image-container">
                     <img
                       class="pet-card__image"
-                      src="${getGoogleDriveImageUrl(pet.imageUrl01, 600, 600)}"
+                      src="${getImageUrl(pet.imageUrl01, 600, 600)}"
                       alt="${pet.breedTypeJa}の写真"
                       loading="lazy"
                       width="600"

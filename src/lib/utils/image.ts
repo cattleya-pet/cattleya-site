@@ -36,16 +36,29 @@ export function extractGoogleDriveFileId(url: string): string | null {
 }
 
 /**
- * Google DriveのURLを直接表示可能な画像URLに変換する
+ * 画像URLを適切な形式に変換する（microCMSとGoogleDriveに対応）
  */
-export function getGoogleDriveImageUrl(url: string, width: number = 800, height: number = 600): string {
+export function getImageUrl(url: string, _width: number = 800, _height: number = 600): string {
   if (!url || typeof url !== 'string') return '';
   
+  // microCMSのメディアURLの場合はそのまま返す
+  if (url.includes('microcms-assets.io') || url.includes('images.microcms-assets.io')) {
+    return url;
+  }
+  
+  // GoogleDriveのURLの場合は従来の処理を実行
   const fileId = extractGoogleDriveFileId(url);
   if (!fileId) return url;
 
   // 従来の方式を維持（lh3.googleusercontent.com）
   return `https://lh3.googleusercontent.com/d/${fileId}`;
+}
+
+/**
+ * Google DriveのURLを直接表示可能な画像URLに変換する（後方互換性のため残存）
+ */
+export function getGoogleDriveImageUrl(url: string, width: number = 800, height: number = 600): string {
+  return getImageUrl(url, width, height);
 }
 
 /**
@@ -84,6 +97,11 @@ export function getGoogleDriveVideoThumbnail(url: string, width: number = 150, h
   if (!fileId) return url;
 
   // Google Driveの動画サムネイル用URL
-  // Google Driveは動画ファイルに対してもlh3.googleusercontent.comでサムネイルを提供
-  return `https://lh3.googleusercontent.com/d/${fileId}=w${width}-h${height}-c`;
+  // 複数のフォーマットを試して、最も確実な形式を使用
+  
+  // 方式1: 直接ダウンロード形式（動画ファイルのサムネイルに有効）
+  return `https://drive.google.com/uc?export=view&id=${fileId}`;
+  
+  // 方式2: lh3.googleusercontent.com（バックアップ用）
+  // return `https://lh3.googleusercontent.com/d/${fileId}`;
 }

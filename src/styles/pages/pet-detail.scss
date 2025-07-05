@@ -333,6 +333,18 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  border: none;
+  
+  // iframe要素の場合の追加スタイル
+  &[src] {
+    pointer-events: none; // サムネイルではクリックイベントを無効化
+  }
+}
+
+// iframe要素専用のスタイル
+iframe.carousel__thumbnail-video-element {
+  border: none;
+  pointer-events: none;
 }
 
 .carousel__thumbnail-play-icon {

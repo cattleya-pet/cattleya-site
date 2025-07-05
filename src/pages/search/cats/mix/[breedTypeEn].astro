@@ -8,7 +8,7 @@ import ContactCTASection from '../../../../components/sections/common/ContactCTA
 import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
 import { getMixBreedsByAnimalType } from '../../../../lib/api/pets/navigation';
 import { getBreedsByAnimalType } from '../../../../lib/api/pets';
-import { getGoogleDriveImageUrl } from '../../../../lib/utils/image';
+import { getImageUrl } from '../../../../lib/utils/image';
 import '../../../../styles/layout/pets-grid.scss';
 
 export async function getStaticPaths() {
@@ -119,7 +119,7 @@ const breedTypeJa = breedData ? breedData.name : (initialCats.length > 0 ? initi
 
 // HeroSection用の画像（先頭の個体の画像）
 const heroImage = initialCats.length > 0 
-  ? getGoogleDriveImageUrl(initialCats[0].imageUrl01, 800, 600)
+  ? getImageUrl(initialCats[0].imageUrl01, 800, 600)
   : '/src/assets/images/backgrounds/img_bg-hero_search-cats-01.webp';
 
 // パンくずリストのデータ
@@ -180,7 +180,7 @@ const breadcrumbItems = [
 </script>
 
 <script>
-  import { getGoogleDriveImageUrl } from '../../../../lib/utils/image';
+  import { getImageUrl } from '../../../../lib/utils/image';
   import { formatDate } from '../../../../lib/utils/date';
 
   let offset = 18; // オフセット
@@ -211,7 +211,7 @@ const breadcrumbItems = [
                   <div class="pet-card__image-container">
                     <img
                       class="pet-card__image"
-                      src="${getGoogleDriveImageUrl(pet.imageUrl01, 600, 600)}"
+                      src="${getImageUrl(pet.imageUrl01, 600, 600)}"
                       alt="${pet.breedTypeJa}の写真"
                       loading="lazy"
                       width="600"

@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import HeroSection from '../../components/sections/common/HeroSection.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import DataTable from '../../components/ui/DataTable.astro';
 import { Image } from 'astro:assets';
 import logoImage from '../../assets/logos/logo_main-color.svg';
 
@@ -10,6 +11,38 @@ import logoImage from '../../assets/logos/logo_main-color.svg';
 const breadcrumbItems = [
   { label: 'ホーム', href: '/' },
   { label: '採用情報' }
+];
+
+// 募集要項のデータ
+const recruitmentRequirementsData = [
+  { 
+    label: '募集職種', 
+    value: 'ペットショップスタッフ（正社員・アルバイト・パート）<br class="sm-up-only">※販売、接客、ペットのケア全般を担当していただきます。' 
+  },
+  { 
+    label: '勤務地', 
+    value: 'Cattleya店舗（新宿店、池袋店）<br>※詳細は応募時にご相談ください。' 
+  },
+  { 
+    label: '勤務時間', 
+    value: '正社員：10:30～20:30（休憩1時間30分）／シフト制<br>アルバイト：10:30～20:30（休憩1時間30分）／シフト制' 
+  },
+  { 
+    label: '給与', 
+    value: '正社員：月給26万円～（経験・能力を考慮）<br>アルバイト：時給1,200円～（店舗により異なる）' 
+  },
+  { 
+    label: '休日・休暇', 
+    value: '正社員：週休2日制（シフト制）、年次有給休暇、特別休暇<br>アルバイト：シフトにより応相談' 
+  },
+  { 
+    label: '待遇・福利厚生', 
+    value: '各種社会保険完備（健康保険・厚生年金・雇用保険・労災保険）<br>交通費支給（上限あり）<br>制服貸与<br>社員割引制度<br>研修制度あり' 
+  },
+  { 
+    label: '応募資格', 
+    value: '未経験者歓迎（研修制度あり）<br>動物が好きで、明るく前向きに仕事に取り組める方<br>接客業経験者や管理職経験者、動物関連の資格保有者は優遇' 
+  }
 ];
 ---
 
@@ -49,6 +82,200 @@ const breadcrumbItems = [
               </div>
             </div>
           </div>
+        </div>
+        
+        <!-- 特長カードセクション -->
+        <div class="recruit-features">
+          <div class="recruit-feature-card">
+            <div class="recruit-feature-content">
+              <h3 class="recruit-feature-title">カトレアで働く魅力</h3>
+              <p class="recruit-feature-description">
+                動物好きにはたまらない、かわいいワンちゃん・ネコちゃんと毎日触れ合える職場です。<br>
+                接客やペットの管理を通じて、人とペットの幸せな暮らしに貢献できます。<br>
+                チームワークを大切にし、スタッフ同士のサポートも充実しています。
+              </p>
+            </div>
+            <div class="recruit-feature-image">
+              <img src="/src/assets/images/content/img_recruit_features-01.webp" alt="カトレアで働く魅力" loading="lazy" />
+            </div>
+          </div>
+          
+          <div class="recruit-feature-card">
+            <div class="recruit-feature-content">
+              <h3 class="recruit-feature-title">こんな方を求めています</h3>
+              <p class="recruit-feature-description">
+                ・ワンちゃん・ネコちゃんが大好きな方<br>
+                ・人と接することが好きで、丁寧な対応ができる方<br>
+                ・成長意欲があり、学ぶことを楽しめる方<br>
+                ・自身の経験を活かしたい方
+              </p>
+            </div>
+            <div class="recruit-feature-image">
+              <img src="/src/assets/images/content/img_recruit_features-02.webp" alt="こんな方を求めています" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- カトレアでの１日の流れセクション -->
+    <section class="recruit-flow-section">
+      <div class="recruit-flow-container">
+        <div class="recruit-flow-heading">
+          <h2 class="recruit-flow-section-title">カトレアでの１日の流れ</h2>
+        </div>
+        
+        <div class="recruit-flow-items">
+          <div class="recruit-flow-item">
+            <div class="recruit-flow-item-image">
+              <img src="/src/assets/images/content/img_recruit_job-flow-01.webp" alt="お客様を迎える準備" loading="lazy" />
+            </div>
+            <div class="recruit-flow-item-content">
+              <div class="recruit-flow-item-phrase">お客様を迎える準備</div>
+              <h3 class="recruit-flow-item-title">開店準備</h3>
+              <p class="recruit-flow-item-desc">毎朝、お店を綺麗に掃除してワンちゃんやネコちゃんたちの健康状態を確認します。<br>ルームの清掃や水・ごはんの準備を行い、ペットたちが快適に過ごせる環境を整えます。</p>
+            </div>
+          </div>
+          
+          <div class="recruit-flow-item">
+            <div class="recruit-flow-item-image">
+              <img src="/src/assets/images/content/img_recruit_job-flow-01.webp" alt="お客様へのご案内" loading="lazy" />
+            </div>
+            <div class="recruit-flow-item-content">
+              <div class="recruit-flow-item-phrase">お客様へのご案内</div>
+              <h3 class="recruit-flow-item-title">接客</h3>
+              <p class="recruit-flow-item-desc">お客様とマッチするペットとの出会いをサポートします。<br>ペットの特徴や飼育方法について丁寧に説明し、お客様とペットにとって最適な選択ができるよう心を込めて対応します。<br>ペット用品などのアドバイスも行います。</p>
+            </div>
+          </div>
+          
+          <div class="recruit-flow-item">
+            <div class="recruit-flow-item-image">
+              <img src="/src/assets/images/content/img_recruit_job-flow-01.webp" alt="ペットのお世話" loading="lazy" />
+            </div>
+            <div class="recruit-flow-item-content">
+              <div class="recruit-flow-item-phrase">ペットのお世話</div>
+              <h3 class="recruit-flow-item-title">健康チェック</h3>
+              <p class="recruit-flow-item-desc">ペット達の健康管理を行っています。毎日健康状態をチェックし、必要に応じて獣医師と連携を取ります。<br>また、爪切りやシャンプーなどのお手入れも行い、ペットが元気で健康に過ごせる環境を保ちます。</p>
+            </div>
+          </div>
+          
+          <div class="recruit-flow-item">
+            <div class="recruit-flow-item-image">
+              <img src="/src/assets/images/content/img_recruit_job-flow-01.webp" alt="お店とペットの魅力を発信" loading="lazy" />
+            </div>
+            <div class="recruit-flow-item-content">
+              <div class="recruit-flow-item-phrase">お店とペットの魅力を発信</div>
+              <h3 class="recruit-flow-item-title">SNS投稿</h3>
+              <p class="recruit-flow-item-desc">ペットたちのかわいい写真や動画を撮影して、SNSやホームページに投稿します。<br>ペットの魅力をお客様に伝える大切なお仕事です。お客様との絆を深める情報発信を意識しています。</p>
+            </div>
+          </div>
+          
+          <div class="recruit-flow-item">
+            <div class="recruit-flow-item-image">
+              <img src="/src/assets/images/content/img_recruit_job-flow-01.webp" alt="ペットと店舗のケア" loading="lazy" />
+            </div>
+            <div class="recruit-flow-item-content">
+              <div class="recruit-flow-item-phrase">ペットと店舗のケア</div>
+              <h3 class="recruit-flow-item-title">閉店作業</h3>
+              <p class="recruit-flow-item-desc">営業終了後は店内の清掃や翌日の準備を行います。<br>また、ペットたちの状態を改めて確認し、必要なケアを行います。<br>1日の締めくくりとして、心を込めてお世話をします。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 採用までの流れセクション -->
+    <section class="recruit-process-section">
+      <div class="recruit-process-container">
+        <div class="recruit-process-heading">
+          <h2 class="recruit-process-section-title">採用までの流れ</h2>
+        </div>
+        
+        <div class="recruit-process-steps">
+          <div class="recruit-process-step">
+            <div class="recruit-process-step-card">
+              <div class="recruit-process-step-header">
+                <div class="recruit-process-step-info">
+                  <div class="recruit-process-step-number">
+                    <span class="recruit-process-step-step">Step</span>
+                    <span class="recruit-process-step-digit">1</span>
+                  </div>
+                  <h3 class="recruit-process-step-title">ご応募</h3>
+                </div>
+                <div class="recruit-process-step-icon">
+                  <img src="/src/assets/icons/icon_recruit_flow-01.svg" alt="応募" loading="lazy" />
+                </div>
+              </div>
+              <div class="recruit-process-step-desc">
+                <p>お問い合わせフォームより、まずは求人申し込みの旨をご連絡ください。<br>※フォームの「求人申し込み」にチェックを入れてください。</p>
+                <a href="/contact" class="recruit-process-step-link">&gt;お申し込み</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="recruit-process-arrow">
+            <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" loading="lazy" />
+          </div>
+          
+          <div class="recruit-process-step">
+            <div class="recruit-process-step-card">
+              <div class="recruit-process-step-header">
+                <div class="recruit-process-step-info">
+                  <div class="recruit-process-step-number">
+                    <span class="recruit-process-step-step">Step</span>
+                    <span class="recruit-process-step-digit">2</span>
+                  </div>
+                  <h3 class="recruit-process-step-title">面接</h3>
+                </div>
+                <div class="recruit-process-step-icon">
+                  <img src="/src/assets/icons/icon_recruit_flow-02.svg" alt="面接" loading="lazy" />
+                </div>
+              </div>
+              <div class="recruit-process-step-desc">
+                <p>お問い合わせいただきましたら、数日以内にメールにて返信をさせていただきます。<br>
+                  その際、面接の日程をご連絡いたしますので、その日に指定した店舗に来店してください。</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="recruit-process-arrow">
+            <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" loading="lazy" />
+          </div>
+          
+          <div class="recruit-process-step">
+            <div class="recruit-process-step-card">
+              <div class="recruit-process-step-header">
+                <div class="recruit-process-step-info">
+                  <div class="recruit-process-step-number">
+                    <span class="recruit-process-step-step">Step</span>
+                    <span class="recruit-process-step-digit">3</span>
+                  </div>
+                  <h3 class="recruit-process-step-title">採用</h3>
+                </div>
+                <div class="recruit-process-step-icon">
+                  <img src="/src/assets/icons/icon_recruit_flow-03.svg" alt="採用決定" loading="lazy" />
+                </div>
+              </div>
+              <div class="recruit-process-step-desc">
+                <p>面接終了後、1週間～2週間を目安に選考させていただきます。<br>
+                  採用後は日程の調整を行い、入社となります。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 募集要項セクション -->
+    <section class="recruitment-requirements-section" style="background-image: url('/src/assets/images/backgrounds/bg_bricks-white-01.webp');">
+      <div class="recruitment-requirements-section__overlay"></div>
+      <div class="recruitment-requirements-container">
+        <div class="recruitment-requirements-heading">
+          <h2 class="recruitment-requirements-section-title">募集要項</h2>
+        </div>
+        
+        <div class="recruitment-requirements-content">
+          <DataTable data={recruitmentRequirementsData} />
         </div>
       </div>
     </section>
@@ -204,5 +431,601 @@ const breadcrumbItems = [
     margin: 0;
     text-align: left;
   }
+}
+
+// 特長カードセクション
+.recruit-features {
+  display: flex;
+  flex-direction: column;
+  gap: rem(50);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(40);
+    align-items: stretch; // カードの高さを揃える
+  }
+  @include breakpoint-up(lg) {
+    gap: rem(60);
+    width: 85%;
+    margin: 0 auto;
+  }
+}
+
+.recruit-feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: rem(24);
+  background: $color-background-tertiary;
+  border-radius: $radius-m;
+  padding: rem(30) rem(20) rem(20);
+  flex: 1; // 高さを揃える
+  
+  @include breakpoint-up(sm) {
+    gap: rem(32);
+    padding: rem(35) rem(25) rem(30);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(40);
+    gap: rem(40);
+    max-width: rem(680);
+  }
+}
+
+.recruit-feature-content {
+  order: 1;
+  flex: 1; // コンテンツエリアを伸縮させてカードの高さを揃える
+}
+
+.recruit-feature-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(16) 0;
+}
+
+.recruit-feature-description {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.recruit-feature-image {
+  order: 2;
+  margin: 0 rem(-20);
+  
+  @include breakpoint-up(sm) {
+    margin: 0 rem(-20);
+  }
+  @include breakpoint-up(lg) {
+    margin: 0 rem(-40);
+  }
+  
+  img {
+    width: 100%;
+    height: rem(200);
+    object-fit: cover;
+    display: block;
+    @include breakpoint-up(lg) {
+      height: rem(250);
+    }
+  }
+}
+
+// カトレアでの１日の流れセクション
+.recruit-flow-section {
+  background: $color-background-secondary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.recruit-flow-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+}
+
+.recruit-flow-heading {
+  margin-bottom: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.recruit-flow-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.recruit-flow-items {
+  display: flex;
+  flex-direction: column;
+  gap: rem(50);
+  
+  @include breakpoint-up(sm) {
+    gap: rem(70);
+  }
+}
+
+.recruit-flow-item {
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(sm) {
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    gap: rem(-40); // ネガティブマージンで重なりを作成
+    
+    &:nth-child(even) {
+      flex-direction: row-reverse; // 偶数項目は左右反転
+    }
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(-50); // より大きな重なり
+  }
+  
+  @include breakpoint-up(xl) {
+    gap: rem(-90); // 最大の重なり
+  }
+}
+
+.recruit-flow-item-image {
+  width: 90%;
+  margin: 0 auto;
+  
+  @include breakpoint-up(sm) {
+    width: 60%; // コンテンツ幅の52%
+    flex: 0 0 60%;
+  }
+  @include breakpoint-up(lg) {
+    width: 48%; // コンテンツ幅の48%
+    flex: 0 0 48%;
+  }
+  
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: $radius-m;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+    border: rem(10) solid white;
+  }
+}
+
+.recruit-flow-item-content {
+  text-align: center;
+  background-color: $color-background-tertiary;
+  padding: rem(20);
+  border-radius: $radius-m;
+  position: relative;
+  margin-top: rem(-30);
+  
+  @include breakpoint-up(sm) {
+    text-align: left;
+    padding: rem(30);
+    width: 60%;
+    background-color: transparent;
+    z-index: 2;
+    margin-left: rem(-60);
+    margin-top: rem(30);
+    
+    // メイン背景
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: $color-background-tertiary;
+      border-radius: $radius-m;
+      z-index: 1;
+    }
+    
+    // ドロップシャドウ
+    &::after {
+      content: '';
+      position: absolute;
+      top: rem(12);
+      left: rem(-10);
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: 1px solid $color-brand-primary;
+      border-radius: $radius-m;
+      z-index: 0;
+    }
+    
+    // 偶数項目（右側から重なる）
+    .recruit-flow-item:nth-child(even) & {
+      margin-left: 0;
+      margin-right: rem(-60);
+    }
+  }
+  @include breakpoint-up(lg) {
+    padding: rem(40);
+    margin-left: rem(-60);
+    margin-top: rem(80);
+    
+    .recruit-flow-item:nth-child(even) & {
+      margin-left: 0;
+      margin-right: rem(-60);
+    }
+  }
+}
+
+.recruit-flow-item-phrase {
+  position: relative;
+  @include typography-ja-2s($font-weight-semibold);
+  color: $color-brand-primary;
+  margin-bottom: rem(15);
+  padding-bottom: rem(8);
+  display: inline-block;
+  border-bottom: 1.5px solid $color-brand-primary;
+  z-index: 1; // HeroSectionと同じパターン
+  
+  @include breakpoint-up(sm) {
+    border-bottom: 2px solid $color-brand-primary;
+  }
+  
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: rem(-5.5);
+    left: 50%;
+    width: rem(15);
+    height: rem(15);
+    box-sizing: border-box;
+    rotate: 135deg;
+    translate: -50%;
+    z-index: -2;
+    @include breakpoint-up(sm) {
+      left: rem(25);
+      bottom: rem(-6);
+    }
+  }
+  
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: rem(-8);
+    left: 50%;
+    width: rem(15);
+    height: rem(15);
+    box-sizing: border-box;
+    border: 1.5px solid;
+    border-color: $color-brand-primary $color-brand-primary transparent transparent;
+    background-color: $color-background-tertiary;
+    rotate: 135deg;
+    translate: -50%;
+    @include breakpoint-up(sm) {
+      left: rem(25);
+      border: 2px solid;
+      border-color: $color-brand-primary $color-brand-primary transparent transparent;
+      bottom: rem(-8.5);
+    }
+  }
+}
+
+.recruit-flow-item-title {
+  // wannyan-support-item-titleと同じスタイル
+  font-size: rem(18);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 rem(15) 0;
+  position: relative;
+  z-index: 1; // HeroSectionと同じパターン
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-m($font-weight-semibold);
+  }
+}
+
+.recruit-flow-item-desc {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.7;
+  margin: 0;
+  position: relative;
+  text-align: left;
+  z-index: 1; // HeroSectionと同じパターン
+}
+
+// 採用までの流れセクション
+.recruit-process-section {
+  background: $color-background-primary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.recruit-process-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+}
+
+.recruit-process-heading {
+  margin-bottom: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.recruit-process-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.recruit-process-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(12);
+  
+  @include breakpoint-up(md) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch; // カードの高さを揃える
+    max-width: rem(1200);
+    margin: 0 auto;
+  }
+  @include breakpoint-up(lg) {
+  }
+}
+
+.recruit-process-step {
+  width: 100%;
+  max-width: rem(320);
+  display: flex; // カードを引き伸ばすためのflex
+  
+  @include breakpoint-up(md) {
+    flex: 1;
+    max-width: rem(440);
+  }
+}
+
+.recruit-process-step-card {
+  padding: rem(30) rem(20);
+  border-radius: $radius-m;
+  width: 100%; // 親要素の幅いっぱいに広がる
+  display: flex;
+  flex-direction: column;
+  
+  // 奇数カード（1枚目、3枚目）
+  .recruit-process-step:nth-child(odd) & {
+    background-color: $color-background-secondary;
+  }
+  
+  // 偶数カード（2枚目）
+  .recruit-process-step:nth-child(even) & {
+    background-color: $color-background-tertiary;
+  }
+  
+  @include breakpoint-up(sm) {
+    padding: rem(35) rem(25);
+  }
+  @include breakpoint-up(lg) {
+    padding: rem(40) rem(30);
+  }
+}
+
+.recruit-process-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(25);
+  }
+}
+
+.recruit-process-step-info {
+  flex: 1;
+}
+
+.recruit-process-step-number {
+  display: flex;
+  align-items: baseline;
+  gap: rem(2);
+  margin-bottom: rem(5);
+  
+  @include breakpoint-up(xl) {
+    margin-bottom: rem(10);
+  }
+}
+
+.recruit-process-step-step {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  position: relative;
+  padding-left: rem(20);
+  font-family: $font-family-en;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: rem(18);
+    height: rem(1);
+    background-color: $color-text-secondary;
+  }
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+    padding-left: rem(30);
+    
+    &::before {
+      width: rem(22);
+    }
+  }
+}
+
+.recruit-process-step-digit {
+  font-size: rem(21);
+  color: $color-text-secondary;
+  font-family: $font-family-en;
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-m($font-weight-semibold);
+  }
+}
+
+.recruit-process-step-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.recruit-process-step-icon {
+  width: rem(90);
+  height: rem(90);
+  flex-shrink: 0;
+  
+  @include breakpoint-up(lg) {
+    width: rem(120);
+    height: rem(120);
+  }
+  @include breakpoint-up(xl) {
+    width: rem(145);
+    height: rem(145);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.recruit-process-step-desc {
+  flex: 1; // 余白を埋めて高さを揃える
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(15) 0;
+  }
+}
+
+.recruit-process-step-link {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-brand-primary;
+  text-decoration: underline;
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: darken($color-brand-primary, 10%);
+    text-decoration: none;
+    transform: translateX(rem(3));
+  }
+  
+  &:focus {
+    outline: 2px solid $color-brand-primary;
+    outline-offset: 2px;
+  }
+}
+
+.recruit-process-arrow {
+  width: rem(30);
+  height: rem(30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg); // md未満では時計回りに90度回転
+  
+  @include breakpoint-up(md) {
+    width: rem(40);
+    height: rem(40);
+    transform: rotate(0deg); // md以上では回転なし（元の向き）
+    align-self: center; // カードの高さの真ん中に配置
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+// 募集要項セクション
+.recruitment-requirements-section {
+  background-size: cover;
+  background-position: center;
+  padding: rem(90) 0 rem(110) 0;
+  position: relative;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.recruitment-requirements-section__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($color-background-primary, 0.5);
+  z-index: 1;
+}
+
+.recruitment-requirements-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.recruitment-requirements-heading {
+  margin-bottom: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.recruitment-requirements-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.recruitment-requirements-content {
+  width: 100%;
 }
 </style>

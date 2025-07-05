@@ -4,7 +4,7 @@ import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
 import { getBreedsByAnimalType } from '../../../../lib/api/pets';
 import { getStoreById } from '../../../../lib/api/stores';
 import { getVoices } from '../../../../lib/api/voice';
-import { getGoogleDriveImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../lib/utils/image';
+import { getImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../lib/utils/image';
 import { formatDate } from '../../../../lib/utils/date';
 import MaleIcon from '../../../../assets/icons/icon_male.svg?raw';
 import FemaleIcon from '../../../../assets/icons/icon_female.svg?raw';
@@ -100,13 +100,14 @@ mediaSlots.forEach((slot, index) => {
     if (slot.type === 'image') {
       mediaItems.push({
         type: 'image',
-        url: getGoogleDriveImageUrl(slot.url, 800, 600),
-        thumbnail: getGoogleDriveImageUrl(slot.url, 150, 150),
+        url: getImageUrl(slot.url, 800, 600),
+        thumbnail: getImageUrl(slot.url, 150, 150),
         alt: `${pet.breedTypeJa}の${slot.label}`
       });
     } else if (slot.type === 'video') {
       const convertedVideoUrl = getGoogleDriveVideoUrl(slot.url);
-      const videoThumbnail = getGoogleDriveImageUrl(slot.url, 150, 150);
+      // 動画のサムネイルも画像と同じ処理を使用（以前の動作していた方法）
+      const videoThumbnail = getImageUrl(slot.url, 150, 150);
       
       mediaItems.push({
         type: 'video',
@@ -310,11 +311,15 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                         />
                       ) : (
                         <div class="carousel__thumbnail-video">
-                          <img 
-                            src={item.thumbnail}
-                            alt={item.alt}
+                          <iframe
+                            src={item.url}
                             class="carousel__thumbnail-video-element"
-                          />
+                            allow="autoplay; fullscreen"
+                            allowfullscreen
+                            frameborder="0"
+                            webkitallowfullscreen
+                            mozallowfullscreen
+                          ></iframe>
                           <div class="carousel__thumbnail-play-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                               <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
@@ -492,7 +497,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                     <div class="pet-card__image-container">
                       <img
                         class="pet-card__image"
-                        src={getGoogleDriveImageUrl(recommendedPet.imageUrl01, 600, 600)}
+                        src={getImageUrl(recommendedPet.imageUrl01, 600, 600)}
                         alt={`${recommendedPet.breedTypeJa}の写真`}
                         loading="lazy"
                         width="600"

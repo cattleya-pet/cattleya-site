@@ -1,6 +1,6 @@
 ---
 import './PetCardSlider.scss';
-import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+import { getImageUrl } from '../../lib/utils/image';
 import { formatDate } from '../../lib/utils/date';
 import MaleIcon from '../../assets/icons/icon_male.svg?raw';
 import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
@@ -66,7 +66,7 @@ const {
       <div class="slider-track">
         <div class="pets-slider">
           {pets.map((pet) => {
-            const imageUrl = getGoogleDriveImageUrl(pet.imageUrl01, 600, 600);
+            const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
             const formattedDate = formatDate(pet.birthday);
             
             return (

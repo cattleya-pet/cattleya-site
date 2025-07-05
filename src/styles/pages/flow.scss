@@ -322,18 +322,37 @@
   font-size: rem(12);
   font-weight: $font-weight-semibold;
   color: $color-text-secondary;
+  position: relative;
+  padding-left: rem(20);
+  font-family: $font-family-en;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: rem(18);
+    height: rem(1);
+    background-color: $color-text-secondary;
+  }
   
   @include breakpoint-up(xl) {
     @include typography-ja-s;
+    padding-left: rem(30);
+    
+    &::before {
+      width: rem(22);
+    }
   }
 }
 
 .flow-step__digit {
   font-size: rem(21);
-  color: $color-brand-primary;
+  color: $color-text-secondary;
+  font-family: $font-family-en;
   
   @include breakpoint-up(xl) {
-    @include typography-ja-l($font-weight-semibold);
+    @include typography-en-m($font-weight-semibold);
   }
 }
 

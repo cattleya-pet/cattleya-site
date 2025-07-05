@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getStoreByStoreId } from '../../lib/api/stores';
-import { getGoogleDriveImageUrl } from '../../lib/utils/image';
+import { getImageUrl } from '../../lib/utils/image';
 import { formatDate } from '../../lib/utils/date';
 import MaleIcon from '../../assets/icons/icon_male.svg?raw';
 import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
@@ -79,8 +79,8 @@ mediaSlots.forEach((slot, index) => {
     if (slot.type === 'image') {
       mediaItems.push({
         type: 'image',
-        url: getGoogleDriveImageUrl(slot.url, 800, 600),
-        thumbnail: getGoogleDriveImageUrl(slot.url, 150, 150),
+        url: getImageUrl(slot.url, 800, 600),
+        thumbnail: getImageUrl(slot.url, 150, 150),
         alt: `${storeInfo.storeName}の${slot.label}`
       });
     } else if (slot.type === 'video') {
@@ -430,7 +430,7 @@ const breadcrumbItems = [
                     <div class="pet-card__image-container">
                       <img
                         class="pet-card__image"
-                        src={getGoogleDriveImageUrl(storePet.imageUrl01, 600, 600)}
+                        src={getImageUrl(storePet.imageUrl01, 600, 600)}
                         alt={`${storePet.breedTypeJa}の写真`}
                         loading="lazy"
                         width="600"
