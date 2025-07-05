@@ -120,10 +120,13 @@ const recruitmentRequirementsData = [
 
     <!-- カトレアでの１日の流れセクション -->
     <section class="recruit-flow-section">
+      <!-- 回転したサブタイトル -->
+      <div class="recruit-flow-subtitle">One day with Staff</div>
       <div class="recruit-flow-container">
         <div class="recruit-flow-heading">
           <h2 class="recruit-flow-section-title">カトレアでの１日の流れ</h2>
         </div>
+        
         
         <div class="recruit-flow-items">
           <div class="recruit-flow-item">
@@ -516,6 +519,7 @@ const recruitmentRequirementsData = [
 .recruit-flow-section {
   background: $color-background-secondary;
   padding: rem(90) 0 rem(110) 0;
+  position: relative;
   
   @include breakpoint-up(sm) {
     padding: rem(120) 0 rem(150) 0;
@@ -526,6 +530,7 @@ const recruitmentRequirementsData = [
   @include container;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .recruit-flow-heading {
@@ -543,6 +548,7 @@ const recruitmentRequirementsData = [
   margin: 0;
   
   @include breakpoint-up(lg) {
+    padding-top: rem(50);
   }
 }
 
@@ -740,6 +746,28 @@ const recruitmentRequirementsData = [
   position: relative;
   text-align: left;
   z-index: 1; // HeroSectionと同じパターン
+}
+
+.recruit-flow-subtitle {
+  line-height: 1;
+  position: absolute;
+  top: rem(-5);
+  font-family: $font-family-en;
+  right: 0;
+  font-size: rem(36);
+  color: rgba($color-text-white, 0.4);
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  @include breakpoint-up(sm) {
+    font-size: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(100);
+    // right: rem(40);
+    // top: rem(340);
+  }
 }
 
 // 採用までの流れセクション

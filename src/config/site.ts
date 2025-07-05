@@ -4,7 +4,7 @@ export const siteConfig = {
   url: 'https://cattleya-pets.com',
   ogImage: '/images/og-image.jpg',
   links: {
-    about: '/about',
+    about: '/relief',
     company: '/company',
     stores: '/stores',
     contact: '/contact'

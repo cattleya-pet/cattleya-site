@@ -1,0 +1,456 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import heroImage from '../../assets/images/backgrounds/img_bg-hero_reserve-01.webp';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '来店予約' }
+];
+---
+
+<Layout title="来店予約 | カトレア" description="カトレアへの来店予約についてご案内します。">
+  <main>
+    <!-- ヒーローセクション -->
+    <section class="hero-section hero-section--reserve">
+      <div class="hero-background">
+        <img 
+          src={heroImage.src} 
+          alt="来店予約" 
+          class="hero-background__image"
+          loading="eager"
+        />
+      </div>
+      
+      <!-- ページタイトルエリア -->
+      <div class="hero-content">
+        <div class="hero-content__semicircle">
+          <div class="hero-content__circle"></div>
+        </div>
+        <div class="container">
+          <div class="hero-content__inner">
+            <h1 class="hero-title">来店予約</h1>
+            
+            <!-- パンくずリスト -->
+            <div class="hero-breadcrumb">
+              <Breadcrumb items={breadcrumbItems} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 来店予約メインセクション -->
+    <section class="reserve-main-section">
+      <div class="container">
+        <div class="reserve-content">
+          <h2 class="reserve-section-title">
+            <span class="reserve-title-highlight">来店予約</span>をすると<br>
+            気になっている子をスムーズにご案内できます
+          </h2>
+          
+          <!-- メリットカード -->
+          <div class="merit-cards">
+            <!-- メリット01 -->
+            <div class="merit-card">
+              <div class="merit-card-label">
+                <span class="merit-label-text">メリット</span>
+                <span class="merit-label-number">01</span>
+              </div>
+              <div class="merit-card-content">
+                <div class="merit-card-text">
+                  <h3 class="merit-card-title">お取り置き可能</h3>
+                  <div class="merit-card-divider"></div>
+                  <p class="merit-card-description">
+                    「来店したら家族が決まっていた…」<br>
+                    そのようなことが無いように、ご来店時間の1時間前からお取り置きが可能です。
+                  </p>
+                </div>
+                <div class="merit-card-image">
+                  <img src="/src/assets/images/content/img_reserve_merit-01.webp" alt="お取り置き可能" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            
+            <!-- メリット02 -->
+            <div class="merit-card">
+              <div class="merit-card-label">
+                <span class="merit-label-text">メリット</span>
+                <span class="merit-label-number">02</span>
+              </div>
+              <div class="merit-card-content">
+                <div class="merit-card-text">
+                  <h3 class="merit-card-title">待ち時間なし</h3>
+                  <div class="merit-card-divider"></div>
+                  <p class="merit-card-description">
+                    「スタッフが空いてない…」<br>
+                    「気になっている子が見当たらない…」<br>
+                    お客様をお待たせすることなく、スタッフが迅速に対応します。
+                  </p>
+                </div>
+                <div class="merit-card-image">
+                  <img src="/src/assets/images/content/img_reserve_merit-02.webp" alt="待ち時間なし" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            
+            <!-- メリット03 -->
+            <div class="merit-card">
+              <div class="merit-card-label">
+                <span class="merit-label-text">メリット</span>
+                <span class="merit-label-number">03</span>
+              </div>
+              <div class="merit-card-content">
+                <div class="merit-card-text">
+                  <h3 class="merit-card-title">詳しいスタッフが対応</h3>
+                  <div class="merit-card-divider"></div>
+                  <p class="merit-card-description">
+                    お客様が知りたい情報やご要望について、詳しい知識を持っているスタッフが対応します。
+                  </p>
+                </div>
+                <div class="merit-card-image">
+                  <img src="/src/assets/images/content/img_reserve_merit-03.webp" alt="詳しいスタッフが対応" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+// ヒーローセクション
+.hero-section--reserve {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-background {
+  width: 100%;
+  height: rem(220);
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    height: rem(360);
+  }
+  
+  @include breakpoint-up(lg) {
+    height: rem(440);
+  }
+}
+
+.hero-background__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-content {
+  position: relative;
+  background-color: transparent;
+  margin-top: rem(-30);
+  z-index: 2;
+  overflow: hidden;
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(-90);
+  }
+  
+  @include breakpoint-up(xl) {
+    margin-top: rem(-125);
+  }
+    
+  .container {
+    background-color: $color-background-secondary;
+  }
+}
+
+.hero-content__semicircle {
+  height: rem(30);
+  margin-left: rem(-100);
+  margin-right: rem(-100);
+  padding-left: rem(100);
+  padding-right: rem(100);
+  overflow: hidden;
+  
+  @include breakpoint-up(sm) {
+    height: rem(90);
+  }
+  
+  @include breakpoint-up(xl) {
+    height: rem(125);
+  }
+}
+
+.hero-content__circle {
+  background-color: $color-background-secondary;
+  border-radius: 50%;
+  height: rem(200);
+  width: calc(100% + rem(200));
+  margin-left: rem(-100);
+  
+  @include breakpoint-up(sm) {
+    height: rem(300);
+    width: calc(100% + rem(200));
+  }
+  
+  @include breakpoint-up(xl) {
+    height: rem(400);
+    width: calc(100% + rem(200));
+  }
+}
+
+.hero-content__inner {
+  padding: 0 0 rem(40);
+  background-color: $color-background-secondary;
+  
+  @include breakpoint-up(sm) {
+    padding: 0 0 rem(60);
+  }
+}
+
+.hero-title {
+  @include typography-ja-l($font-weight-semibold);
+  text-align: center;
+  color: $color-text-primary;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-2l($font-weight-semibold);
+    margin-bottom: rem(30);
+  }
+}
+
+.hero-breadcrumb {
+  display: flex;
+  justify-content: flex-start;
+}
+
+// 来店予約メインセクション
+.reserve-main-section {
+  background: $color-background-secondary;
+  padding: rem(60) 0 rem(90) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0 rem(120) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0 rem(150) 0;
+  }
+}
+
+.reserve-content {
+  text-align: center;
+  max-width: rem(800);
+  margin: 0 auto;
+}
+
+.reserve-section-title {
+  font-size: rem(16);
+  color: $color-text-primary;
+  margin: 0 0 rem(30) 0;
+  line-height: 1.6;
+  text-decoration: underline;
+  text-decoration-color: $color-border-hover;
+  text-decoration-thickness: 2px;
+  text-underline-offset: rem(4);
+  display: inline-block;
+  @include breakpoint-up(sm) {
+    @include typography-ja-m($font-weight-semibold);
+  }
+  
+  
+  @include breakpoint-up(lg) {
+    margin: 0 0 rem(40) 0;
+  }
+}
+
+.reserve-title-highlight {
+  font-size: rem(21);
+  @include breakpoint-up(sm) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.reserve-description {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(18);
+  }
+}
+
+// メリットカード
+.merit-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: rem(50);
+  margin-top: rem(50);
+  overflow: visible;
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: 1fr 1fr;
+    gap: rem(40);
+    margin-top: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(50);
+    margin-top: rem(80);
+  }
+  
+  .merit-card:nth-child(3) {
+    @include breakpoint-up(sm) {
+      grid-column: 1 / -1;
+      max-width: 50%;
+      margin: 0 auto;
+    }
+  }
+}
+
+.merit-card {
+  background-color: $color-background-primary;
+  border-radius: $radius-m;
+  padding: rem(20);
+  position: relative;
+  overflow: visible;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(40);
+  }
+}
+
+.merit-card-label {
+  position: absolute;
+  top: rem(-10);
+  left: rem(-10);
+  background-color: $color-background-accent;
+  color: $color-text-white;
+  border-radius: $radius-s;
+  padding: rem(4) rem(10) rem(6);
+  display: flex;
+  align-items: flex-end;
+  gap: rem(4);
+  z-index: 1;
+  
+  @include breakpoint-up(sm) {
+    top: rem(-15);
+    left: rem(-15);
+    padding: rem(10) rem(15);
+  }
+}
+
+.merit-label-text {
+  @include typography-ja-s;
+  transform: translateY(rem(-3));
+}
+
+.merit-label-number {
+  @include typography-ja-l($font-weight-semibold);
+}
+
+.merit-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(30);
+    align-items: center;
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(40);
+  }
+}
+
+.merit-card-text {
+  flex: 1;
+  order: 2;
+  
+  @include breakpoint-up(sm) {
+    order: 1;
+  }
+}
+
+.merit-card-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(15) 0;
+  
+  @include breakpoint-up(sm) {
+    margin: 0 0 rem(20) 0;
+  }
+}
+
+.merit-card-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: rem(15);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(20);
+  }
+}
+
+.merit-card-description {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.7;
+  margin: 0;
+  text-align: left;
+}
+
+.merit-card-image {
+  width: 80%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  order: 1;
+  margin: 0 auto;
+  
+  @include breakpoint-up(sm) {
+    width: rem(120);
+    height: rem(120);
+    order: 2;
+    margin: 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(150);
+    height: rem(150);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+}
+</style>
