@@ -3,7 +3,15 @@ import Layout from '../../layouts/Layout.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import BaseButton from '../../components/ui/buttons/BaseButton.astro';
+import ButtonWrapper from '../../components/ui/buttons/ButtonWrapper.astro';
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+import lineIcon from '../../assets/icons/icon_line-01.svg';
+import { getAllStores } from '../../lib/api/stores';
 import heroImage from '../../assets/images/backgrounds/img_bg-hero_reserve-01.webp';
+
+// 店舗データを取得
+const stores = (await getAllStores()).sort((a, b) => a.storeName.localeCompare(b.storeName));
 
 // パンくずリストのデータ
 const breadcrumbItems = [
@@ -120,7 +128,268 @@ const breadcrumbItems = [
         </div>
       </div>
     </section>
-    
+
+    <!-- 来店予約の流れセクション -->
+    <section class="reserve-process-section">
+      <div class="container">
+        <div class="reserve-process-heading">
+          <h2 class="reserve-process-section-title">来店予約の流れ</h2>
+        </div>
+        
+        <div class="reserve-process-steps">
+          <div class="reserve-process-step">
+            <div class="reserve-process-step-card">
+              <div class="reserve-process-step-header">
+                <div class="reserve-process-step-info">
+                  <div class="reserve-process-step-number">
+                    <span class="reserve-process-step-step">Step</span>
+                    <span class="reserve-process-step-digit">1</span>
+                  </div>
+                  <h3 class="reserve-process-step-title">お申し込み</h3>
+                </div>
+                <div class="reserve-process-step-icon">
+                  <img src="/src/assets/icons/icon_reserve_flow-01.svg" alt="お申し込み" loading="lazy" />
+                </div>
+              </div>
+              <div class="reserve-process-step-desc">
+                <p>下記リンクより、お電話・LINE・メール等でお問い合わせください。<br>
+                  気になるワンちゃん・ネコちゃんがいれば、お問い合わせ番号をお伝えいただくとスムーズです。</p>
+                <a href="/contact" class="reserve-process-step-link">&gt;お申し込み</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="reserve-process-arrow">
+            <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" loading="lazy" />
+          </div>
+          
+          <div class="reserve-process-step">
+            <div class="reserve-process-step-card">
+              <div class="reserve-process-step-header">
+                <div class="reserve-process-step-info">
+                  <div class="reserve-process-step-number">
+                    <span class="reserve-process-step-step">Step</span>
+                    <span class="reserve-process-step-digit">2</span>
+                  </div>
+                  <h3 class="reserve-process-step-title">予約の事前連絡</h3>
+                </div>
+                <div class="reserve-process-step-icon">
+                  <img src="/src/assets/icons/icon_reserve_flow-02.svg" alt="予約の事前連絡" loading="lazy" />
+                </div>
+              </div>
+              <div class="reserve-process-step-desc">
+                <p>ご来店日時の確認連絡を前日に入れさせていただきます。<br>
+                  ご要望や変更等ございましたらお申し付けください。</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="reserve-process-arrow">
+            <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" loading="lazy" />
+          </div>
+          
+          <div class="reserve-process-step">
+            <div class="reserve-process-step-card">
+              <div class="reserve-process-step-header">
+                <div class="reserve-process-step-info">
+                  <div class="reserve-process-step-number">
+                    <span class="reserve-process-step-step">Step</span>
+                    <span class="reserve-process-step-digit">3</span>
+                  </div>
+                  <h3 class="reserve-process-step-title">ご来店</h3>
+                </div>
+                <div class="reserve-process-step-icon">
+                  <img src="/src/assets/icons/icon_reserve_flow-03.svg" alt="ご来店" loading="lazy" />
+                </div>
+              </div>
+              <div class="reserve-process-step-desc">
+                <p>予約日時にご来店ください。<br>
+                  予約のお名前をスタッフにお申し付けください。<br>
+                  ご来店を心よりお待ちしております。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="reserve-process-cta">
+          <BaseButton 
+            href="/flow" 
+            text="お迎えまでの流れを確認する" 
+            variant="short"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 関連コンテンツセクション -->
+    <section class="related-content-section">
+      <div class="container">
+        <div class="content-box">
+          <h2 class="content-box__title">お問い合わせ</h2>
+          <div class="contact-buttons-wrapper">
+            {stores.map((store) => (
+              <div class="store-contact-group">
+                <!-- 電話ボタン -->
+                <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">{store.storePhoneNumber}</span>
+                  </div>
+                  <img src={phoneIcon.src} alt="" class="contact-button__icon" />
+                </a>
+                <!-- LINEボタン -->
+                <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">LINE</span>
+                  </div>
+                  <img src={lineIcon.src} alt="" class="contact-button__icon" />
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 来店予約のQ&Aセクション -->
+    <section class="reserve-qa-section">
+      <div class="container">
+        <h2 class="reserve-qa-title">来店予約の<span class="qa-title-q">Q</span>&<span class="qa-title-a">A</span></h2>
+        
+        <div class="qa-list">
+          <!-- Q1 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q1.</span>
+                <span class="qa-question-text">来店予約は有料ですか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>無料でご利用いただけます。<br>
+                  <strong>※来店時間1時間前から、ご希望のペットをお取り置きさせていただきます。</strong> </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q2.</span>
+                <span class="qa-question-text">来店予約の前に、予約しているワンちゃん・ネコちゃんの家族が決まってしまうことはありますか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>はい、あります。<br>
+                  ご購入が確定していれば、お振込み(ペット価格の10%)で売約ができます。ご入金日から1週間お取り置きが可能ですので、ご遠慮なくお申し付けください。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q3.</span>
+                <span class="qa-question-text">予約はいつまでできますか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>希望来店日の1週間前から、ご来店の1時間前まで予約可能です。<br>
+                  来店予約時間は11:00〜19:30です。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q4.</span>
+                <span class="qa-question-text">先住犬・猫を連れていけますか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>はい、大丈夫です。<br>
+                  ご自宅で飼われている、ワンちゃん・ネコちゃんを連れてきていただくことで、お家の子の反応も見ることができます。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 関連コンテンツセクション（2つ目） -->
+    <section class="related-content-section">
+      <div class="container">
+        <!-- ホームステイボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">ホームステイ</h2>
+          
+          <div class="homestay-section-inner">
+            <div class="homestay-img-wrap">
+              <img src="/src/assets/images/content/img_homestay_main-01.webp" alt="ホームステイ" class="homestay-img" loading="lazy" />
+            </div>
+            
+            <div class="homestay-content">
+              <div class="homestay-features">
+                <p class="homestay-feature">一律10,000円(税込)で選べる泊数</p>
+                <p class="homestay-feature">お泊まりセット無料でレンタル</p>
+              </div>
+              <p class="homestay-desc">
+                カトレアでは、相性や飼育不安を解消するためにホームステイサービスを行っています。<br><br>
+                ホームステイ中もスタッフが精一杯サポートいたします。お気軽にお申し付けください。
+              </p>
+              <ButtonWrapper>
+                <BaseButton href="/homestay" text="詳しくみる" />
+              </ButtonWrapper>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 会いたい子を探すボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">会いたい子を探す</h2>
+          <div class="content-box__buttons">
+            <a href="/search/dogs" class="bg-button bg-button--search-dogs">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子犬を探す</span>
+              </div>
+            </a>
+            <a href="/search/cats" class="bg-button bg-button--search-cats">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子猫を探す</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <BannerSection />
     <ContactCTASection />
   </main>
@@ -247,17 +516,17 @@ const breadcrumbItems = [
   padding: rem(60) 0 rem(90) 0;
   
   @include breakpoint-up(sm) {
-    padding: rem(80) 0 rem(120) 0;
+    padding: rem(40) 0 rem(120) 0;
   }
   
   @include breakpoint-up(lg) {
-    padding: rem(100) 0 rem(150) 0;
+    padding: 0 0 rem(150) 0;
   }
 }
 
 .reserve-content {
   text-align: center;
-  max-width: rem(800);
+  max-width: rem(1600);
   margin: 0 auto;
 }
 
@@ -301,75 +570,112 @@ const breadcrumbItems = [
 
 // メリットカード
 .merit-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: rem(50);
+  display: flex;
+  flex-direction: column;
+  gap: rem(75);
   margin-top: rem(50);
   overflow: visible;
   
   @include breakpoint-up(sm) {
-    grid-template-columns: 1fr 1fr;
-    gap: rem(40);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: rem(70);
+    column-gap: rem(30);
     margin-top: rem(60);
+    max-width: rem(1380);
+    margin-left: auto;
+    margin-right: auto;
   }
   
   @include breakpoint-up(lg) {
-    gap: rem(50);
     margin-top: rem(80);
+    row-gap: rem(80);
+    column-gap: rem(50);
   }
   
   .merit-card:nth-child(3) {
     @include breakpoint-up(sm) {
-      grid-column: 1 / -1;
-      max-width: 50%;
+      flex-basis: 100%;
+      max-width: rem(660);
       margin: 0 auto;
+    }
+  }
+  
+  .merit-card:nth-child(1),
+  .merit-card:nth-child(2) {
+    @include breakpoint-up(sm) {
+      flex: 0 0 rem(675);
+      max-width: rem(660);
     }
   }
 }
 
 .merit-card {
   background-color: $color-background-primary;
-  border-radius: $radius-m;
+  border-radius: 0 $radius-m $radius-m $radius-m;
   padding: rem(20);
   position: relative;
   overflow: visible;
+  max-width: rem(750);
   
   @include breakpoint-up(sm) {
-    padding: rem(30);
+    border-radius: 0 rem(75) rem(75) 0;
+    padding: 0;
   }
   
   @include breakpoint-up(lg) {
-    padding: rem(40);
+    border-radius: 0 rem(120) rem(120) 0;
+  }
+  
+  @include breakpoint-up(lg) {
   }
 }
 
 .merit-card-label {
   position: absolute;
-  top: rem(-10);
-  left: rem(-10);
+  top: rem(-40);
+  left: 0;
   background-color: $color-background-accent;
   color: $color-text-white;
-  border-radius: $radius-s;
-  padding: rem(4) rem(10) rem(6);
+  border-radius: $radius-s $radius-s 0 0;
+  padding: rem(6) rem(10) rem(4);
   display: flex;
   align-items: flex-end;
   gap: rem(4);
   z-index: 1;
+  height: rem(40);
   
   @include breakpoint-up(sm) {
-    top: rem(-15);
-    left: rem(-15);
-    padding: rem(10) rem(15);
+    
+  }
+  
+  @include breakpoint-up(lg) {
+    top: rem(-35);
+    height: rem(35);
+    padding: rem(2) rem(10) rem(2);
+  }
+  @include breakpoint-up(xl) {
+    top: rem(-40);
+    height: rem(40);
   }
 }
 
 .merit-label-text {
-  @include typography-ja-s;
-  transform: translateY(rem(-3));
+  font-size: rem(12);
+  transform: translateY(rem(-4));
+  @include breakpoint-up(sm) {
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+  }
 }
 
 .merit-label-number {
-  @include typography-ja-l($font-weight-semibold);
+  font-size: rem(21);
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
 }
 
 .merit-card-content {
@@ -379,12 +685,10 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     flex-direction: row;
-    gap: rem(30);
-    align-items: center;
+    align-items: flex-start;
   }
   
   @include breakpoint-up(lg) {
-    gap: rem(40);
   }
 }
 
@@ -394,6 +698,7 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     order: 1;
+    padding: rem(20);
   }
 }
 
@@ -403,7 +708,13 @@ const breadcrumbItems = [
   margin: 0 0 rem(15) 0;
   
   @include breakpoint-up(sm) {
+    margin: 0 0 rem(10) 0;
+    text-align: left;
+  }
+  
+  @include breakpoint-up(lg) {
     margin: 0 0 rem(20) 0;
+    text-align: left;
   }
 }
 
@@ -414,7 +725,11 @@ const breadcrumbItems = [
   margin-bottom: rem(15);
   
   @include breakpoint-up(sm) {
-    margin-bottom: rem(20);
+    margin-bottom: rem(10);
+  }
+  @include breakpoint-up(lg) {
+    margin: 0 0 rem(20) 0;
+    text-align: left;
   }
 }
 
@@ -435,15 +750,18 @@ const breadcrumbItems = [
   margin: 0 auto;
   
   @include breakpoint-up(sm) {
-    width: rem(120);
-    height: rem(120);
+    width: rem(150);
+    height: auto;
     order: 2;
     margin: 0;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
   }
   
   @include breakpoint-up(lg) {
-    width: rem(150);
-    height: rem(150);
+    width: rem(240);
+    height: rem(240);
   }
   
   img {
@@ -451,6 +769,847 @@ const breadcrumbItems = [
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+    
+    @include breakpoint-up(sm) {
+      aspect-ratio: 1 / 1;
+      height: auto;
+    }
+  }
+}
+
+// 来店予約の流れセクション
+.reserve-process-section {
+  background: $color-background-tertiary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.reserve-process-heading {
+  margin-bottom: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.reserve-process-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.reserve-process-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(12);
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    max-width: rem(1400);
+    margin: 0 auto;
+  }
+}
+
+.reserve-process-step {
+  width: 100%;
+  display: flex;
+  
+  @include breakpoint-up(sm) {
+    width: 70%;
+  }
+  
+  @include breakpoint-up(lg) {
+    flex: 1;
+  }
+}
+
+.reserve-process-step-card {
+  padding: rem(30) rem(20);
+  border-radius: $radius-m;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(35) rem(25);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(40) rem(30);
+  }
+}
+
+.reserve-process-step:nth-child(1) .reserve-process-step-card,
+.reserve-process-step:nth-child(5) .reserve-process-step-card {
+  background-color: $color-background-secondary;
+}
+
+.reserve-process-step:nth-child(3) .reserve-process-step-card {
+  background-color: $color-background-primary;
+}
+
+.reserve-process-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(25);
+  }
+}
+
+.reserve-process-step-info {
+  flex: 1;
+}
+
+.reserve-process-step-number {
+  display: flex;
+  align-items: baseline;
+  gap: rem(2);
+  margin-bottom: rem(5);
+  
+  @include breakpoint-up(xl) {
+    margin-bottom: rem(10);
+  }
+}
+
+.reserve-process-step-step {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  position: relative;
+  padding-left: rem(20);
+  font-family: $font-family-en;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: rem(18);
+    height: rem(1);
+    background-color: $color-text-secondary;
+  }
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+    padding-left: rem(30);
+    
+    &::before {
+      width: rem(22);
+    }
+  }
+}
+
+.reserve-process-step-digit {
+  font-size: rem(21);
+  color: $color-text-secondary;
+  font-family: $font-family-en;
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-m($font-weight-semibold);
+  }
+}
+
+.reserve-process-step-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.reserve-process-step-icon {
+  width: rem(90);
+  height: rem(90);
+  flex-shrink: 0;
+  
+  @include breakpoint-up(lg) {
+    width: rem(120);
+    height: rem(120);
+  }
+  
+  @include breakpoint-up(xl) {
+    width: rem(145);
+    height: rem(145);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.reserve-process-step-desc {
+  flex: 1;
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(15) 0;
+  }
+}
+
+.reserve-process-step-link {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-brand-primary;
+  text-decoration: underline;
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: darken($color-brand-primary, 10%);
+    text-decoration: none;
+    transform: translateX(rem(3));
+  }
+  
+  &:focus {
+    outline: 2px solid $color-brand-primary;
+    outline-offset: 2px;
+  }
+}
+
+.reserve-process-arrow {
+  width: rem(30);
+  height: rem(30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  
+  @include breakpoint-up(lg) {
+    width: rem(40);
+    height: rem(40);
+    transform: rotate(0deg);
+    align-self: center;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.reserve-process-cta {
+  margin-top: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(80);
+  }
+}
+
+// 関連コンテンツセクション
+.related-content-section {
+  background: $color-background-tertiary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+// 来店予約の流れセクション
+.reserve-process-section {
+  background: $color-background-tertiary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.content-box {
+  background-color: $color-background-primary;
+  border-radius: $radius-l;
+  padding: rem(40) rem(20);
+  margin-bottom: rem(40);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(50) rem(30);
+    margin-bottom: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) rem(40);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &__title {
+    text-align: center;
+    font-size: rem(21);
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: rem(40);
+    position: relative;
+    
+    @include breakpoint-up(lg) {
+      font-size: $font-size-ja-l;
+    }
+    
+    @include breakpoint-up(sm) {
+      margin-bottom: rem(50);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: rem(-15);
+      left: 50%;
+      transform: translateX(-50%);
+      width: rem(50);
+      height: rem(1);
+      background: linear-gradient(to right, $color-border-secondary 0%, $color-border-secondary 50%, $color-border-tertiary 50%, $color-border-tertiary 100%);
+    }
+  }
+}
+
+// ホームステイセクション
+.homestay-section-inner {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(30);
+    align-items: flex-start;
+  }
+}
+
+.homestay-img-wrap {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: $radius-m;
+  overflow: hidden;
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    max-width: 40%;
+  }
+}
+
+.homestay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.homestay-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    gap: rem(25);
+  }
+}
+
+.homestay-features {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+}
+
+.homestay-feature {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-s($font-weight-semibold);
+  }
+}
+
+.homestay-desc {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+}
+
+// コンテンツボックス内のボタン配置（会いたい子を探す用）
+.content-box__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    justify-content: center;
+    gap: rem(24);
+  }
+}
+
+// 背景画像付きボタン
+.bg-button {
+  display: block;
+  text-decoration: none;
+  border-radius: $radius-s;
+  border: 1px solid $color-text-primary;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-height: rem(102);
+  position: relative;
+  max-width: rem(480);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    max-width: rem(480);
+  }
+  
+  &:hover {
+    transform: translateY(rem(-2));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &--search-dogs {
+    background-image: url('/src/assets/images/ui/bg_button-search-dogs-link-01.webp');
+    background-size: auto 70%;
+    background-position: calc(100% - rem(40)) calc(100% + rem(1));
+    background-repeat: no-repeat;
+    @include breakpoint-up(lg) {
+      background-size: auto 80%;
+    }
+  }
+  
+  &--search-cats {
+    background-image: url('/src/assets/images/ui/bg_button-search-cats-link-01.webp');
+    background-size: auto 75%;
+    background-position: calc(100% - rem(45)) calc(100% + rem(1));
+    background-repeat: no-repeat;
+    @include breakpoint-up(lg) {
+      background-size: auto 85%;
+    }
+  }
+}
+
+.bg-button__overlay {
+  padding: rem(40) rem(80);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: rem(102);
+  border-radius: $radius-s;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(20) rem(40);
+  }
+}
+
+.bg-button__text {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-align: left;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(18);
+  }
+}
+
+// コンタクトボタンラッパー
+.contact-buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: column;
+    gap: rem(24);
+  }
+}
+
+// 店舗ごとのコンタクトグループ
+.store-contact-group {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(45);
+    justify-content: center;
+  }
+}
+
+// コンタクトボタン
+.contact-button {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-text-primary;
+  border-radius: $radius-s;
+  padding: rem(30) rem(75) rem(30) rem(55);
+  text-decoration: none;
+  color: $color-text-primary;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  width: rem(270);
+  flex-shrink: 0;
+  background-color: $color-background-primary;
+  
+  @include breakpoint-up(lg) {
+    width: rem(300);
+  }
+  
+  &:hover {
+    text-decoration: none;
+    
+    .contact-button__line {
+      transform: translateX(rem(15));
+    }
+  }
+  
+  &--phone {
+    border-color: $color-brand-primary;
+    
+    .contact-button__line {
+      background-color: $color-brand-primary;
+    }
+  }
+  
+  &--line {
+    border-color: #00B900;
+    
+    .contact-button__line {
+      background-color: #00B900;
+    }
+  }
+}
+
+.contact-button__line {
+  position: absolute;
+  left: rem(-30);
+  width: rem(40);
+  height: 1px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.contact-button__content {
+  display: flex;
+  align-items: center;
+  gap: rem(10);
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-button__text,
+.contact-button__detail {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.contact-button__icon {
+  position: absolute;
+  right: rem(30);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(20);
+  height: rem(20);
+  
+  img, svg {
+    width: 100%;
+    height: 100%;
+    fill: $color-text-primary;
+  }
+}
+
+// 来店予約のQ&Aセクション
+.reserve-qa-section {
+  background: $color-background-secondary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.reserve-qa-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+}
+
+.qa-title-q {
+  color: $color-background-gender-male;
+}
+
+.qa-title-a {
+  color: $color-background-gender-female;
+}
+
+.qa-list {
+  max-width: rem(1200);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  @include breakpoint-up(sm) {
+    gap: rem(30);
+  }
+  @include breakpoint-up(lg) {
+    gap: rem(40);
+  }
+}
+
+.qa-item {
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.qa-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: rem(20);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: $color-background-tertiary;
+  border: solid 1px $color-border-primary;
+  border-radius: $radius-m;
+  
+  @include breakpoint-up(sm) {
+  }
+  
+  &:hover {
+    background: rgba($color-brand-primary, 0.05);
+  }
+}
+
+.qa-question-content {
+  display: flex;
+  gap: rem(8);
+  flex: 1;
+}
+
+.qa-question-text {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  flex: 1;
+  padding-top: rem(8);
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+      padding-top: rem(12);
+    }
+  
+}
+
+.qa-question-number {
+  @include typography-en-m($font-weight-semibold);
+  color: $color-text-gender-male;
+  flex-shrink: 0;
+  width: rem(40);
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-l($font-weight-semibold);
+    width: rem(65);
+  }
+}
+
+.qa-toggle {
+  width: rem(30);
+  height: rem(30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: rem(4);
+  transition: transform 0.3s ease;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    width: rem(36);
+    height: rem(36);
+  }
+}
+
+.qa-toggle-icon {
+  position: relative;
+  width: rem(16);
+  height: rem(16);
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: $color-border-primary;
+    transition: all 0.3s ease;
+  }
+  
+  // 縦線
+  &::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: rem(2);
+    height: rem(16);
+  }
+  
+  // 横線
+  &::after {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: rem(16);
+    height: rem(2);
+  }
+  
+  @include breakpoint-up(sm) {
+    width: rem(18);
+    height: rem(18);
+    
+    &::before {
+      height: rem(18);
+    }
+    
+    &::after {
+      width: rem(18);
+    }
+  }
+}
+
+.qa-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.qa-answer-content {
+  padding: rem(20);
+  background-color: $color-background-primary;
+  border-right: solid 1px $color-border-primary;
+  border-left: solid 1px $color-border-primary;
+  border-bottom: solid 1px $color-border-primary;
+  display: flex;
+  gap: rem(8);
+  border-radius: 0 0 $radius-m $radius-m;
+  
+  @include breakpoint-up(sm) {
+
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+    padding-top: rem(8);
+    @include breakpoint-up(xl) {
+      padding-top: rem(12);
+    }
+  } 
+}
+
+.qa-answer-label {
+  @include typography-en-m($font-weight-semibold);
+  color: $color-text-gender-female;
+  flex-shrink: 0;
+  width: rem(40);
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-l($font-weight-semibold);
+    width: rem(65);
+  }
+}
+
+// アクティブ状態
+.qa-item.active {
+  .qa-question {
+    border-radius: $radius-m $radius-m 0 0;
+  }
+  
+  .qa-toggle-icon {
+    &::before {
+      opacity: 0;
+    }
+  }
+  
+  .qa-answer {
+    max-height: rem(200);
   }
 }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const qaToggles = document.querySelectorAll('[data-qa-toggle]');
+    
+    qaToggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const qaItem = this.closest('.qa-item');
+        
+        // 他のアイテムを閉じる
+        qaToggles.forEach(otherToggle => {
+          const otherItem = otherToggle.closest('.qa-item');
+          if (otherItem !== qaItem) {
+            otherItem.classList.remove('active');
+          }
+        });
+        
+        // 現在のアイテムをトグル
+        if (qaItem.classList.contains('active')) {
+          qaItem.classList.remove('active');
+        } else {
+          qaItem.classList.add('active');
+        }
+      });
+    });
+  });
+</script>

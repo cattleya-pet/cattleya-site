@@ -810,11 +810,11 @@ const recruitmentRequirementsData = [
   align-items: center;
   gap: rem(12);
   
-  @include breakpoint-up(md) {
+  @include breakpoint-up(lg) {
     flex-direction: row;
     justify-content: center;
     align-items: stretch; // カードの高さを揃える
-    max-width: rem(1200);
+    max-width: rem(1400);
     margin: 0 auto;
   }
   @include breakpoint-up(lg) {
@@ -823,12 +823,16 @@ const recruitmentRequirementsData = [
 
 .recruit-process-step {
   width: 100%;
-  max-width: rem(320);
   display: flex; // カードを引き伸ばすためのflex
   
-  @include breakpoint-up(md) {
+  @include breakpoint-up(sm) {
+    width: 70%;
+  }
+  
+  @include breakpoint-up(lg) {
     flex: 1;
     max-width: rem(440);
+    width: auto;
   }
 }
 
@@ -926,9 +930,6 @@ const recruitmentRequirementsData = [
   color: $color-text-primary;
   margin: 0;
   
-  @include breakpoint-up(lg) {
-    @include typography-ja-l($font-weight-semibold);
-  }
 }
 
 .recruit-process-step-icon {
@@ -991,10 +992,10 @@ const recruitmentRequirementsData = [
   justify-content: center;
   transform: rotate(90deg); // md未満では時計回りに90度回転
   
-  @include breakpoint-up(md) {
+  @include breakpoint-up(lg) {
     width: rem(40);
     height: rem(40);
-    transform: rotate(0deg); // md以上では回転なし（元の向き）
+    transform: rotate(0deg); // lg以上では回転なし（元の向き）
     align-self: center; // カードの高さの真ん中に配置
   }
   
