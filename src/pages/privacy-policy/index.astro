@@ -1,0 +1,379 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'プライバシーポリシー' }
+];
+---
+
+<Layout title="プライバシーポリシー | カトレア" description="カトレアのプライバシーポリシーをご確認ください。">
+  <main>
+    <HeroSection 
+      title="プライバシーポリシー"
+      image="/src/assets/images/backgrounds/img_bg-hero_privacy-policy-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- プライバシーポリシーメインセクション -->
+    <section class="privacy-policy-section">
+      <div class="container">
+        <div class="privacy-policy-content">
+          <!-- 導入文 -->
+          <div class="privacy-policy-introduction">
+            <p class="privacy-policy-intro-text">
+              当社は、個人情報保護の重要性に鑑み、また保険業に対するお客様の信頼をより向上させるため、個人情報の保護に関する法律（個人情報保護法）、その他の関係法令、関係官庁からのガイドラインなどを遵守して、個人情報を厳正・適切に取扱うとともに、安全管理について適切な措置を講じます。<br><br>
+              当社は、個人情報の取扱いが適正に行われるように、従業者への教育・指導を徹底し、適正な取扱いが行われるよう取組んでまいります。また、個人情報の取扱いに関する苦情・ご相談に迅速に対応し、当社の個人情報の取扱い及び安全管理に係る適切な措置については、適宜見直し、改善いたします。
+            </p>
+          </div>
+
+          <!-- 条文リスト -->
+          <div class="privacy-policy-articles">
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第1条：個人情報の取得</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社は、業務上必要な範囲内で、かつ、適法で公正な手段により個人情報を取得します。
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">​第2条：個人情報の利用目的</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社はペットショップ業を営んでおり、当該業務の遂行に必要な範囲においても、取得した個人情報を利用します。<br>
+                  また、保険会社から保険募集業務の委託を受けて、取得した個人情報についても、当該業務の遂行に必要な範囲内で利用します。<br>
+                  当社において、お預かりしている個人情報と具体的な個人情報の利用目的は次のとおりであり、これ以外の他の目的に利用することはありません。<br><br>
+
+                  (1)お預かりしている個人情報<br>
+                  氏名、電話番号、メールアドレス、LINE IDまたはお客様のLINEプロフィール情報<br><br>
+
+                  (2)具体的な利用目的<br>
+                  ＜お客様の個人情報＞<br>
+                  ①お迎えいただいたどうぶつに対するアフターサービスの提供のため<br>
+                  ②その他商品の発送やアフターサービスの提供のため<br>
+                  ③当社の新商品・サービス、キャンペーンに関する情報のお知らせのため<br>
+                  ④当社が取扱う保険商品および、これらに付帯・関連するサービスの提案・提供のため<br>
+                  ※当社に対し、保険業務の委託を行う保険会社の利用目的は、保険会社のホームぺージ(以下)に記載しております。<br>
+                  ・アニコム損害保険株式会社（<a href="https://www.anicom-sompo.co.jp/" target="_blank" rel="noopener noreferrer">https://www.anicom-sompo.co.jp</a>）<br>
+                  ・ペット＆ファミリー損害保険株式会社（<a href="https://www.anicom-sompo.co.jp/" target="_blank" rel="noopener noreferrer">https://www.petfamilyins.co.jp</a>）<br><br>
+                  ＜お取引先様に関する個人情報(※法人のお客様の場合はその役職員の皆様)＞<br>
+                  ①業務上必要なご連絡、契約の履行、商談等の対応のため<br>
+                  ②取引先情報の管理のため<br><br>
+
+                  ＜社員、社員の採用に関する個人情報(※雇用(役職員等)管理情報＞<br>
+                  ①業務上必要な連絡、報酬の支払い、人事・労務管理の履行、福利厚生の提供のため<br>
+                  ②採用活動に必要な連絡、各種管理のため<br>
+
+                  なお、上記の利用目的の変更は、相当の関連性を有すると合理的に認められている範囲内で行います。変更した場合には、その内容をご本人に通知する、もしくはホームページなどにより公表します。　
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第3条：個人データの安全管理措置</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社は、取扱う個人情報について、漏えい、滅失または毀損の防止、その他の適切な管理のための措置を、以下のとおり講じています。
+                  <br><br>
+                  ＜基本方針の策定＞<br>
+                  ・個人情報の適正な取扱いの確保、質問及び苦情処理の窓口周知のための本基本方針を策定<br><br>
+                  ＜個人データの取扱いに係る規律の整備＞<br>
+                  ・個人データの取得、利用、保存等を行う場合の基本的な取扱い方法を整備<br><br>
+                  ＜組織的安全管理措置＞<br>
+                  ・整備した取扱方法に従って個人データが取扱われていることを責任者が確認<br>
+                  ・事業者から責任者に対する報告連絡体制を整備<br><br>
+                  ＜人的安全管理措置＞<br>
+                  ・個人情報の取扱いに関する留意事項について、従業者に定期的な研修を実施<br>
+                  ・個人情報についての秘密保持に関する事項を就業規則に記載<br><br>
+                  ＜物理的安全管理措置＞<br>
+                  ・個人情報を取扱う区域において、従業者の入退室管理及び持ち込む機器等の制限を行うとともに、権限を有しない者による個人情報の閲覧を防止する措置を実施<br>
+                  ・個人情報を取扱う機器・電子媒体及び書類等の盗難又は紛失等を防止するための措置を実施<br>
+                  ・事業所内の移動を含め、個人情報を取扱う機器、電子媒体等を持ち運ぶ場合、容易に個人情報が判明しないよう措置を実施<br><br>
+                  ＜技術的安全管理措置＞<br>
+                  ・アクセス制御を実施して、担当者及び取扱う個人情報の範囲を限定<br>
+                  ・個人情報を取扱う情報システムを外部からの不正アクセス又は不正ソフトウェアから保護する仕組みを導入
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第4条：個人データの第三者への提供</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社は、次の場合を除き、ご本人の同意を得ることなく、個人情報を第三者に提供することはありません。<br><br>
+                  (1)法令に基づく場合<br>
+                  (2)人の生命、身体又は財産の保護のために必要がある場合であって、本人の同意を得ることが困難であるとき。<br>
+                  (3)公衆衛生の向上又は児童の健全な育成の推進のために特に必要がある場合であって、本人の同意を得ることが困難であるとき。<br>
+                  (4)国の機関若しくは地方公共団体又はその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合であって、本人の同意を得ることにより当該事務の遂行に支障を及ぼすおそれがあるとき。<br><br>
+                  また、個人データを第三者に提供したとき、あるいは第三者から提供を受けたときは、提供・取得経緯等の確認を行うとともに、提供先・提供者の氏名等、法令で定める事項を記録し、保管します。
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第5条：委託</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社はお客様への商品の発送業務を第三者に委託することがあります。この場合、当社は個人情報保護法に従い、委託先に対する必要かつ適切な監督を行います。
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第6条：センシティブ情報の取扱い</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  当社は、要配慮個人情報（人種、信条、社会的身分、病歴、前科・前歴、犯罪被害情報などをいいます）ならびに労働組合への加盟、門地および本籍地、保健医療および性生活（これらのうち要配慮個人情報に該当するものを除く）に関する情報（センシティブ情報）については、次の場合を除き、原則として取得、利用または第三者提供を行いません。<br><br>
+                  (1) 法令等に基づく場合<br>
+                  (2) 人の生命、身体又は財産の保護のために必要がある場合<br>
+                  (3) 公衆衛生の向上又は児童の健全な育成の推進のため特に必要がある場合<br>
+                  (4) 国の機関若しくは地方公共団体又はその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合<br>
+                  (5) 個人情報保護法第20条第２項第６号に掲げる場合にセンシティブ情報を取得する場合、同法第18条第３項第６号に掲げる場合にセンシティブ情報を利用する場合、または同法第27条第1項第７号に掲げる場合にセンシティブ情報を第三者提供する場合<br>
+                  (6) 源泉徴収事務等の遂行上必要な範囲において、政治・宗教等の団体若しくは労働組合への所属若しくは加盟に関する従業員等のセンシティブ情報を取得、利用又は第三者提供する場合<br>
+                  (7) 相続手続による権利義務の移転等の遂行に必要な限りにおいて、センシティブ情報を取得、利用又は第三者提供する場合<br>
+                  (8) 保険業その他金融分野の事業の適切な業務運営を確保する必要性から、本人の同意に基づき業務遂行上必要な範囲でセンシティブ情報を取得、利用又は第三者提供する場合<br>
+                  (9)センシティブ情報に該当する生体認証情報を本人の同意に基づき、本人確認に用いる場合<br>
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第7条：匿名加工情報の取扱い</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  (1)匿名加工情報の作成<br>
+                  当社は、匿名加工情報（法令に定める措置を講じて特定の個人を識別することができないように個人情報を加工して得られる個人に関する情報であって、当該個人情報を復元することができないようにしたもの）を作成する場合には、以下の対応を行います。<br>
+                  ・法令で定める基準に従って、適正な加工を施すこと<br>
+                  ・法令で定める基準に従って、削除した情報や加工の方法に関する情報の漏えいを防止するために安全管理措置を講じること<br>
+                  ・作成した匿名加工情報に含まれる情報の項目を公表すること<br>
+                  ・作成の元となった個人情報の本人を識別するための行為をしないこと<br><br>
+
+                  (2)匿名加工情報の提供<br>
+                  当社は、匿名加工情報を第三者に提供する場合には、提供しようとする匿名加工情報に含まれる個人に関する情報の項目と提供の方法を公表するとともに、提供先となる第三者に対して、提供する情報が匿名加工情報であることを明示します。
+                </p>    
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第8条：個人情報保護法に基づく保有個人データの開示、訂正、利用停止など</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  個人情報保護法に基づく保有個人データに関する開示、訂正または利用停止などに関するご請求については、請求者がご本人であることを確認させていただいたうえで、次の場合を除き、遅滞なく手続きを行います。なお、開示しない場合または当該保有個人データが存在しない場合には、その旨を回答します。保険会社や他社の保有個人データに関しては当該会社に対してお取次ぎいたします。<br>
+                  (1)本人または、第三者の生命、身体、財産その他の権利利益を害するおそれがある場合<br>
+                  (2)当社の業務の適正な実施に著しい支障を及ぼすおそれがある場合<br>
+                  (3)法令に違反することとなる場合<br><br>
+
+                  また当社は、本人またはその代理人から、当該保有個人データに関して、訂正、追加、削除のご請求、または利用の停止、消去、第三者提供の停止のご請求があった場合は、調査のうえ法令に従って対応させていただきます。<br>
+                  なお、上記開示などのお手続きについては所定の手数料をいただきます。手続きを希望される方は、下記お問い合わせ先までお申し付けください。
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第9条：クッキーおよび外部サービスの利用</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  (1)クッキーの利用について当社は、ユーザーにより良いサービスを提供するため、クッキー（Cookie）を使用しています。クッキーは、ウェブサイト訪問者のデバイスに保存される小さなテキストファイルであり、次の目的で使用されます。<br>
+                  ・サイトの利便性向上およびユーザー体験の最適化<br>
+                  ・サイトのパフォーマンスおよび利用状況の分析<br>
+                  ユーザーは、ブラウザの設定によりクッキーを無効化することができます。ただし、クッキーを無効化することで、当社ウェブサイトの一部機能が利用できなくなる場合があります。<br><br>(2)Googleアナリティクスの利用について<br>
+                  当社では、Google LLCが提供するアクセス解析サービス「Googleアナリティクス」を利用しています。Googleアナリティクスでは、クッキーを使用してウェブサイト利用者の行動を収集し、分析することで、ウェブサイトの改善や最適化に役立てています。<br>
+                  ・Googleアナリティクスが収集する情報には、個人を特定できない形でIPアドレスやアクセス状況が含まれます。<br>
+                  ・詳細については、<a href="https://marketingplatform.google.com/about/analytics/terms/jp" target="_blank" rel="noopener noreferrer">Googleアナリティクス利用規約</a>を確認ください。<br>
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第10条：プライバシーポリシーの変更</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  ・本ポリシーの内容は、法令その他本ポリシーに別段の定めのある事項を除いてユーザーに通知することなく変更することができるものとします。<br>・当社が別途定める場合を除いて、変更後のプライバシーポリシーは本ウェブサイトに掲載したときから効力を生じるものとします。
+                </p>
+              </div>
+            </article>
+
+            <article class="privacy-policy-article">
+              <h2 class="privacy-policy-article-title">第11条：お問い合わせについて</h2>
+              <div class="privacy-policy-article-content">
+                <p>
+                  ご連絡先は以下のとおりです。また保険契約に関する照会については、各保険会社の窓口にもお問い合わせいただくことができます。なお、照会者がご本人であることを確認させていただいたうえで、対応させていただきますので、あらかじめご了承願います。<br><br><お問い合わせ窓口><br>株式会社 Cattleya<br><a href="https://www.cattleya-pet.com/contact" target="_blank" rel="noopener noreferrer">https://www.cattleya-pet.com/contact</a><br>電話　03-6709-2092<br>受付時間　11:00~20:00<br>
+                </p>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- 制定日 -->
+          <div class="privacy-policy-date">
+            <p>改定日　2025年3月1日</p>
+            <p>株式会社 Cattleya<br>〒144-0051<br>東京都大田区西蒲田3丁目5番2 102<br>代表取締役　木村 亮<br><br>H2202-0026 22年2月　YG021-2202-00</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+.privacy-policy-section {
+  background-color: $color-background-primary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.privacy-policy-content {
+  max-width: rem(1400);
+  margin: 0 auto;
+}
+
+.privacy-policy-introduction {
+  margin-bottom: rem(60);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(100);
+  }
+}
+
+.privacy-policy-intro-text {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.privacy-policy-articles {
+  margin-bottom: rem(60);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+}
+
+.privacy-policy-article {
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.privacy-policy-article-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-secondary;
+  margin-bottom: rem(10);
+  padding-bottom: rem(10);
+  border-bottom: 1px solid $color-text-secondary;
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(15);
+    padding-bottom: rem(15);
+  }
+}
+
+.privacy-policy-article-content {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(20) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+    text-decoration-color: $color-text-link;
+    font-weight: $font-weight-semibold;
+    
+    &:hover {
+      color: $color-text-link-hover;
+      text-decoration-color: $color-text-link-hover;
+    }
+  }
+}
+
+.privacy-policy-list {
+  margin: rem(15) 0;
+  padding-left: rem(20);
+  
+  li {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin-bottom: rem(8);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.privacy-policy-contact {
+  background-color: $color-background-primary;
+  padding: rem(20);
+  border-radius: $radius-s;
+  margin-top: rem(15);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30);
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    margin: 0 0 rem(8) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.privacy-policy-date {
+  text-align: right;
+  padding-top: rem(40);
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-secondary;
+    margin: 0 0 rem(5) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+</style>

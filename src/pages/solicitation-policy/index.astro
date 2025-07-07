@@ -1,0 +1,282 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '勧誘方針' }
+];
+---
+
+<Layout title="勧誘方針 | カトレア" description="カトレアの勧誘方針をご確認ください。">
+  <main>
+    <HeroSection 
+      title="勧誘方針"
+      image="/src/assets/images/backgrounds/img_bg-hero_solicitation-policy-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- 勧誘方針メインセクション -->
+    <section class="solicitation-policy-section">
+      <div class="container">
+        <div class="solicitation-policy-content">
+          <!-- 導入文 -->
+          <div class="solicitation-policy-introduction">
+            <p class="solicitation-policy-intro-text">
+              弊店は、動物を「種を超えた家族」と位置づけ、保険商品の販売を通じて、お客様とどうぶつの生活を守り、より安心で、より豊かな社会を築くことに努めます。
+            </p>
+          </div>
+
+          <!-- 条文リスト -->
+          <div class="solicitation-policy-articles">
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">基本理念</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  保険商品を販売するものとしての高い倫理観に基づき、誠実に行動いたします。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">お客様本意</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  お客様の保険商品に関する知識、ご経験、保険商品購入の目的などを総合的に勘案し、お客様のご意向と実情に沿った保険商品の説明および提供に努めます。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">節度ある行動</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  お客様にご迷惑をおかけする時間帯や場所、方法での勧誘はいたしません。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">説明義務の履行</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  お客様に保険商品について重要事項を正しく理解いただけるように努めます。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">プライバシー保護</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  お客様のプライバシーを尊重するとともに、お客様に関する情報については、適正な取扱いおよび厳正な管理をいたします。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">質の高いサービス</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  適正な業務を確保するために、社内体制の整備や販売に携わる者の研修に取り組みます。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">法令の遵守</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  保険業法、金融サービスの提供に関する法律、消費者契約法、金融商品取引法、個人情報の保護に関する法律、その他の関係法令等を遵守します。
+                </p>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">比較推奨方針について</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  当社では取り扱い保険商品に関して、比較推奨方針を公開しています。詳細は以下のリンクからご確認ください。
+                </p>
+                <a href="/comparison-policy" class="solicitation-policy-article-link" target="_blank" rel="noopener noreferrer">比較推奨方針</a>
+              </div>
+            </article>
+
+            <article class="solicitation-policy-article">
+              <h2 class="solicitation-policy-article-title">代理店名・連絡先</h2>
+              <div class="solicitation-policy-article-content">
+                <p>
+                  PG036-2111-00<br>
+                  株式会社Cattleya<br>
+                  東京都新宿区新宿三丁目24番7号 第6ウイザードセブンビル<br>電話　03-6709-2092（受付時間：11:00〜20:00）<br>メールアドレス：info@cattleya-pet.com
+                </p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+.solicitation-policy-section {
+  background-color: $color-background-primary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.solicitation-policy-content {
+  max-width: rem(1400);
+  margin: 0 auto;
+}
+
+.solicitation-policy-introduction {
+  margin-bottom: rem(60);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(100);
+  }
+}
+
+.solicitation-policy-intro-text {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.solicitation-policy-articles {
+  margin-bottom: rem(60);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+}
+
+.solicitation-policy-article {
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.solicitation-policy-article-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-secondary;
+  margin-bottom: rem(10);
+  padding-bottom: rem(10);
+  border-bottom: 1px solid $color-text-secondary;
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(15);
+    padding-bottom: rem(15);
+  }
+}
+
+.solicitation-policy-article-content {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(20) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+    text-decoration-color: $color-text-link;
+    font-weight: $font-weight-semibold;
+    
+    &:hover {
+      color: $color-text-link-hover;
+      text-decoration-color: $color-text-link-hover;
+    }
+  }
+}
+
+.solicitation-policy-list {
+  margin: rem(15) 0;
+  padding-left: rem(20);
+  
+  li {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin-bottom: rem(8);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.solicitation-policy-contact {
+  background-color: $color-background-primary;
+  padding: rem(20);
+  border-radius: $radius-s;
+  margin-top: rem(15);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30);
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    margin: 0 0 rem(8) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.solicitation-policy-date {
+  text-align: right;
+  padding-top: rem(40);
+  border-top: 1px solid $color-border-tertiary;
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-secondary;
+    margin: 0 0 rem(5) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+</style>
