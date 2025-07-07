@@ -1,0 +1,226 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: '比較推奨方針' }
+];
+---
+
+<Layout title="比較推奨方針 | カトレア" description="カトレアの比較推奨方針をご確認ください。">
+  <main>
+    <HeroSection 
+      title="比較推奨方針"
+      image="/src/assets/images/backgrounds/img_bg-hero_comparison-policy-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- 比較推奨方針メインセクション -->
+    <section class="comparison-policy-section">
+      <div class="container">
+        <div class="comparison-policy-content">
+          <div class="document-paper">
+            
+            <!-- 見出し -->
+            <h2 class="document-title">カトレアで取り扱うペット保険</h2>
+            
+            <!-- 会社情報 -->
+            <div class="company-info">
+              株式会社Cattleya<br>
+              03-6709-2902
+            </div>
+
+            <!-- 条文セクション -->
+            <div class="document-sections">
+              <section class="document-section">
+                <h3 class="document-section-title">（１）当社の権限</h3>
+                <div class="document-section-content">
+                  <p>
+                    当社は複数の保険会社の商品を取扱う乗合代理店です。当社では、アニコム損害保険株式会社、ペット&ファミリー損害保険株式会社の保険契約の締結の代理または媒介を行います。
+                  </p>
+                </div>
+              </section>
+
+              <section class="document-section">
+                <h3 class="document-section-title">（２）比較・推奨販売にかかる基本方針</h3>
+                <div class="document-section-content">
+                  <p>
+                    <strong>■アニコム損害保険株式会社</strong><br>
+                    当社では、以下の理由から、アニコム損害保険株式会社の商品を主に取り扱う経営方針です。<br>
+                    ・動物病院での精算が簡単な「窓口精算」に対応しており、飼い主様が立て替え不要である<br>
+                    ・付帯サービスが充実しており、ペットの健康管理をトータルでサポートしている<br>
+                    ・獣医師やペットケアに関する情報提供が豊富で、飼い主様の不安を軽減できる<br><br>
+
+                    <strong>①ペットの引渡と同時に保険募集する場合</strong><br>
+                    どうぶつの引渡と同時に保険募集を行う場合には、幼齢のペットが環境変化により体調を崩しやすいことから、生体引渡と同時に補償が開始する商品をお勧めします。<br>
+                    ※契約締結の代理を行います。<br><br>
+
+                    <strong>②既にペットと暮らしているお客様に対して募集する場合</strong><br>
+                    既にペットと暮らしているお客様に対して募集する場合には、契約時期に制約のない商品をお勧めします。<br>
+                    ※契約締結の媒介を行います。<br><br>
+
+                    ※各商品には上限年齢等の諸条件があります。<br>
+                    ※保険会社および商品の選択について、お客様のご意向を妨げるものではありません。取扱い損害保険会社等の中から、当社推奨会社以外の商品もご契約いただけますので、募集人にお問い合わせください。
+                  </p>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- 以上 -->
+            <div class="document-ending">
+              以上
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+.comparison-policy-section {
+  background-color: $color-background-primary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.comparison-policy-content {
+  max-width: rem(1200);
+  margin: 0 auto;
+}
+
+.document-paper {
+  background-color: $color-background-tertiary;
+  padding: rem(40) rem(30);
+  border-radius: $radius-m;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(60) rem(50);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(80) rem(70);
+  }
+}
+
+.document-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin-bottom: rem(30);
+  
+  @include breakpoint-up(lg) {
+    @include typography-ja-l($font-weight-semibold);
+    margin-bottom: rem(40);
+  }
+}
+
+.company-info {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  text-align: right;
+  margin-bottom: rem(40);
+  line-height: 1.6;
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(50);
+  }
+}
+
+.document-introduction {
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(60);
+  }
+}
+
+.document-intro-text {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+  text-align: left;
+}
+
+.document-sections {
+  .document-section {
+    margin-bottom: rem(40);
+    
+    @include breakpoint-up(lg) {
+      margin-bottom: rem(50);
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.document-section-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-secondary;
+  margin-bottom: rem(15);
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(20);
+  }
+}
+
+.document-section-content {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(15) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+    text-decoration-color: $color-text-link;
+    font-weight: $font-weight-semibold;
+    
+    &:hover {
+      color: $color-text-link-hover;
+      text-decoration-color: $color-text-link-hover;
+    }
+  }
+}
+
+.document-ending {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  text-align: right;
+  margin-top: rem(40);
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(50);
+  }
+}
+</style>

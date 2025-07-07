@@ -105,6 +105,12 @@ const breadcrumbItems = [
               </div>
             </article>
 
+            <div class="solicitation-policy-statement">
+              <p>
+                以上の方針は、「金融サービスの提供に関する法律」に基づく弊店の「勧誘方針」です。
+              </p>
+            </div>
+
             <article class="solicitation-policy-article">
               <h2 class="solicitation-policy-article-title">代理店名・連絡先</h2>
               <div class="solicitation-policy-article-content">
@@ -261,6 +267,22 @@ const breadcrumbItems = [
     &:last-child {
       margin-bottom: 0;
     }
+  }
+}
+
+.solicitation-policy-statement {
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0;
+    text-align: left;
   }
 }
 
