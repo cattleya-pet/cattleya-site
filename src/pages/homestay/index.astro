@@ -1,0 +1,2848 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import BaseButton from '../../components/ui/buttons/BaseButton.astro';
+import footprintIcon from '../../assets/icons/icon_step-cat-footprints-01.svg';
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+import lineIcon from '../../assets/icons/icon_line-01.svg';
+import { getAllStores } from '../../lib/api/stores';
+
+// 店舗データを取得
+const stores = await getAllStores();
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'ホームステイ' }
+];
+---
+
+<Layout title="ホームステイ" description="ワンちゃん&ネコちゃんのホームステイサービス。1泊2日または2泊3日、一律税込10,000円でご利用いただけます。">
+  <main>
+    <!-- ヒーローセクション -->
+    <section class="homestay-hero">
+      <!-- パンくずリスト（モバイルではコンテナ内、デスクトップではコンテナ外） -->
+      <nav class="breadcrumb-nav breadcrumb-nav--mobile">
+        <div class="breadcrumb-container">
+          <ol class="breadcrumb">
+            {breadcrumbItems.map((item, index) => (
+              <li class="breadcrumb-item">
+                {item.href ? (
+                  <a href={item.href} class="breadcrumb-link">{item.label}</a>
+                ) : (
+                  <span class="breadcrumb-current">{item.label}</span>
+                )}
+                {index < breadcrumbItems.length - 1 && (
+                  <span class="breadcrumb-separator">></span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </nav>
+      
+      <div class="homestay-hero-container">
+
+        <!-- ヒーローコンテンツ -->
+        <div class="homestay-hero-content">
+          <!-- 見出し -->
+          <h1 class="homestay-hero-title">
+            <span class="homestay-hero-title-main">ワンちゃん&ネコちゃんの</span>
+            <span class="homestay-hero-title-sub">
+              <!-- 肉球アイコン -->
+              <img src="/src/assets/icons/icon_step-cat-footprints-02.svg" alt="肉球" class="homestay-hero-icon" />
+              ホームステイ
+            </span>
+          </h1>
+
+          <!-- ヒーロー画像 -->
+          <div class="homestay-hero-image">
+            <img src="/src/assets/images/backgrounds/img_bg-hero_homestay-01.webp" alt="ホームステイ" />
+          </div>
+
+          <!-- 情報ボックス -->
+          <div class="homestay-hero-boxes">
+            <!-- ボックス1：選べる泊数 -->
+            <div class="homestay-hero-box">
+              <h2 class="homestay-hero-box-title">選べる泊数</h2>
+              <div class="homestay-hero-box-content">
+                <div class="homestay-hero-checklist">
+                  <div class="homestay-hero-check-item">
+                    <img src="/src/assets/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
+                    <span class="homestay-hero-check-text">
+                      <span class="homestay-hero-check-number">1</span>泊<span class="homestay-hero-check-number">2</span>日 or <span class="homestay-hero-check-number">2</span>泊<span class="homestay-hero-check-number">3</span>日
+                    </span>
+                  </div>
+                  <div class="homestay-hero-check-item">
+                    <img src="/src/assets/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
+                    <span class="homestay-hero-check-text">
+                      一律税込<span class="homestay-hero-check-number">10,000</span>円
+                    </span>
+                  </div>
+                </div>
+                <p class="homestay-hero-note">
+                  ※ホームステイ後ご購入の場合、頭金として充当させていただきます
+                </p>
+              </div>
+            </div>
+
+            <!-- ボックス2：お泊りセットつき -->
+            <div class="homestay-hero-box">
+              <h2 class="homestay-hero-box-title">お泊りセットつき</h2>
+              <div class="homestay-hero-box-content">
+                <div class="homestay-hero-goods-image">
+                  <img src="/src/assets/images/content/img_homestay-goods-02.webp" alt="お泊りセット" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- デスクトップ用パンくずリスト -->
+    <nav class="breadcrumb-nav breadcrumb-nav--desktop">
+      <div class="breadcrumb-container">
+        <ol class="breadcrumb">
+          {breadcrumbItems.map((item, index) => (
+            <li class="breadcrumb-item">
+              {item.href ? (
+                <a href={item.href} class="breadcrumb-link">{item.label}</a>
+              ) : (
+                <span class="breadcrumb-current">{item.label}</span>
+              )}
+              {index < breadcrumbItems.length - 1 && (
+                <span class="breadcrumb-separator">></span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+
+    <!-- こんなご不安ありませんか？セクション -->
+    <section class="homestay-concerns-section">
+      <div class="homestay-concerns-container">
+        <h2 class="homestay-concerns-title">こんなご不安ありませんか？</h2>
+        
+        <!-- モバイル版レイアウト -->
+        <div class="homestay-concerns-mobile">
+          <!-- 吹き出し1 -->
+          <div class="homestay-concerns-bubble homestay-concerns-bubble--right">
+            <p class="homestay-concerns-bubble-text">
+              ペットを飼うのは<br>
+              初めてだけど、<br>
+              ちゃんとお世話できるかな...
+            </p>
+          </div>
+          
+          <!-- 吹き出し2 -->
+          <div class="homestay-concerns-bubble homestay-concerns-bubble--right">
+            <p class="homestay-concerns-bubble-text">
+              家族や先住ペットと<br>
+              仲良く暮らせるかな...
+            </p>
+          </div>
+          
+          <!-- 吹き出し3 -->
+          <div class="homestay-concerns-bubble homestay-concerns-bubble--left">
+            <p class="homestay-concerns-bubble-text">
+              アレルギー反応は<br>大丈夫かな....
+            </p>
+          </div>
+          
+          <!-- 画像群 -->
+          <div class="homestay-concerns-images">
+            <img src="/src/assets/images/content/img_homestay_human-01.webp" alt="心配する人1" />
+            <img src="/src/assets/images/content/img_homestay_human-02.webp" alt="心配する人2" />
+            <img src="/src/assets/images/content/img_homestay_human-03.webp" alt="心配する人3" />
+          </div>
+        </div>
+        
+        <!-- デスクトップ版レイアウト -->
+        <div class="homestay-concerns-desktop">
+          <!-- 左エリア -->
+          <div class="homestay-concerns-area">
+            <div class="homestay-concerns-bubble homestay-concerns-bubble--right">
+              <p class="homestay-concerns-bubble-text">
+                ペットを飼うのは<br>
+              初めてだけど、<br>
+              ちゃんとお世話できるかな...
+              </p>
+            </div>
+            <div class="homestay-concerns-image">
+              <img src="/src/assets/images/content/img_homestay_human-01.webp" alt="心配する人1" />
+            </div>
+          </div>
+          
+          <!-- 中央エリア -->
+          <div class="homestay-concerns-area">
+            <div class="homestay-concerns-bubble homestay-concerns-bubble--right">
+              <p class="homestay-concerns-bubble-text">
+                家族や先住ペットと<br>
+              仲良く暮らせるかな...
+              </p>
+            </div>
+            <div class="homestay-concerns-image">
+              <img src="/src/assets/images/content/img_homestay_human-02.webp" alt="心配する人2" />
+            </div>
+          </div>
+          
+          <!-- 右エリア -->
+          <div class="homestay-concerns-area">
+            <div class="homestay-concerns-bubble homestay-concerns-bubble--left">
+              <p class="homestay-concerns-bubble-text">
+                アレルギー反応は<br>大丈夫かな....
+              </p>
+            </div>
+            <div class="homestay-concerns-image">
+              <img src="/src/assets/images/content/img_homestay_human-03.webp" alt="心配する人3" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ホームステイソリューションセクション -->
+    <section class="homestay-solution-section">
+      <div class="homestay-solution-container">
+        <h2 class="homestay-solution-title">
+          <div class="homestay-solution-title-line">
+            <img src="/src/assets/images/ui/icon_homestay_solution-text-01.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--left" />
+            <span class="homestay-solution-title-text homestay-solution-title-text--sub">そんな悩みを解決するのが</span>
+            <img src="/src/assets/images/ui/icon_homestay_solution-text-01.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--right" />
+          </div>
+          <div class="homestay-solution-title-line">
+            <img src="/src/assets/images/ui/icon_homestay_solution-text-02.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--left" />
+            <span class="homestay-solution-title-text homestay-solution-title-text--main">ホームステイ</span>
+            <img src="/src/assets/images/ui/icon_homestay_solution-text-02.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--right" />
+          </div>
+        </h2>
+        
+        <!-- モバイル版レイアウト -->
+        <div class="homestay-solution-mobile">
+          <!-- メイン画像 -->
+          <div class="homestay-solution-main-image">
+            <img src="/src/assets/images/content/img_homestay_solution-01.webp" alt="ホームステイソリューション" />
+          </div>
+          
+          <!-- コンテンツボックス -->
+          <div class="homestay-solution-content-box">
+            <!-- 説明文 -->
+            <div class="homestay-solution-description">
+              <p>
+                ホームステイではワンちゃん・ネコちゃんを実際にお家に迎え入れて、お世話をしていただきます。<br>
+                環境・お客様・ご家族・先住ペットなどとの相性を見ていただくことでお客様の不安を取り除きたい。<br>
+                そんな想いで始めた取り組みです。
+              </p>
+            </div>
+            
+            <!-- スタッフ画像 -->
+            <div class="homestay-solution-staff-image">
+              <img src="/src/assets/images/content/img_homestay_staff-01.webp" alt="ホームステイスタッフ" />
+            </div>
+          </div>
+          
+          <!-- ボタン -->
+          <div class="homestay-solution-button">
+            <BaseButton href="/flow" variant="short" text="お迎えまでの流れを確認する" />
+          </div>
+        </div>
+        
+        <!-- デスクトップ版レイアウト -->
+        <div class="homestay-solution-desktop">
+          <!-- 左側：画像 -->
+          <div class="homestay-solution-image-area">
+            <img src="/src/assets/images/content/img_homestay_solution-01.webp" alt="ホームステイソリューション" />
+          </div>
+          
+          <!-- 右側：コンテンツ -->
+          <div class="homestay-solution-content-area">
+            <!-- コンテンツボックス -->
+            <div class="homestay-solution-content-box homestay-solution-content-box--desktop">
+              <!-- 説明文 -->
+              <div class="homestay-solution-description">
+                <p>
+                  ホームステイではワンちゃん・ネコちゃんを実際にお家に迎え入れて、お世話をしていただきます。<br>
+                  環境・お客様・ご家族・先住ペットなどとの相性を見ていただくことでお客様の不安を取り除きたい。<br>
+                  そんな想いで始めた取り組みです。
+                </p>
+              </div>
+              
+              <!-- スタッフ画像 -->
+              <div class="homestay-solution-staff-image">
+                <img src="/src/assets/images/content/img_homestay_staff-01.webp" alt="ホームステイスタッフ" />
+              </div>
+            </div>
+            
+            <!-- ボタン -->
+            <div class="homestay-solution-button">
+              <BaseButton href="/flow" variant="short" text="お迎えまでの流れを確認する" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ホームステイの流れセクション -->
+    <section class="homestay-flow-section">
+      <div class="homestay-flow-container">
+        <h2 class="homestay-flow-title">ホームステイの流れ</h2>
+        
+        <!-- ホームステイ前 -->
+        <div class="homestay-flow-category">
+          <h3 class="homestay-flow-category-title">ホームステイ前</h3>
+          
+          <div class="homestay-flow-steps">
+            <!-- Step 1 -->
+            <div class="homestay-flow-step">
+              <div class="homestay-flow-step-card">
+                <div class="homestay-flow-step-header">
+                  <div class="homestay-flow-step-info">
+                    <div class="homestay-flow-step-number">
+                      <span class="homestay-flow-step-step">Step</span>
+                      <span class="homestay-flow-step-digit">1</span>
+                    </div>
+                    <h4 class="homestay-flow-step-title">ご相談・ご来店</h4>
+                  </div>
+                  <div class="homestay-flow-step-icon">
+                    <img src="/src/assets/icons/icon_homestay_flow-01.svg" alt="ご相談・ご来店" />
+                  </div>
+                </div>
+                <div class="homestay-flow-step-desc">
+                  <p>前向きにご検討中のワンちゃん・ネコちゃんをスタッフにご相談ください。店頭でご相談いただくか、下記よりご相談ください。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ステップ間の矢印 -->
+            <div class="homestay-flow-arrow">
+              <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" />
+            </div>
+
+            <!-- Step 2 -->
+            <div class="homestay-flow-step">
+              <div class="homestay-flow-step-card">
+                <div class="homestay-flow-step-header">
+                  <div class="homestay-flow-step-info">
+                    <div class="homestay-flow-step-number">
+                      <span class="homestay-flow-step-step">Step</span>
+                      <span class="homestay-flow-step-digit">2</span>
+                    </div>
+                    <h4 class="homestay-flow-step-title">お泊まりセットのご準備</h4>
+                  </div>
+                  <div class="homestay-flow-step-icon">
+                    <img src="/src/assets/icons/icon_homestay_flow-02.svg" alt="お泊まりセットのご準備" />
+                  </div>
+                </div>
+                <div class="homestay-flow-step-desc">
+                  <p>ごはん、簡易サークル、トイレ、おもちゃなど必要なものはすべて、当店でご用意しています。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ステップ間の矢印 -->
+            <div class="homestay-flow-arrow">
+              <img src="/src/assets/images/ui/icon_arrow-step-01.svg" alt="次のステップ" />
+            </div>
+
+            <!-- Step 3 -->
+            <div class="homestay-flow-step">
+              <div class="homestay-flow-step-card">
+                <div class="homestay-flow-step-header">
+                  <div class="homestay-flow-step-info">
+                    <div class="homestay-flow-step-number">
+                      <span class="homestay-flow-step-step">Step</span>
+                      <span class="homestay-flow-step-digit">3</span>
+                    </div>
+                    <h4 class="homestay-flow-step-title">必要書類の記入</h4>
+                  </div>
+                  <div class="homestay-flow-step-icon">
+                    <img src="/src/assets/icons/icon_homestay_flow-03.svg" alt="必要書類の記入" />
+                  </div>
+                </div>
+                <div class="homestay-flow-step-desc">
+                  <p>お世話の仕方、注意事項、すべてご説明の上、同意書にご署名いただきます。<br>
+                    また、身分証明書の確認をさせていただきます。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カテゴリー間の区切り -->
+        <div class="step-divider">
+          <img src={footprintIcon.src} alt="" class="step-divider__icon" />
+        </div>
+
+        <!-- ホームステイ中 -->
+        <div class="homestay-flow-category">
+          <h3 class="homestay-flow-category-title">ホームステイ中</h3>
+          
+          <!-- Step 4 -->
+          <div class="homestay-flow-step homestay-flow-step--with-image">
+            <div class="homestay-flow-step-card">
+              <div class="homestay-flow-step-content">
+                <div class="homestay-flow-step-header">
+                  <div class="homestay-flow-step-info">
+                    <div class="homestay-flow-step-number">
+                      <span class="homestay-flow-step-step">Step</span>
+                      <span class="homestay-flow-step-digit">4</span>
+                    </div>
+                    <h4 class="homestay-flow-step-title">ご検討・サポート</h4>
+                  </div>
+                </div>
+                <!-- モバイル版：見出しと説明文の間に画像 -->
+                <div class="homestay-flow-step-image homestay-flow-step-image--mobile">
+                  <img src="/src/assets/images/content/img_homestay_flow-04.webp" alt="ご検討・サポート" />
+                </div>
+                <div class="homestay-flow-step-desc">
+                  <p>実際にご自宅でホームステイをしていただきます。
+                    ホームステイ中は、お電話やLINEを通じてスタッフが精一杯サポートいたします。<br><br>
+                    どんな些細なことでも、ご遠慮なくご相談ください。</p>
+                </div>
+              </div>
+              <!-- デスクトップ版：右側に画像 -->
+              <div class="homestay-flow-step-image homestay-flow-step-image--desktop">
+                <img src="/src/assets/images/content/img_homestay_flow-04.webp" alt="ご検討・サポート" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カテゴリー間の区切り -->
+        <div class="step-divider">
+          <img src={footprintIcon.src} alt="" class="step-divider__icon" />
+        </div>
+
+        <!-- ホームステイ後 -->
+        <div class="homestay-flow-category">
+          <h3 class="homestay-flow-category-title">ホームステイ後</h3>
+          
+          <!-- Step 5 -->
+          <div class="homestay-flow-step homestay-flow-step--with-image">
+            <div class="homestay-flow-step-card">
+              <div class="homestay-flow-step-content">
+                <div class="homestay-flow-step-header">
+                  <div class="homestay-flow-step-info">
+                    <div class="homestay-flow-step-number">
+                      <span class="homestay-flow-step-step">Step</span>
+                      <span class="homestay-flow-step-digit">5</span>
+                    </div>
+                    <h4 class="homestay-flow-step-title">再度ご来店</h4>
+                  </div>
+                </div>
+                <!-- モバイル版：見出しと説明文の間に画像 -->
+                <div class="homestay-flow-step-image homestay-flow-step-image--mobile">
+                  <img src="/src/assets/images/content/img_homestay_flow-05.webp" alt="再度ご来店" />
+                </div>
+                <div class="homestay-flow-step-desc">
+                  <p>ホームステイが終了したら、ワンちゃん・ネコちゃんと一緒にご来店いただきます。<br>
+                    ホームステイを通して「家族として迎え入れたい」とご判断いただいた場合は、そのまま契約手続きに移ります。<br><br>
+                    <strong>※ご自宅で契約を判断された場合でも、必ず一度ワンちゃん・ネコちゃんとご来店いただきます。</strong></p>
+                </div>
+              </div>
+              <!-- デスクトップ版：右側に画像 -->
+              <div class="homestay-flow-step-image homestay-flow-step-image--desktop">
+                <img src="/src/assets/images/content/img_homestay_flow-05.webp" alt="再度ご来店" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="homestay-flow-button">
+          <BaseButton href="/flow" variant="short" text="お迎えまでの流れを確認する" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ご利用料金セクション -->
+    <section class="homestay-pricing-section" style="background-image: url('/src/assets/images/backgrounds/bg_bricks-white-01.webp');">
+      <div class="homestay-pricing-section__overlay"></div>
+      <div class="homestay-pricing-container">
+        <div class="homestay-pricing-heading">
+          <h2 class="homestay-pricing-section-title">ご利用料金</h2>
+        </div>
+        
+        <div class="homestay-pricing-content">
+          <div class="homestay-pricing-table-wrapper">
+            <table class="homestay-pricing-table">
+              <!-- ヘッダー行 -->
+              <thead>
+                <tr class="homestay-pricing-table__header-row">
+                  <th class="homestay-pricing-table__header">泊数プラン</th>
+                  <th class="homestay-pricing-table__header">価格（税込）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 1泊2日 -->
+                <tr class="homestay-pricing-table__row">
+                  <td class="homestay-pricing-table__label">1泊2日</td>
+                  <td class="homestay-pricing-table__value" rowspan="2">
+                    <div class="homestay-pricing-value">
+                      <span class="homestay-pricing-value__prefix">一律</span><br>
+                      <div class="homestay-pricing-value__amount-wrapper">
+                        <span class="homestay-pricing-value__amount">10,000</span><span class="homestay-pricing-value__unit">円</span>
+                      </div><br>
+                      <span class="homestay-pricing-value__note">※料金にお泊りセットも含まれています。</span>
+                    </div>
+                  </td>
+                </tr>
+                <!-- 2泊3日 -->
+                <tr class="homestay-pricing-table__row">
+                  <td class="homestay-pricing-table__label">2泊3日</td>
+                  <!-- valueは上の行と統合 -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- お客様の声セクション -->
+    <section class="homestay-testimonials-section">
+      <div class="homestay-testimonials-container">
+        <div class="homestay-testimonials-heading">
+          <h2 class="homestay-testimonials-section-title">ホームステイをご利用された<br>お客様の声</h2>
+        </div>
+        
+        <div class="homestay-testimonials-content">
+          <!-- お客様の声1 -->
+          <div class="homestay-testimonial">
+            <div class="homestay-testimonial-profile">
+              <div class="homestay-testimonial-avatar">
+                <img src="/src/assets/images/content/img_icon-woman-01.webp" alt="お客様アイコン" />
+              </div>
+              <div class="homestay-testimonial-info">
+                <span class="homestay-testimonial-age">20代女性</span>
+              </div>
+            </div>
+            <div class="homestay-testimonial-content">
+              <h3 class="homestay-testimonial-title">同棲の彼氏も気に入ってくれました</h3>
+              <p class="homestay-testimonial-text">
+                偶然寄ったペットショップで可愛いポメラニアンちゃんと出会い、抱っこさせてもらいました。<br><br>お膝の上ですやすや気持ち良さそうに寝てくれたポメラニアンちゃんのお顔を見て、連れて帰りたい！という気持ちになりました。<br><br>ただ同棲している彼氏がいたため1人で決めることはできず悩んでいましたが、ホームステイという制度があることをスタッフさんに教えてもらい、お試しで連れて帰ることになりました。<br><br>2人とも飼ったことがなく最初は戸惑いましたが、ホームステイ期間中はスタッフさんが電話で体調確認や飼育の相談に乗ってくださり、とても心強かったです。<br>お部屋で遊ぶ可愛い姿を見て彼氏も気に入ってくれ、お迎えを決意することができました。ポメラニアンちゃんとのご縁を繋いでくださり、ありがとうございました！<br>2人で幸せに育てていきます。
+              </p>
+            </div>
+          </div>
+
+          <!-- お客様の声2 -->
+          <div class="homestay-testimonial">
+            <div class="homestay-testimonial-profile">
+              <div class="homestay-testimonial-avatar">
+                <img src="/src/assets/images/content/img_icon-man-01.webp" alt="お客様アイコン" />
+              </div>
+              <div class="homestay-testimonial-info">
+                <span class="homestay-testimonial-age">20代男性</span>
+              </div>
+            </div>
+            <div class="homestay-testimonial-content">
+              <h3 class="homestay-testimonial-title">この子を守ってあげたい、と決意できました</h3>
+              <p class="homestay-testimonial-text">
+                現在一人暮らしで、今まで飼ったことも無いため、なかなか飼うイメージや一人で飼う自信がありませんでした。<br>それでも猫が大好きなので、ペットショップを見かけたらよく覗かせていただいていました。<br><br>そんな中、Cattleyaさんでとても素敵なラグドールちゃんに出会い、スタッフの方にもとても詳しく飼育方法を聞かせていただいたのですが、不安な気持ちが拭えず、ホームステイをさせていただきました。<br><br>いざ自宅に連れて帰ると、お膝の上に頑張って登ってきてくれたり、甘えてすりすりしてきてくれたり、想像していた以上の可愛さでした！<br>こんなに小さいのにご飯を一生懸命食べる姿や、お部屋の中を探検している姿を見て、この子を守ってあげたい、お迎えしたい！と自分でもビックリしましたが、お迎えすることを決意しました。<br>これからの毎日が本当に楽しみです。たくさん相談にのって頂いたスタッフさんにも感謝しています。
+              </p>
+            </div>
+          </div>
+
+          <!-- お客様の声3 -->
+          <div class="homestay-testimonial">
+            <div class="homestay-testimonial-profile">
+              <div class="homestay-testimonial-avatar">
+                <img src="/src/assets/images/content/img_icon-woman-02.webp" alt="お客様アイコン" />
+              </div>
+              <div class="homestay-testimonial-info">
+                <span class="homestay-testimonial-age">30代女性</span>
+              </div>
+            </div>
+            <div class="homestay-testimonial-content">
+              <h3 class="homestay-testimonial-title">ホームステイで家族の担当が決められました</h3>
+              <p class="homestay-testimonial-text">
+                子どもたちが犬を見たいというので、検索で出てきたCattleyaさんに立ち寄りました。<br><br>一番奥のお部屋にいたチワワちゃんがあまりに可愛くて、家族でじーっと見ていると、店員さんが話しかけてくださって、抱っこすることに。<br><br>主人がメロメロになってしまい、子ども達と一緒に懇願されましたが、ペットを飼った経験がない上に、お世話は私がすることになるだろうなという点を懸念し、決め兼ねていました。<br><br>そんな私を見て、店員さんにホームステイを提案して頂き、2泊3日で我が家に連れて帰ることにしました。<br>ホームステイ前には、ごはんのあげ方や、お留守番の時の話などしっかり説明してくれたので、安心してホームステイすることができました。<br>ホームステイ中は、「ごはん担当」「トイレ担当」と家族で担当交換制にしよう！など決めごとができたので、チワワちゃんをお迎えすることができました！<br>今では、誰よりも私がメロメロで店員さんにうちの子自慢のLINEを定期的にさせてもらっています。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ホームステイのQ&Aセクション -->
+    <section class="homestay-qa-section">
+      <div class="container">
+        <h2 class="homestay-qa-title">ホームステイの<span class="qa-title-q">Q</span>&<span class="qa-title-a">A</span></h2>
+        
+        <div class="qa-list">
+          <!-- Q1 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q1.</span>
+                <span class="qa-question-text">ホームステイ後は、必ず契約しなければなりませんか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>お家で一緒に過ごしていただいて、不安が解消できるかご検討していただくためのホームステイになります。<br>
+                ホームステイ中にお迎えされるかどうかをゆっくり考えていただければ大丈夫です。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q2.</span>
+                <span class="qa-question-text">どの子でもホームステイできますか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>基本的にはどの子も可能ですが、体調次第となります。<br>
+                  気になる子がいる場合は店舗にお問い合わせください。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q3.</span>
+                <span class="qa-question-text">家の子と一緒にしても大丈夫ですか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>まだワクチン接種が終わっていないので、一緒に遊ぶことはできません。<br>対面させる場合は、抱っこしてお尻の匂いをかがせる程度でお願いしています。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q4.</span>
+                <span class="qa-question-text">予約などはできますか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>はい、１週間前からご予約できます。<br>
+                  前日までにご家族が決まってしまう可能性がありますが、当日に限りご予約時間までお取り置きさせていただきます。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q5 -->
+          <div class="qa-item">
+            <div class="qa-question" data-qa-toggle>
+              <div class="qa-question-content">
+                <span class="qa-question-number">Q5.</span>
+                <span class="qa-question-text">ホームステイ中お留守番させて大丈夫ですか？</span>
+              </div>
+              <div class="qa-toggle">
+                <span class="qa-toggle-icon"></span>
+              </div>
+            </div>
+            <div class="qa-answer">
+              <div class="qa-answer-content">
+                <span class="qa-answer-label">A.</span>
+                <p>いつも通りの生活スタイルでホームステイを行っていただくので、お留守番は大丈夫です。<br>
+                  まだ20時間ほど寝るので、お家でもゆっくり休ませてお留守番の練習をさせてあげてください。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 関連コンテンツセクション -->
+    <section class="related-content-section">
+      <div class="container">
+        
+        <!-- お問い合わせボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">お問い合わせ</h2>
+          <div class="contact-buttons-wrapper">
+            {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
+              <div class="store-contact-group">
+                <!-- 電話ボタン -->
+                <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">{store.storePhoneNumber}</span>
+                  </div>
+                  <img src={phoneIcon.src} alt="" class="contact-button__icon" />
+                </a>
+                <!-- LINEボタン -->
+                <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+                  <span class="contact-button__line"></span>
+                  <div class="contact-button__content">
+                    <span class="contact-button__text">{store.storeName}</span>
+                    <span class="contact-button__detail">LINE</span>
+                  </div>
+                  <img src={lineIcon.src} alt="" class="contact-button__icon" />
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- 会いたい子を探すボックス -->
+        <div class="content-box">
+          <h2 class="content-box__title">会いたい子を探す</h2>
+          <div class="content-box__buttons">
+            <a href="/search/dogs" class="bg-button bg-button--search-dogs">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子犬を探す</span>
+              </div>
+            </a>
+            <a href="/search/cats" class="bg-button bg-button--search-cats">
+              <div class="bg-button__overlay">
+                <span class="bg-button__text">子猫を探す</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <BannerSection />
+    
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+.homestay-hero {
+  position: relative;
+  background: $color-background-primary;
+  padding: rem(20) 0 rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: 0 0 rem(10) 0;
+  }
+}
+
+.homestay-hero-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  padding-right: 0;
+  
+  @include breakpoint-up(sm) {
+    gap: rem(40);
+    padding-right: 0;
+  }
+  @include breakpoint-up(xl) {
+    padding-left: rem(80);
+  }
+}
+
+// パンくずリスト
+.breadcrumb-nav--mobile {
+  @include breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.breadcrumb-nav--desktop {
+  display: none;
+  
+  @include breakpoint-up(md) {
+    display: block;
+    padding: rem(20) 0;
+    background: $color-background-primary;
+  }
+}
+
+.breadcrumb-container {
+  @include container;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: rem(8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  
+  @include typography-ja-2s;
+  color: $color-text-secondary;
+}
+
+.breadcrumb-link {
+  color: $color-text-secondary;
+  text-decoration: none;
+  
+  &:hover {
+    color: $color-text-primary;
+  }
+}
+
+.breadcrumb-current {
+  color: $color-text-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.breadcrumb-separator {
+  color: $color-text-disabled;
+  font-size: rem(12);
+}
+
+// ヒーローコンテンツ
+.homestay-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(30);
+  
+  @include breakpoint-up(md) {
+    position: relative;
+    gap: rem(40);
+    min-height: rem(640);
+    height: fit-content;
+  }
+  @include breakpoint-up(lg) {
+    min-height: rem(580);
+  }
+  @include breakpoint-up(xl) {
+    min-height: rem(700);
+  }
+}
+
+// 見出し
+.homestay-hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding-top: rem(20);
+  
+  @include breakpoint-up(md) {
+    position: absolute;
+    top: rem(60);
+    left: 0;
+    z-index: 10;
+    text-align: left;
+    width: auto;
+    align-items: flex-start;
+    padding-top: 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    top: rem(80);
+  }
+  
+  @include breakpoint-up(xl) {
+    top: rem(60);
+  }
+}
+
+.homestay-hero-title-main {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-secondary;
+  line-height: 1.4;
+  @include breakpoint-up(md) {
+    display: inline-block;
+    padding: rem(10) rem(10) 0 rem(10);
+    background-color: $color-background-primary;
+    border-radius: 0 $radius-l 0 0;
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-2l($font-weight-semibold);
+  }
+}
+
+.homestay-hero-title-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  font-size: rem(45);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  line-height: 1.2;
+  
+  @include breakpoint-up(md) {
+    justify-content: flex-start;
+    display: inline-flex;
+    padding: rem(15);
+    background-color: $color-background-primary;
+    border-radius: 0 $radius-l $radius-l 0;
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-4l($font-weight-semibold);
+  }
+}
+
+.homestay-hero-icon {
+  width: rem(43);
+  height: rem(46);
+  
+  @include breakpoint-up(xl) {
+    width: rem(88);
+    height: rem(94);
+  }
+}
+
+// ヒーロー画像
+.homestay-hero-image {
+  width: 100%;
+  height: rem(280);
+  
+  @include breakpoint-up(md) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 90%;
+    height: rem(640);
+  }
+  @include breakpoint-up(lg) {
+    height: rem(580);
+  }
+  @include breakpoint-up(xl) {
+    height: rem(700);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: $radius-l 0 0 $radius-l;
+    
+    @include breakpoint-up(md) {
+      border-radius: 0 0 0 $radius-l;
+    }
+    
+    @include breakpoint-up(xl) {
+      border-radius: 0 0 0 rem(32);
+    }
+  }
+}
+
+// 情報ボックス
+.homestay-hero-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: rem(10);
+  align-items: center;
+  
+  @include breakpoint-up(md) {
+    position: absolute;
+    bottom: rem(20);
+    left: 0;
+    z-index: 10;
+    flex-direction: row;
+    gap: rem(30);
+    max-width: 74%;
+    align-items: flex-end;
+  }
+  @include breakpoint-up(xl) {
+    bottom: rem(25);
+  }
+}
+
+.homestay-hero-box {
+  background: $color-background-tertiary;
+  border-radius: $radius-l;
+  padding: rem(20);
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  @include breakpoint-up(md) {
+    padding: rem(36) rem(24) rem(24);
+    flex: 1;
+    width: rem(260);
+    height: rem(260);
+    border-radius: 100%;
+  }
+  
+  @include breakpoint-up(xl) {
+    padding: rem(50) rem(36) rem(24);
+    flex: 1;
+    width: rem(340);
+    height: rem(340);
+  }
+  &:first-child {
+    @include breakpoint-up(md) {
+      margin-bottom: rem(30);
+    }
+    @include breakpoint-up(lg) {
+    margin-bottom: rem(30);
+    }
+    @include breakpoint-up(xl) {
+      margin-bottom: rem(50);
+    }
+  }
+}
+
+.homestay-hero-box-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(16) 0;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: #FCDCB0;
+    z-index: -1;
+  }
+}
+
+.homestay-hero-box-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+}
+
+// チェックリスト
+.homestay-hero-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: rem(12);
+  align-items: center;
+  width: 100%;
+}
+
+.homestay-hero-check-item {
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  width: auto;
+  
+  &:first-child {
+    margin-left: 0;
+  }
+  
+  &:last-child {
+    margin-left: rem(26); // チェックマークの左端を揃える調整
+  }
+}
+
+.homestay-hero-check-mark {
+  width: rem(18);
+  height: rem(18);
+  flex-shrink: 0;
+}
+
+.homestay-hero-check-text {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  @include breakpoint-up(xl) {
+    font-size: rem(16);
+  }
+}
+
+.homestay-hero-check-number {
+  font-size: rem(16);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  @include breakpoint-up(xl) {
+    font-size: rem(21);
+  }
+}
+
+.homestay-hero-note {
+  @include typography-ja-s;
+  color: $color-text-secondary;
+  font-weight: $font-weight-semibold;
+  margin: 0;
+  font-size: rem(12);
+  line-height: 1.5;
+}
+
+// お泊りセット画像
+.homestay-hero-goods-image {
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: $radius-m;
+  }
+}
+
+// モバイルでボックス1が画像にかぶるスタイル
+@media (max-width: 767px) {
+  .homestay-hero-content {
+    position: relative;
+  }
+  
+  .homestay-hero-boxes {
+    margin-top: rem(-70); // 画像に40px程度重ねる
+    @include breakpoint-up(md) {
+      margin-top: 0;
+    }
+  }
+  
+  .homestay-hero-box:first-child {
+    position: relative;
+    z-index: 5;
+  }
+}
+
+// こんなご不安ありませんか？セクション
+.homestay-concerns-section {
+  padding: rem(90) 0 0 0;
+  background: $color-background-primary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 0 0;
+  }
+}
+
+.homestay-concerns-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(40);
+  
+  @include breakpoint-up(md) {
+    gap: rem(60);
+  }
+}
+
+.homestay-concerns-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  text-align: center;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-2l($font-weight-semibold);
+  }
+}
+
+// モバイル版レイアウト
+.homestay-concerns-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: rem(45);
+  width: 100%;
+  align-items: center;
+  
+  @include breakpoint-up(lg) {
+    display: none;
+  }
+}
+
+.homestay-concerns-images {
+  display: flex;
+  justify-content: space-between;
+  gap: rem(15);
+  
+  img {
+    width: calc(33.333% - rem(10));
+    height: auto;
+    object-fit: cover;
+    border-radius: $radius-l;
+  }
+}
+
+// デスクトップ版レイアウト
+.homestay-concerns-desktop {
+  display: none;
+  
+  @include breakpoint-up(lg) {
+    display: flex;
+    justify-content: center;
+    gap: rem(60);
+    width: 15%;
+    align-items: flex-end;
+  }
+}
+
+.homestay-concerns-area {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  align-items: end;
+  
+  @include breakpoint-up(lg) {
+    justify-content: flex-end;
+    height: 100%;
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(30);
+  }
+}
+
+.homestay-concerns-bubble {
+  background: $color-background-tertiary;
+  border-radius: rem(24);
+  padding: rem(20) rem(24);
+  position: relative;
+  min-width: rem(230);
+  border: rem(1) solid $color-border-new;
+  
+  @include breakpoint-up(md) {
+    max-width: none;
+    width: 100%;
+    min-width: rem(260);
+    max-width: rem(300);
+    padding: rem(40) rem(24);
+  }
+  @include breakpoint-up(xl) {
+    border-radius: rem(48);
+  }
+  
+  // 吹き出しの尻尾（小円と中円）
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    background: $color-background-tertiary;
+    border-radius: 50%;
+    border: rem(1) solid $color-border-new;
+  }
+  
+  // 中円
+  &::after {
+    bottom: rem(-20);
+    width: rem(21);
+    height: rem(15);
+    @include breakpoint-up(xl) {
+      bottom: rem(-30);
+      width: rem(28);
+      height: rem(20);
+    }
+  }
+  
+  // 小円
+  &::before {
+    bottom: rem(-30);
+    width: rem(9);
+    height: rem(6);
+    @include breakpoint-up(xl) {
+      bottom: rem(-40);
+      width: rem(12);
+      height: rem(8);
+    }
+  }
+}
+
+// 左向き吹き出し（左下向き）
+.homestay-concerns-bubble--left {
+  &::after {
+    right: rem(20);
+    @include breakpoint-up(xl) {
+      right: rem(50);
+    }
+  }
+  
+  &::before {
+    right: rem(35);
+    @include breakpoint-up(xl) {
+      right: rem(80);
+    }
+  }
+}
+
+// 右向き吹き出し（右下向き）
+.homestay-concerns-bubble--right {
+  &::after {
+    left: rem(20);
+    @include breakpoint-up(xl) {
+      left: rem(50);
+    }
+  }
+  
+  &::before {
+    left: rem(35);
+    @include breakpoint-up(xl) {
+      left: rem(80);
+    }
+  }
+}
+
+// 中央吹き出し（真下向き）- デフォルトを再定義
+.homestay-concerns-bubble--center {
+  &::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  &::before {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+// 2つめの吹き出し（中央エリア）のデスクトップ時margin-bottom
+.homestay-concerns-desktop .homestay-concerns-area:nth-child(2) .homestay-concerns-bubble {
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(50);
+  }
+}
+
+// lg未満時のモバイル版吹き出しのmargin-right設定
+.homestay-concerns-mobile {
+  .homestay-concerns-bubble:nth-child(1) {
+    margin-right: rem(30);
+    @include breakpoint-up(sm) {
+      margin-right: rem(150);
+    }
+  }
+  
+  .homestay-concerns-bubble:nth-child(2) {
+    margin-left: rem(30);
+    @include breakpoint-up(sm) {
+      margin-left: rem(150);
+    }
+  }
+  
+  .homestay-concerns-bubble:nth-child(3) {
+    margin-right: rem(30);
+    @include breakpoint-up(sm) {
+      margin-right: rem(150);
+    }
+  }
+}
+
+.homestay-concerns-bubble-text {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  margin: 0;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.homestay-concerns-image {
+  width: 100%;
+  
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    @include breakpoint-up(lg) {
+      width: 60%;
+      margin: 0 auto;
+      padding-top: rem(30);
+    }
+  }
+}
+
+// ホームステイソリューションセクション
+.homestay-solution-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: #F9E9D4;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.homestay-solution-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(40);
+  
+  @include breakpoint-up(sm) {
+    gap: rem(60);
+  }
+  @include breakpoint-up(xl) {
+    gap: rem(80);
+  }
+}
+
+.homestay-solution-title {
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: rem(5);
+  align-items: center;
+}
+
+.homestay-solution-title-line {
+  display: flex;
+  align-items: center;
+  gap: rem(15);
+  
+  @include breakpoint-up(md) {
+    gap: rem(20);
+  }
+  @include breakpoint-up(lg) {
+    gap: rem(25);
+  }
+}
+
+.homestay-solution-title-text {
+  color: $color-text-primary;
+  line-height: 1.4;
+}
+
+.homestay-solution-title-text--sub {
+  @include typography-ja-m($font-weight-semibold);
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+.homestay-solution-title-text--main {
+  @include typography-ja-2l($font-weight-semibold);
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-4l($font-weight-semibold);
+  }
+}
+
+.homestay-solution-title-icon {
+  height: auto;
+  flex-shrink: 0;
+}
+
+.homestay-solution-title-icon--right {
+  transform: scaleX(-1);
+}
+
+// -01アイコン（1行目用）のサイズ
+.homestay-solution-title-line:first-child .homestay-solution-title-icon {
+  width: rem(25);
+  @include breakpoint-up(xl) {
+    width: rem(40);
+  }
+}
+
+// -02アイコン（2行目用）のサイズ
+.homestay-solution-title-line:last-child .homestay-solution-title-icon {
+  width: rem(40);
+  @include breakpoint-up(xl) {
+    width: rem(75);
+  }
+}
+
+// モバイル版レイアウト
+.homestay-solution-mobile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+  
+  > .homestay-solution-main-image {
+    margin-bottom: 0;
+  }
+  
+  > .homestay-solution-content-box {
+    margin-top: 0;
+  }
+  
+  > .homestay-solution-button {
+    margin-top: rem(50);
+  }
+}
+
+.homestay-solution-main-image {
+  width: 100%;
+  aspect-ratio: 1/1;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: $radius-l $radius-l 0 0;
+  }
+}
+
+.homestay-solution-content-box {
+  background: $color-background-primary;
+  border-radius: 0 0 $radius-l $radius-l;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: rem(24);
+}
+
+.homestay-solution-content-box--desktop {
+  border-radius: $radius-l;
+  padding: rem(30) rem(24) 0;
+  @include breakpoint-up(md) {
+    padding: rem(30) rem(30) 0;
+  }
+  @include breakpoint-up(lg) {
+    padding: rem(40) rem(40) 0;
+  }
+}
+
+// デスクトップ版レイアウト
+.homestay-solution-desktop {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: flex;
+    gap: rem(40);
+    width: 100%;
+    align-items: start;
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(60);
+  }
+  @include breakpoint-up(xl) {
+    max-width: rem(1400);
+  }
+}
+
+.homestay-solution-image-area {
+  flex: 0 0 35%;
+  aspect-ratio: 1/1;
+  @include breakpoint-up(md) {
+    flex: 0 0 40%;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: $radius-l;
+  }
+}
+
+.homestay-solution-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  
+  @include breakpoint-up(lg) {
+    gap: rem(50);
+  }
+}
+
+// 共通スタイル
+.homestay-solution-description {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    margin: 0;
+    line-height: 1.7;
+    text-align: left;
+  }
+}
+
+.homestay-solution-staff-image {
+  img {
+    width: 80%;
+    height: auto;
+    object-fit: cover;
+    margin: 0 auto;
+    @include breakpoint-up(sm) {
+      width: 40%;
+      margin-right: 0;
+    }
+  }
+}
+
+.homestay-solution-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  
+  @include breakpoint-up(sm) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.homestay-flow-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: rem(60);
+  
+  @include breakpoint-up(sm) {
+    width: 100%;
+    justify-content: center;
+    margin-top: rem(80);
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-top: rem(100);
+  }
+}
+
+// ホームステイの流れセクション
+.homestay-flow-section {
+  padding: rem(90) 0 rem(110) 0;
+  background: $color-background-tertiary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.homestay-flow-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  @include breakpoint-up(sm) {
+  }
+}
+
+.homestay-flow-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(40) 0;
+  text-align: center;
+  
+  @include breakpoint-up(lg) {
+    margin: 0 0 rem(60) 0;
+  }
+}
+
+.homestay-flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    gap: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.homestay-flow-box {
+  background: $color-background-tertiary;
+  border-radius: $radius-l;
+  padding: rem(30) rem(20);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(40) rem(30);
+  }
+  
+  @include breakpoint-up(lg) {
+    flex: 1;
+    max-width: calc(33.333% - rem(20));
+  }
+}
+
+.homestay-flow-box-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(30) 0;
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(40);
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-l($font-weight-semibold);
+  }
+}
+
+// ステップカードのスタイル
+.homestay-flow-step {
+  width: 100%;
+  display: flex;
+  
+  @include breakpoint-up(sm) {
+    width: 70%;
+  }
+  
+  @include breakpoint-up(lg) {
+    flex: 1;
+    max-width: rem(440);
+    width: auto;
+  }
+}
+
+.homestay-flow-step-card {
+  padding: rem(30) rem(20);
+  border-radius: $radius-l;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(35) rem(25);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(40) rem(30);
+  }
+}
+
+// ホームステイの流れ - カテゴリー
+.homestay-flow-category {
+  padding: rem(35) rem(15) rem(20);
+  background-color: $color-background-primary;
+  border: rem(1) solid $color-text-secondary;
+  border-radius: rem(42) rem(42) rem(24) rem(24);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  @include breakpoint-up(sm) {
+  }
+  
+  @include breakpoint-up(lg) {
+    margin: 0 auto;
+    width: 100%;
+    padding: rem(45) rem(30) rem(30);
+  }
+  @include breakpoint-up(xl) {
+    max-width: rem(1400);
+    padding: rem(45) rem(40);
+  }
+}
+
+.homestay-flow-category-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0 0 rem(30) 0;
+  text-align: center;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+// ホームステイ前のステップ（横並び）
+.homestay-flow-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(12);
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0 auto;
+  }
+  @include breakpoint-up(xl) {
+    max-width: rem(1400);
+  }
+}
+
+// ホームステイ前のステップカード背景色（テスト用）
+.homestay-flow-step-card {
+  background-color: #f9f9f9 !important; // tertiary
+}
+
+.homestay-flow-category:first-child .homestay-flow-steps .homestay-flow-step:nth-child(3) .homestay-flow-step-card {
+  background-color: #ece9e7 !important; // secondary
+}
+
+// ホームステイ前のステップ間の矢印
+.homestay-flow-arrow {
+  width: rem(30);
+  height: rem(30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  
+  @include breakpoint-up(lg) {
+    width: rem(40);
+    height: rem(40);
+    transform: rotate(0deg);
+    align-self: center;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+// ステップ区切り
+.step-divider {
+  padding: rem(30) 0;
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+  }
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.step-divider__icon {
+  width: rem(40);
+  height: auto;
+  display: inline-block;
+  
+  @include breakpoint-up(sm) {
+    width: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(76);
+  }
+}
+
+// ホームステイ前のステップ - lg以降で横並び
+.homestay-flow-category:first-child {
+  .homestay-flow-step {
+    @include breakpoint-up(lg) {
+      flex: 1;
+    }
+  }
+}
+
+.homestay-flow-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: rem(20);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(25);
+  }
+}
+
+.homestay-flow-step-info {
+  flex: 1;
+}
+
+.homestay-flow-step-number {
+  display: flex;
+  align-items: baseline;
+  gap: rem(2);
+  margin-bottom: rem(5);
+  
+  @include breakpoint-up(xl) {
+    margin-bottom: rem(10);
+  }
+}
+
+.homestay-flow-step-step {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  position: relative;
+  padding-left: rem(20);
+  font-family: $font-family-en;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: rem(18);
+    height: rem(1);
+    background-color: $color-text-secondary;
+  }
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+    padding-left: rem(30);
+    
+    &::before {
+      width: rem(22);
+    }
+  }
+}
+
+.homestay-flow-step-digit {
+  font-size: rem(21);
+  color: $color-text-secondary;
+  font-family: $font-family-en;
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-m($font-weight-semibold);
+  }
+}
+
+.homestay-flow-step-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.homestay-flow-step-icon {
+  width: rem(90);
+  height: rem(90);
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  @include breakpoint-up(lg) {
+  }
+  @include breakpoint-up(xl) {
+    width: rem(145);
+    height: rem(145);
+  }
+}
+
+.homestay-flow-step-desc {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    margin: 0;
+    line-height: 1.7;
+  }
+}
+
+// 画像付きステップのスタイル
+.homestay-flow-step--with-image {
+  margin: 0 auto;
+  
+  @include breakpoint-up(md) {
+    width: 100%;
+  }
+  @include breakpoint-up(lg) {
+    max-width: none;
+  }
+  
+  .homestay-flow-step-card {
+    display: flex;
+    flex-direction: column;
+    
+    @include breakpoint-up(sm) {
+      flex-direction: row;
+      gap: rem(30);
+      align-items: start;
+    }
+  }
+}
+
+.homestay-flow-step-content {
+  flex: 1;
+}
+
+.homestay-flow-step-image {
+  img {
+    aspect-ratio: 1 / 1;
+    width: 90%;
+    margin: 0 auto;
+    height: auto;
+    object-fit: cover;
+    border-radius: 50%;
+    @include breakpoint-up(sm) {
+      width: 100%;
+    }
+  }
+}
+
+.homestay-flow-step-image--mobile {
+  margin: rem(16) 0;
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+.homestay-flow-step-image--desktop {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: block;
+    flex: 0 0 40%;
+  }
+}
+
+// ご利用料金セクション
+.homestay-pricing-section {
+  background-size: cover;
+  background-position: center;
+  padding: rem(90) 0 rem(110) 0;
+  position: relative;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.homestay-pricing-section__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($color-background-primary, 0.5);
+  z-index: 1;
+}
+
+.homestay-pricing-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.homestay-pricing-heading {
+  text-align: center;
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.homestay-pricing-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.homestay-pricing-content {
+  width: 100%;
+}
+
+.homestay-pricing-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.homestay-pricing-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: rem(3);
+  background-color: transparent;
+  
+  @include breakpoint-up(lg) {
+    max-width: rem(900);
+    margin: rem(40) auto 0;
+  }
+}
+
+.homestay-pricing-table__header-row {
+  .homestay-pricing-table__header:first-child {
+    border-top-left-radius: $radius-s;
+    @include typography-ja-s($font-weight-regular);
+  }
+  .homestay-pricing-table__header:last-child {
+    border-top-right-radius: $radius-s;
+    @include typography-ja-s($font-weight-regular);
+  }
+}
+
+.homestay-pricing-table__header {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  padding: rem(10);
+  background-color: rgba($color-background-select, 0.1);
+  vertical-align: top;
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(20) rem(20) rem(20) rem(10);
+  }
+}
+
+.homestay-pricing-table__row {
+  &:last-child {
+    .homestay-pricing-table__label {
+      border-bottom-left-radius: $radius-s;
+    }
+    .homestay-pricing-table__value {
+      border-bottom-right-radius: $radius-s;
+    }
+  }
+}
+
+.homestay-pricing-table__label {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  padding: rem(10);
+  background-color: rgba($color-background-select, 0.1);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(20) rem(20) rem(20) rem(10);
+  }
+  
+  @include breakpoint-up(md) {
+    max-width: rem(150);
+  }
+}
+
+.homestay-pricing-table__value {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  padding: rem(10);
+  background-color: rgba($color-background-secondary, 0.4);
+  text-align: center;
+  line-height: 0.5;
+  width: calc(100% - rem(150));
+  
+  @include breakpoint-up(sm) {
+    padding: rem(20) rem(20) rem(20) rem(10);
+  }
+}
+
+.homestay-pricing-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.homestay-pricing-value__amount-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: rem(2);
+}
+
+.homestay-pricing-value__prefix {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+}
+
+.homestay-pricing-value__amount {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+}
+
+.homestay-pricing-value__unit {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+}
+
+.homestay-pricing-value__note {
+  @include typography-ja-2s($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin-top: rem(5);
+}
+
+// お客様の声セクション
+.homestay-testimonials-section {
+  background-color: $color-background-primary;
+  padding: rem(90) 0 rem(110) 0;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(120) 0 rem(150) 0;
+  }
+}
+
+.homestay-testimonials-container {
+  @include container;
+  display: flex;
+  flex-direction: column;
+}
+
+.homestay-testimonials-heading {
+  text-align: center;
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(70);
+  }
+}
+
+.homestay-testimonials-section-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  margin: 0;
+  
+  @include breakpoint-up(lg) {
+  }
+}
+
+.homestay-testimonials-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(70);
+  
+  @include breakpoint-up(xl) {
+    gap: rem(90);
+    max-width: rem(1400);
+    margin: 0 auto;
+  }
+}
+
+.homestay-testimonial {
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(30);
+    align-items: flex-start;
+  }
+  
+  @include breakpoint-up(lg) {
+    gap: rem(40);
+  }
+}
+
+.homestay-testimonial-profile {
+  display: flex;
+  align-items: center;
+  gap: rem(15);
+  
+  @include breakpoint-up(sm) {
+    flex-direction: column;
+    gap: rem(10);
+    flex-shrink: 0;
+    width: rem(120);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(150);
+  }
+}
+
+.homestay-testimonial-avatar {
+  width: rem(120);
+  height: rem(120);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  
+  
+  @include breakpoint-up(lg) {
+    width: rem(160);
+    height: rem(160);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.homestay-testimonial-age {
+  @include typography-ja-s($font-weight-semibold);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    text-align: center;
+  }
+}
+
+.homestay-testimonial-content {
+  flex: 1;
+  padding: rem(30) rem(15);
+  border-radius: $radius-s;
+  border: 1px solid $color-border-new;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: rem(-1);
+    left: rem(20);
+    width: rem(20);
+    height: 1px;
+    background-color: $color-border-new;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+    @include breakpoint-up(sm) {
+      top: rem(30);
+      left: rem(-15);
+    }
+  }
+}
+
+.homestay-testimonial-title {
+  font-size: rem(16);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 rem(25) 0;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+    margin-bottom: rem(40);
+  }
+}
+
+.homestay-testimonial-text {
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.8;
+  margin: 0;
+}
+
+// ホームステイのQ&Aセクション
+.homestay-qa-section {
+  background: $color-background-secondary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.homestay-qa-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+}
+
+.qa-title-q {
+  color: $color-background-gender-male;
+}
+
+.qa-title-a {
+  color: $color-background-gender-female;
+}
+
+.qa-list {
+  max-width: rem(1200);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+  @include breakpoint-up(sm) {
+    gap: rem(30);
+  }
+  @include breakpoint-up(lg) {
+    gap: rem(40);
+  }
+}
+
+.qa-item {
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.qa-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: rem(20);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: $color-background-tertiary;
+  border: solid 1px $color-border-primary;
+  border-radius: $radius-m;
+  
+  @include breakpoint-up(sm) {
+  }
+  
+  &:hover {
+    background: rgba($color-brand-primary, 0.05);
+  }
+}
+
+.qa-question-content {
+  display: flex;
+  gap: rem(8);
+  flex: 1;
+}
+
+.qa-question-text {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  flex: 1;
+  padding-top: rem(8);
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+      padding-top: rem(12);
+    }
+  
+}
+
+.qa-question-number {
+  @include typography-en-m($font-weight-semibold);
+  color: $color-text-gender-male;
+  flex-shrink: 0;
+  width: rem(40);
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-l($font-weight-semibold);
+    width: rem(65);
+  }
+}
+
+.qa-toggle {
+  width: rem(30);
+  height: rem(30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: rem(4);
+  transition: transform 0.3s ease;
+  position: relative;
+  
+  @include breakpoint-up(sm) {
+    width: rem(36);
+    height: rem(36);
+  }
+}
+
+.qa-toggle-icon {
+  position: relative;
+  width: rem(16);
+  height: rem(16);
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: $color-border-primary;
+    transition: all 0.3s ease;
+  }
+  
+  // 縦線
+  &::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: rem(2);
+    height: rem(16);
+  }
+  
+  // 横線
+  &::after {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: rem(16);
+    height: rem(2);
+  }
+  
+  @include breakpoint-up(sm) {
+    width: rem(18);
+    height: rem(18);
+    
+    &::before {
+      height: rem(18);
+    }
+    
+    &::after {
+      width: rem(18);
+    }
+  }
+}
+
+.qa-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.qa-answer-content {
+  padding: rem(20);
+  background-color: $color-background-primary;
+  border-right: solid 1px $color-border-primary;
+  border-left: solid 1px $color-border-primary;
+  border-bottom: solid 1px $color-border-primary;
+  display: flex;
+  gap: rem(8);
+  border-radius: 0 0 $radius-m $radius-m;
+  
+  @include breakpoint-up(sm) {
+
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+    padding-top: rem(8);
+    @include breakpoint-up(xl) {
+      padding-top: rem(12);
+    }
+  } 
+}
+
+.qa-answer-label {
+  @include typography-en-m($font-weight-semibold);
+  color: $color-text-gender-female;
+  flex-shrink: 0;
+  width: rem(40);
+  
+  @include breakpoint-up(xl) {
+    @include typography-en-l($font-weight-semibold);
+    width: rem(65);
+  }
+}
+
+// アクティブ状態
+.qa-item.active {
+  .qa-question {
+    border-radius: $radius-m $radius-m 0 0;
+  }
+  
+  .qa-toggle-icon {
+    &::before {
+      opacity: 0;
+    }
+  }
+  
+  .qa-answer {
+    max-height: rem(200);
+  }
+}
+
+// 関連コンテンツセクション
+.related-content-section {
+  background-color: $color-background-tertiary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.content-box {
+  background-color: $color-background-primary;
+  border-radius: $radius-l;
+  padding: rem(40) rem(20);
+  margin-bottom: rem(40);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(50) rem(30);
+    margin-bottom: rem(60);
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(60) rem(40);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &__title {
+    text-align: center;
+    font-size: rem(21);
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: rem(40);
+    position: relative;
+    
+    @include breakpoint-up(lg) {
+      font-size: $font-size-ja-l;
+    }
+    
+    @include breakpoint-up(sm) {
+      margin-bottom: rem(50);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: rem(-15);
+      left: 50%;
+      transform: translateX(-50%);
+      width: rem(50);
+      height: rem(1);
+      background: linear-gradient(to right, $color-border-secondary 0%, $color-border-secondary 50%, $color-border-tertiary 50%, $color-border-tertiary 100%);
+    }
+  }
+  
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: rem(16);
+    align-items: center;
+    width: 100%;
+    
+    @include breakpoint-up(sm) {
+      flex-direction: row;
+      justify-content: center;
+      gap: rem(24);
+    }
+  }
+}
+
+// コンタクトボタンラッパー（お問い合わせ用）
+.contact-buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: column;
+    gap: rem(24);
+  }
+}
+
+// 店舗ごとのコンタクトグループ
+.store-contact-group {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(45);
+    justify-content: center;
+  }
+}
+
+.contact-button {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-text-primary;
+  border-radius: $radius-s;
+  padding: rem(30) rem(75) rem(30) rem(55);
+  text-decoration: none;
+  color: $color-text-primary;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  width: rem(270);
+  flex-shrink: 0;
+  
+  @include breakpoint-up(lg) {
+    width: rem(300);
+  }
+  background-color: $color-background-primary;
+  
+  &:hover {
+    text-decoration: none;
+    
+    .contact-button__line {
+      transform: translateX(rem(15));
+    }
+  }
+  
+  &--phone {
+    border-color: $color-brand-primary;
+    
+    .contact-button__line {
+      background-color: $color-brand-primary;
+    }
+  }
+  
+  &--line {
+    border-color: #00B900;
+    
+    .contact-button__line {
+      background-color: #00B900;
+    }
+  }
+  
+  &--mail {
+    border-color: $color-text-secondary;
+    
+    .contact-button__line {
+      background-color: $color-text-secondary;
+    }
+  }
+}
+
+.contact-button__line {
+  position: absolute;
+  left: rem(-30);
+  width: rem(40);
+  height: 1px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.contact-button__content {
+  display: flex;
+  align-items: center;
+  gap: rem(10);
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-button__text,
+.contact-button__detail {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.contact-button__icon {
+  position: absolute;
+  right: rem(30);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(20);
+  height: rem(20);
+  
+  img, svg {
+    width: 100%;
+    height: 100%;
+    fill: $color-text-primary;
+  }
+}
+
+// 背景画像付きボタン
+.bg-button {
+  display: block;
+  text-decoration: none;
+  border-radius: $radius-s;
+  border: 1px solid $color-text-primary;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-height: rem(102);
+  position: relative;
+  max-width: rem(480);
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex: 1;
+    max-width: rem(480);
+  }
+  
+  &:hover {
+    transform: translateY(rem(-2));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &--search-dogs {
+    background-image: url('/src/assets/images/ui/bg_button-search-dogs-link-01.webp');
+    background-size: auto 70%;
+    background-position: calc(100% - rem(40)) calc(100% + rem(1));
+    background-repeat: no-repeat;
+    @include breakpoint-up(lg) {
+      background-size: auto 80%;
+    }
+  }
+  
+  &--search-cats {
+    background-image: url('/src/assets/images/ui/bg_button-search-cats-link-01.webp');
+    background-size: auto 75%;
+    background-position: calc(100% - rem(45)) calc(100% + rem(1));
+    background-repeat: no-repeat;
+    @include breakpoint-up(lg) {
+      background-size: auto 85%;
+    }
+  }
+}
+
+.bg-button__overlay {
+  padding: rem(40) rem(80);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: rem(102);
+  border-radius: $radius-s;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(20) rem(40);
+  }
+}
+
+.bg-button__text {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-align: left;
+  
+  @include breakpoint-up(lg) {
+    font-size: rem(18);
+  }
+}
+
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const qaToggles = document.querySelectorAll('[data-qa-toggle]');
+    
+    qaToggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const qaItem = this.closest('.qa-item');
+        
+        // 他のアイテムを閉じる
+        qaToggles.forEach(otherToggle => {
+          const otherItem = otherToggle.closest('.qa-item');
+          if (otherItem !== qaItem) {
+            otherItem.classList.remove('active');
+          }
+        });
+        
+        // 現在のアイテムをトグル
+        if (qaItem.classList.contains('active')) {
+          qaItem.classList.remove('active');
+        } else {
+          qaItem.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
