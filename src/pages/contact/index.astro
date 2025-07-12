@@ -1,0 +1,2067 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+import lineIcon from '../../assets/icons/icon_line-01.svg';
+import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
+import { getAllStores } from '../../lib/api/stores';
+import { getAllLatestPets } from '../../lib/api/pets/queries';
+
+// 店舗データを取得
+const stores = await getAllStores();
+// ペットデータを取得（ランダムIDによる順序）
+const pets = await getAllLatestPets();
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'お問い合わせ' }
+];
+---
+
+<Layout title="お問い合わせ | カトレア" description="カトレアへのお問い合わせ方法をご案内します。お電話、LINE、メールからお気軽にご連絡ください。">
+  <main>
+    <HeroSection 
+      title="お問い合わせ"
+      image="/src/assets/images/backgrounds/img_bg-hero_contact-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
+
+    <!-- 問い合わせ方法選択セクション -->
+    <section class="contact-methods-section">
+      <div class="container">
+        <div class="contact-methods-description">
+          <p>来店予約や、ワンちゃん・ネコちゃんのお問い合わせ等がございましたら、お気軽にお電話、LINE、または下記お問い合わせフォームからお問い合わせください。</p>
+        </div>
+        <div class="contact-methods">
+          <!-- お電話で問い合わせる -->
+          <a href="#phone-contact" class="contact-method-link">
+            <div class="contact-method-link__inner">
+              <div class="contact-method-link__icon">
+                <img src={phoneIcon.src} alt="電話アイコン" />
+              </div>
+              <div class="contact-method-link__text">お電話で<br>問い合わせる</div>
+              <div class="contact-method-link__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+
+          <!-- LINEで問い合わせる -->
+          <a href="#line-contact" class="contact-method-link contact-method-link--line">
+            <div class="contact-method-link__inner">
+              <div class="contact-method-link__icon">
+                <img src={lineIcon.src} alt="LINEアイコン" />
+              </div>
+              <div class="contact-method-link__text">LINEで<br>問い合わせる</div>
+              <div class="contact-method-link__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+
+          <!-- メールで問い合わせる -->
+          <a href="#mail-contact" class="contact-method-link">
+            <div class="contact-method-link__inner">
+              <div class="contact-method-link__icon">
+                <img src={mailIcon.src} alt="メールアイコン" />
+              </div>
+              <div class="contact-method-link__text">メールで<br>問い合わせる</div>
+              <div class="contact-method-link__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- お電話セクション -->
+    <section id="phone-contact" class="phone-contact-section">
+      <div class="container">
+        <h2 class="phone-contact-title">お電話</h2>
+        <div class="phone-contact-buttons">
+          {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
+            <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
+              <span class="contact-button__line"></span>
+              <div class="contact-button__content">
+                <span class="contact-button__text">{store.storeName}</span>
+                <span class="contact-button__detail">{store.storePhoneNumber}</span>
+              </div>
+              <img src={phoneIcon.src} alt="" class="contact-button__icon" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- LINEセクション -->
+    <section id="line-contact" class="line-contact-section">
+      <div class="container">
+        <h2 class="line-contact-title">LINE</h2>
+        <div class="line-contact-buttons">
+          {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
+            <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+              <span class="contact-button__line"></span>
+              <div class="contact-button__content">
+                <span class="contact-button__text">{store.storeName}</span>
+                <span class="contact-button__detail">LINE</span>
+              </div>
+              <img src={lineIcon.src} alt="" class="contact-button__icon" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- お問い合わせフォームセクション -->
+    <section id="mail-contact" class="mail-contact-section">
+      <div class="container">
+        <h2 class="mail-contact-title">お問い合わせフォーム</h2>
+        <div class="mail-contact-description">
+          <p>メールでのお問い合わせはこちらからお願いいたします。<br>
+            フォーム上部のご要件種類を選択し、ご入力ください。<br>
+            営業・宣伝はお断りしております。</p>
+        </div>
+        
+        <!-- タブ切り替え -->
+        <div class="contact-form-tabs">
+          <div class="contact-tabs">
+            <button class="contact-tab active" data-tab="pet">
+              <span class="contact-tab__label">ペット<br class="sm-down-only">について</span>
+              <span class="contact-tab__arrow">▼</span>
+            </button>
+            <button class="contact-tab" data-tab="job">
+              <span class="contact-tab__label">求人<br class="sm-down-only">について</span>
+              <span class="contact-tab__arrow">▼</span>
+            </button>
+            <button class="contact-tab" data-tab="other">
+              <span class="contact-tab__label">その他の<br class="sm-down-only">お問い合わせ</span>
+              <span class="contact-tab__arrow">▼</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- フォーム -->
+        <div class="contact-forms">
+          <!-- ペットについてフォーム -->
+          <form class="contact-form active" id="pet-form" data-form="pet">
+            <div class="form-group">
+              <label for="pet-inquiry-type" class="form-label required">お問い合わせ種別</label>
+              <select id="pet-inquiry-type" name="inquiry-type" class="form-select" required>
+                <option value="">選択してください</option>
+                <option value="気になる子について問い合わせる">気になる子について問い合わせる</option>
+                <option value="来店予約をする">来店予約をする</option>
+                <option value="ホームステイをしたい子がいる">ホームステイをしたい子がいる</option>
+                <option value="その他">その他</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="pet-name" class="form-label required">お名前</label>
+              <input type="text" id="pet-name" name="name" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="pet-email" class="form-label required">メールアドレス</label>
+              <input type="email" id="pet-email" name="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="pet-phone" class="form-label required">電話番号</label>
+              <input type="tel" id="pet-phone" name="phone" class="form-input" required>
+            </div>
+            
+            <div class="form-group form-group--vertical">
+              <label class="form-label">来店予約</label>
+              <div class="form-checkbox-group">
+                <label class="form-checkbox">
+                  <input type="checkbox" id="pet-visit-reservation" name="visit-reservation" value="1">
+                  <span class="checkbox-mark"></span>
+                  <span class="checkbox-text">来店予約をする</span>
+                </label>
+                <div class="visit-reservation-details" id="visit-reservation-details" style="display: none;">
+                  <div class="reservation-fields">
+                    <div class="reservation-field">
+                      <label for="visit-date" class="reservation-label">来店日</label>
+                      <input type="date" id="visit-date" name="visit-date" class="form-input">
+                    </div>
+                    <div class="reservation-field">
+                      <label for="visit-time" class="reservation-label">来店時間</label>
+                      <select id="visit-time" name="visit-time" class="form-select">
+                        <option value="">選択してください</option>
+                        <option value="11:00-11:30">11:00〜11:30</option>
+                        <option value="11:30-12:00">11:30〜12:00</option>
+                        <option value="12:00-12:30">12:00〜12:30</option>
+                        <option value="12:30-13:00">12:30〜13:00</option>
+                        <option value="13:00-13:30">13:00〜13:30</option>
+                        <option value="14:00-14:30">14:00〜14:30</option>
+                        <option value="14:30-15:00">14:30〜15:00</option>
+                        <option value="15:00-15:30">15:00〜15:30</option>
+                        <option value="15:30-16:00">15:30〜16:00</option>
+                        <option value="16:00-16:30">16:00〜16:30</option>
+                        <option value="16:30-17:00">16:30〜17:00</option>
+                        <option value="17:00-17:30">17:00〜17:30</option>
+                        <option value="17:30-18:00">17:30〜18:00</option>
+                        <option value="18:00-18:30">18:00〜18:30</option>
+                        <option value="18:30-19:00">18:30〜19:00</option>
+                        <option value="19:00-19:30">19:00〜19:30</option>
+                        <option value="19:30-20:00">19:30〜20:00</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">お問い合わせ番号</label>
+              <div class="form-pet-select">
+                <div class="visit-reservation-notice" id="visit-reservation-notice" style="display: none;">
+                  <p>※来店予約では、店舗が異なるペットは選べません</p>
+                </div>
+                <button type="button" class="pet-select-button" id="pet-select-button">
+                  問い合わせたいペットを選ぶ
+                </button>
+                <div class="selected-pets" id="selected-pets"></div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="pet-content" class="form-label">お問い合わせ内容</label>
+              <textarea id="pet-content" name="content" class="form-textarea" rows="6"></textarea>
+            </div>
+            
+            <div class="form-privacy">
+              <label class="privacy-checkbox">
+                <input type="checkbox" name="privacy-agreement" required>
+                <span class="checkmark"></span>
+                <span class="privacy-text">
+                  <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
+                </span>
+              </label>
+            </div>
+            
+            <div class="form-submit">
+              <button type="submit" class="submit-button">送信する</button>
+            </div>
+          </form>
+
+          <!-- 求人についてフォーム -->
+          <form class="contact-form" id="job-form" data-form="job">
+            <div class="form-group">
+              <label for="job-inquiry-type" class="form-label required">お問い合わせ種別</label>
+              <select id="job-inquiry-type" name="inquiry-type" class="form-select" required>
+                <option value="">選択してください</option>
+                <option value="正社員での応募">正社員での応募</option>
+                <option value="アルバイトでの応募">アルバイトでの応募</option>
+                <option value="その他">その他</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="job-name" class="form-label required">お名前</label>
+              <input type="text" id="job-name" name="name" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="job-email" class="form-label required">メールアドレス</label>
+              <input type="email" id="job-email" name="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="job-phone" class="form-label required">電話番号</label>
+              <input type="tel" id="job-phone" name="phone" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="job-content" class="form-label">お問い合わせ内容</label>
+              <textarea id="job-content" name="content" class="form-textarea" rows="6"></textarea>
+            </div>
+            
+            <div class="form-privacy">
+              <label class="privacy-checkbox">
+                <input type="checkbox" name="privacy-agreement" required>
+                <span class="checkmark"></span>
+                <span class="privacy-text">
+                  <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
+                </span>
+              </label>
+            </div>
+            
+            <div class="form-submit">
+              <button type="submit" class="submit-button">送信する</button>
+            </div>
+          </form>
+
+          <!-- その他のお問い合わせフォーム -->
+          <form class="contact-form" id="other-form" data-form="other">
+            <div class="form-group">
+              <label for="other-name" class="form-label required">お名前</label>
+              <input type="text" id="other-name" name="name" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="other-email" class="form-label required">メールアドレス</label>
+              <input type="email" id="other-email" name="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="other-phone" class="form-label required">電話番号</label>
+              <input type="tel" id="other-phone" name="phone" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="other-content" class="form-label required">お問い合わせ内容</label>
+              <textarea id="other-content" name="content" class="form-textarea" rows="6" required></textarea>
+            </div>
+            
+            <div class="form-privacy">
+              <label class="privacy-checkbox">
+                <input type="checkbox" name="privacy-agreement" required>
+                <span class="checkmark"></span>
+                <span class="privacy-text">
+                  <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
+                </span>
+              </label>
+            </div>
+            
+            <div class="form-submit">
+              <button type="submit" class="submit-button">送信する</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <BannerSection />
+    
+    <ContactCTASection />
+  </main>
+
+  <!-- ペット選択モーダル -->
+  <div id="pet-select-modal" class="pet-modal">
+    <div class="pet-modal__overlay">
+      <div class="pet-modal__content">
+        <div class="pet-modal__header">
+          <p class="pet-modal__title">問い合わせたい子犬・子猫を選択し、「問い合わせに追加」ボタンを押してください。（複数選択可）</p>
+          <button class="pet-modal__close" id="pet-modal-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="pet-modal__body">
+          <div class="pet-tabs">
+            <button class="pet-tab active" data-tab="dogs">子犬</button>
+            <button class="pet-tab" data-tab="cats">子猫</button>
+          </div>
+          
+          <div class="pet-grid-container">
+            <!-- 子犬一覧 -->
+            <div class="pet-grid active" data-grid="dogs">
+              {pets.filter(pet => pet.animalType === 'dog').map((pet) => (
+                <div class="pet-card" data-pet-id={pet.id}>
+                  <div class="pet-card__image">
+                    <img src={pet.imageUrl01} alt={pet.breedTypeJa} />
+                  </div>
+                  <div class="pet-card__content">
+                    <div class="pet-card__checkbox">
+                      <input type="checkbox" id={`pet-${pet.id}`} name="selected-pets" value={pet.id} />
+                      <label for={`pet-${pet.id}`} class="pet-card__checkbox-label"></label>
+                    </div>
+                    <div class="pet-card__info">
+                      <div class="pet-card__number">
+                        <span class="pet-card__number-label">お問い合わせ番号：</span>
+                        <span class="pet-card__number-value">{pet.id}</span>
+                      </div>
+                      <div class="pet-card__breed">
+                        {pet.breedTypeJa}
+                        <span class={`pet-card__gender ${pet.gender === 'male' ? 'male' : 'female'}`}>
+                          {pet.gender === 'male' ? '♂' : '♀'}
+                        </span>
+                      </div>
+                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
+                      <div class="pet-card__store">店舗：{pet.storeName}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <!-- 子猫一覧 -->
+            <div class="pet-grid" data-grid="cats">
+              {pets.filter(pet => pet.animalType === 'cat').map((pet) => (
+                <div class="pet-card" data-pet-id={pet.id}>
+                  <div class="pet-card__image">
+                    <img src={pet.imageUrl01} alt={pet.breedTypeJa} />
+                  </div>
+                  <div class="pet-card__content">
+                    <div class="pet-card__checkbox">
+                      <input type="checkbox" id={`pet-${pet.id}`} name="selected-pets" value={pet.id} />
+                      <label for={`pet-${pet.id}`} class="pet-card__checkbox-label"></label>
+                    </div>
+                    <div class="pet-card__info">
+                      <div class="pet-card__number">
+                        <span class="pet-card__number-label">お問い合わせ番号：</span>
+                        <span class="pet-card__number-value">{pet.id}</span>
+                      </div>
+                      <div class="pet-card__breed">
+                        {pet.breedTypeJa}
+                        <span class={`pet-card__gender ${pet.gender === 'male' ? 'male' : 'female'}`}>
+                          {pet.gender === 'male' ? '♂' : '♀'}
+                        </span>
+                      </div>
+                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
+                      <div class="pet-card__store">店舗：{pet.storeName}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div class="pet-modal__footer">
+          <button class="pet-modal__add-button" id="pet-modal-add">お問い合わせに追加する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style lang="scss">
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/_typography' as *;
+@use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_radius' as *;
+
+// 問い合わせ方法選択セクション
+.contact-methods-section {
+  padding: rem(60) 0;
+  background-color: $color-background-primary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+}
+
+.contact-methods-description {
+  margin-bottom: rem(40);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.8;
+    margin: 0;
+    max-width: rem(800);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: row;
+  gap: rem(12);
+  justify-content: center;
+  margin-top: rem(10);
+  
+  @include breakpoint-up(sm) {
+    gap: rem(30);
+  }
+}
+
+.contact-method-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  width: 30%;
+  flex-shrink: 0;
+  
+  @include breakpoint-up(sm) {
+    width: 25%;
+    aspect-ratio: 1/1;
+  }
+  
+  @include breakpoint-up(md) {
+    width: rem(160);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(180);
+  }
+  
+  &:hover {
+    .contact-method-link__inner {
+      transform: translateY(rem(-4));
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  &--line {
+    .contact-method-link__inner {
+      border-color: #00B900;
+    }
+  }
+}
+
+.contact-method-link__inner {
+  background-color: $color-background-primary;
+  border: 1px solid $color-border-primary;
+  border-radius: $radius-m;
+  padding: rem(20) rem(5) rem(5);
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  
+  @include breakpoint-up(sm) {
+  }
+  
+  @include breakpoint-up(xl) {
+  }
+}
+
+.contact-method-link__icon {
+  width: rem(40);
+  height: rem(40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: rem(10);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  @include breakpoint-up(sm) {
+    width: rem(50);
+    height: rem(50);
+  }
+}
+
+.contact-method-link__text {
+  font-size: rem(12);
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: 1.6;
+  @include breakpoint-up(xl) {
+    @include typography-ja-s($font-weight-semibold);
+  }
+}
+
+.contact-method-link__arrow {
+  color: $color-text-secondary;
+  margin-top: rem(10);
+  
+  svg {
+    width: rem(24);
+    height: rem(24);
+  }
+}
+
+// お電話セクション
+.phone-contact-section {
+  background-color: $color-background-tertiary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.phone-contact-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(50);
+  }
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(60);
+  }
+}
+
+.phone-contact-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(45);
+    justify-content: center;
+  }
+}
+
+.contact-button {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-text-primary;
+  border-radius: $radius-s;
+  padding: rem(30) rem(75) rem(30) rem(55);
+  text-decoration: none;
+  color: $color-text-primary;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  width: rem(270);
+  flex-shrink: 0;
+  
+  @include breakpoint-up(lg) {
+    width: rem(300);
+  }
+  background-color: $color-background-primary;
+  
+  &:hover {
+    text-decoration: none;
+    
+    .contact-button__line {
+      transform: translateX(rem(15));
+    }
+  }
+  
+  &--phone {
+    border-color: $color-brand-primary;
+    
+    .contact-button__line {
+      background-color: $color-brand-primary;
+    }
+  }
+}
+
+.contact-button__line {
+  position: absolute;
+  left: rem(-30);
+  width: rem(40);
+  height: 1px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.contact-button__content {
+  display: flex;
+  align-items: center;
+  gap: rem(10);
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-button__text,
+.contact-button__detail {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.contact-button__icon {
+  position: absolute;
+  right: rem(30);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(20);
+  height: rem(20);
+  
+  img, svg {
+    width: 100%;
+    height: 100%;
+    fill: $color-text-primary;
+  }
+}
+
+// LINEセクション
+.line-contact-section {
+  background-color: $color-background-primary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.line-contact-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(50);
+  }
+  
+  @include breakpoint-up(lg) {
+    font-size: $font-size-ja-2l;
+    margin-bottom: rem(60);
+  }
+}
+
+.line-contact-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+  align-items: center;
+  width: 100%;
+  
+  @include breakpoint-up(sm) {
+    flex-direction: row;
+    gap: rem(45);
+    justify-content: center;
+  }
+}
+
+.contact-button--line {
+  border-color: #00B900;
+  
+  .contact-button__line {
+    background-color: #00B900;
+  }
+}
+
+// お問い合わせフォームセクション
+.mail-contact-section {
+  background-color: $color-background-secondary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+.mail-contact-title {
+  @include typography-ja-l($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(50);
+  }
+  
+  @include breakpoint-up(lg) {
+    font-size: $font-size-ja-2l;
+    margin-bottom: rem(60);
+  }
+}
+
+.mail-contact-description {
+  text-align: center;
+  margin-bottom: rem(40);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.8;
+    margin: 0;
+    max-width: rem(800);
+    margin-left: auto;
+    margin-right: auto;
+    
+    @include breakpoint-up(lg) {
+    }
+  }
+}
+
+
+// コンタクトフォーム専用タブスタイリング (独立)
+.contact-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: rem(40);
+  border: 1px solid $color-text-primary;
+  background-color: $color-background-primary;
+  border-radius: $radius-s;
+  overflow: hidden;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: rem(5);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+}
+
+.contact-tab {
+  padding: rem(12);
+  border: none;
+  border-radius: 0;
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  color: $color-text-secondary;
+  background-color: $color-background-primary;
+  transition: all 0.3s ease;
+  position: relative;
+  min-width: rem(100);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(4);
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  @include breakpoint-up(sm) {
+    padding: rem(12) rem(20);
+  }
+  
+  &:hover {
+    opacity: 0.7;
+  }
+  
+  &.active {
+    color: $color-text-primary;
+    background-color: $color-background-tertiary;
+    border: 1px solid $color-text-primary;
+    border-radius: rem(3);
+  }
+}
+
+.contact-tab__arrow {
+  font-size: rem(10);
+  transition: opacity 0.3s ease;
+}
+
+// フォームスタイリング
+.contact-forms {
+  max-width: rem(800);
+  margin: 0 auto;
+}
+
+.contact-form {
+  display: none;
+  
+  &.active {
+    display: block;
+  }
+}
+
+.form-group {
+  margin-bottom: rem(24);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(30);
+  }
+  
+  @include breakpoint-up(md) {
+    display: flex;
+    align-items: flex-start;
+    gap: rem(20);
+  }
+  
+  // 来店予約フォームグループは特別なレイアウト
+  &.form-group--vertical {
+    @include breakpoint-up(md) {
+      display: flex;
+      align-items: flex-start;
+      gap: rem(20);
+    }
+  }
+}
+
+.form-label {
+  display: block;
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  margin-bottom: rem(8);
+  
+  @include breakpoint-up(md) {
+    flex-shrink: 0;
+    width: rem(180);
+    margin-bottom: 0;
+    padding-top: rem(10);
+  }
+  
+  &.required::after {
+    content: '必須';
+    @include typography-ja-2s($font-weight-semibold);
+    color: $color-feedback-error;
+    border: 1px solid $color-feedback-error;
+    padding: rem(2) rem(4);
+    margin-left: rem(8);
+    border-radius: rem(4);
+  }
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: rem(8) rem(16) rem(8) rem(10);
+  border: 1px solid $color-border-secondary;
+  border-radius: $radius-s;
+  @include typography-ja-s;
+  color: $color-text-primary;
+  background-color: $color-background-primary;
+  transition: border-color 0.3s ease;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(8) rem(20) rem(8) rem(10);
+  }
+  
+  @include breakpoint-up(md) {
+    flex: 1;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: $color-brand-primary;
+  }
+  
+  &::placeholder {
+    color: $color-text-tertiary;
+  }
+}
+
+// セレクトフォームの下三角ボタンをカスタマイズ
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 9L1.5 4.5L2.5 3.5L6 7L9.5 3.5L10.5 4.5L6 9Z' fill='%23666666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right rem(12) center;
+  background-size: rem(12) rem(12);
+  padding-right: rem(40);
+  
+  @include breakpoint-up(sm) {
+    background-position: right rem(16) center;
+    padding-right: rem(44);
+  }
+  
+  &:focus {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 9L1.5 4.5L2.5 3.5L6 7L9.5 3.5L10.5 4.5L6 9Z' fill='%23007bff'/%3E%3C/svg%3E");
+  }
+}
+
+// 日付入力フィールドのカレンダーアイコンをカスタマイズ
+input[type="date"] {
+  position: relative;
+  
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: rem(10);
+    top: 50%;
+    transform: translateY(-50%);
+    width: rem(12);
+    height: rem(12);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M1.5 3.5h9v6.5a1 1 0 01-1 1h-7a1 1 0 01-1-1V3.5z' stroke='%23666666' stroke-width='1' fill='none'/%3E%3Cpath d='M3.5 1.5v3M8.5 1.5v3M1.5 5.5h9' stroke='%23666666' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: rem(12) rem(12);
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+    
+    @include breakpoint-up(sm) {
+      right: rem(14);
+    }
+  }
+  
+  &:focus::-webkit-calendar-picker-indicator {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M1.5 3.5h9v6.5a1 1 0 01-1 1h-7a1 1 0 01-1-1V3.5z' stroke='%23007bff' stroke-width='1' fill='none'/%3E%3Cpath d='M3.5 1.5v3M8.5 1.5v3M1.5 5.5h9' stroke='%23007bff' stroke-width='1'/%3E%3C/svg%3E");
+  }
+}
+
+.form-textarea {
+  width: 100%;
+  padding: rem(8) rem(16);
+  border: 1px solid $color-border-secondary;
+  border-radius: $radius-s;
+  @include typography-ja-s;
+  color: $color-text-primary;
+  background-color: $color-background-primary;
+  resize: vertical;
+  min-height: rem(120);
+  transition: border-color 0.3s ease;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(8) rem(20);
+  }
+  
+  @include breakpoint-up(md) {
+    flex: 1;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: $color-brand-primary;
+  }
+  
+  &::placeholder {
+    color: $color-text-tertiary;
+  }
+}
+
+.form-privacy {
+  margin-bottom: rem(30);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(40);
+  }
+}
+
+.privacy-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: rem(12);
+  cursor: pointer;
+  @include typography-ja-s;
+  color: $color-text-primary;
+  line-height: 1.6;
+  
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  .checkmark {
+    width: rem(20);
+    height: rem(20);
+    border: 2px solid $color-border-secondary;
+    border-radius: rem(4);
+    background-color: $color-background-primary;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.3s ease;
+    margin-top: rem(2);
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: rem(2);
+      left: rem(6);
+      width: rem(6);
+      height: rem(10);
+      border: 2px solid $color-background-primary;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  }
+  
+  input[type="checkbox"]:checked + .checkmark {
+    background-color: $color-brand-primary;
+    border-color: $color-brand-primary;
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+  
+  .privacy-text {
+    a {
+      color: $color-brand-primary;
+      text-decoration: underline;
+      white-space: nowrap;
+      
+      &:hover {
+        color: $color-text-primary;
+      }
+    }
+  }
+}
+
+.form-submit {
+  text-align: center;
+}
+
+.submit-button {
+  background-color: $color-brand-primary;
+  color: $color-background-primary;
+  border: none;
+  border-radius: $radius-s;
+  padding: rem(16) rem(40);
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: rem(200);
+  
+  @include breakpoint-up(sm) {
+    padding: rem(20) rem(50);
+    @include typography-ja-m($font-weight-semibold);
+    min-width: rem(250);
+  }
+  
+  &:hover {
+    background-color: darken($color-brand-primary, 10%);
+    transform: translateY(rem(-2));
+  }
+  
+  &:disabled {
+    background-color: $color-text-tertiary;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// チェックボックスグループ
+.form-checkbox-group {
+  @include breakpoint-up(md) {
+    padding-top: rem(10);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: rem(16);
+  }
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: rem(12);
+  cursor: pointer;
+  @include typography-ja-s;
+  color: $color-text-primary;
+  width: fit-content;
+  
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  .checkbox-mark {
+    width: rem(20);
+    height: rem(20);
+    border: 2px solid $color-border-secondary;
+    border-radius: rem(4);
+    background-color: $color-background-primary;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.3s ease;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: rem(2);
+      left: rem(6);
+      width: rem(6);
+      height: rem(10);
+      border: 2px solid $color-background-primary;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  }
+  
+  input[type="checkbox"]:checked + .checkbox-mark {
+    background-color: $color-brand-primary;
+    border-color: $color-brand-primary;
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+  
+  .checkbox-text {
+    user-select: none;
+  }
+}
+
+// 来店予約時の注意文
+.visit-reservation-notice {
+  margin-bottom: rem(12);
+  padding: rem(11) 0;
+  
+  p {
+    @include typography-ja-s($font-weight-semibold);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+// 来店予約詳細
+.visit-reservation-details {
+  margin-top: rem(16);
+  padding: rem(16);
+  background-color: $color-background-secondary;
+  border-radius: $radius-s;
+  border: 1px solid $color-border-secondary;
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(20);
+    padding: rem(20);
+  }
+  
+  @include breakpoint-up(md) {
+    margin-top: rem(16);
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.reservation-fields {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
+}
+
+.reservation-field {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+}
+
+.reservation-label {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+}
+
+// ペット選択フォーム
+.form-pet-select {
+  @include breakpoint-up(md) {
+    flex: 1;
+  }
+}
+
+.pet-select-button {
+  background-color: $color-background-accent;
+  color: $color-background-primary;
+  border: none;
+  border-radius: $radius-s;
+  padding: rem(6) rem(20);
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(10) rem(24);
+  }
+  
+  &:hover {
+    background-color: darken($color-brand-primary, 10%);
+    transform: translateY(rem(-2));
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.selected-pets {
+  margin-top: rem(12);
+  
+  .selected-pet {
+    background-color: $color-background-tertiary;
+    border: 1px solid $color-border-secondary;
+    border-radius: $radius-s;
+    padding: rem(8) rem(12);
+    margin-bottom: rem(8);
+    @include typography-ja-s;
+    color: $color-text-primary;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// ペット選択モーダル
+.pet-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+  
+  &.active {
+    display: block;
+  }
+}
+
+.pet-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: rem(20);
+  padding-top: rem(70);
+  
+  @include breakpoint-up(sm) {
+    padding-top: rem(110);
+  }
+}
+
+.pet-modal__content {
+  background-color: $color-background-primary;
+  border-radius: $radius-m;
+  max-width: rem(1200);
+  max-height: 70vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-modal__header {
+  padding: rem(50) rem(15) rem(16);
+  border-bottom: 1px solid $color-border-secondary;
+  position: relative;
+  text-align: center;
+  background-color: $color-background-secondary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(60) rem(20) rem(30);
+  }
+}
+
+.pet-modal__title {
+  @include typography-ja-s;
+  text-align: left;
+  color: $color-text-primary;
+  margin: 0;
+  line-height: 1.6;
+  @include breakpoint-up(lg) {
+    text-align: center;
+  }
+}
+
+.pet-modal__close {
+  background: none;
+  border: none;
+  color: $color-text-white;
+  cursor: pointer;
+  padding: rem(6);
+  transition: all 0.3s ease;
+  position: absolute;
+  top: rem(10);
+  right: rem(10);
+  background-color: $color-text-link;
+  width: rem(30);
+  height: rem(30);
+  border-radius: 50%;
+
+  
+  @include breakpoint-up(sm) {
+    // top: rem(24);
+    // right: rem(30);
+  }
+  
+  &:hover {
+    color: $color-text-primary;
+    background-color: $color-background-secondary;
+  }
+  
+  svg {
+    width: rem(18);
+    height: rem(18);
+  }
+}
+
+.pet-modal__body {
+  padding: rem(20);
+  flex: 1;
+  overflow-y: auto;
+  
+  @include breakpoint-up(xl) {
+    padding: rem(30) rem(40);
+  }
+}
+
+.pet-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: rem(40);
+  border: 1px solid $color-text-primary;
+  background-color: $color-background-primary;
+  border-radius: $radius-s;
+  overflow: hidden;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: rem(5);
+  
+  @include breakpoint-up(sm) {
+    // margin-bottom: rem(60);
+  }
+}
+
+.pet-tab {
+  padding: rem(12);
+  border: none;
+  border-radius: 0;
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  color: $color-text-secondary;
+  background-color: $color-background-primary;
+  transition: all 0.3s ease;
+  position: relative;
+  min-width: rem(100);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(4);
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(12) rem(20);
+  }
+  
+  &:hover {
+    opacity: 0.7;
+  }
+  
+  &.active {
+    color: $color-text-primary;
+    background-color: $color-background-tertiary;
+    border: 1px solid $color-text-primary;
+    border-radius: rem(3);
+  }
+}
+
+.pet-grid-container {
+  position: relative;
+}
+
+.pet-grid {
+  display: none;
+  grid-template-columns: 1fr;
+  gap: rem(20);
+  
+  @include breakpoint-up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: rem(16);
+  }
+  
+  &.active {
+    display: grid;
+  }
+}
+
+.pet-card {
+  border-radius: $radius-l;
+  overflow: hidden;
+  background-color: $color-background-tertiary;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  padding: rem(10) rem(15) rem(20);
+  gap: rem(15);
+  align-items: flex-start;
+  @include breakpoint-up(lg) {
+    gap: rem(25);
+    padding: rem(15) rem(20) rem(30);
+  }
+  
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(rem(-2));
+  }
+}
+
+.pet-card__image {
+  width: rem(120);
+  height: rem(120);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  margin-top: rem(15);
+  
+  @include breakpoint-up(sm) {
+    width: rem(140);
+    height: rem(140);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(200);
+    height: rem(200);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    border-radius: $radius-m;
+  }
+}
+
+.pet-card__content {
+  padding-top: rem(30);
+  position: relative;
+  flex: 1;
+  
+  @include breakpoint-up(sm) {
+
+  }
+}
+
+.pet-card__checkbox {
+  position: absolute;
+  top: 0;
+  right: 0;
+  
+  
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  .pet-card__checkbox-label {
+    display: block;
+    width: rem(24);
+    height: rem(24);
+    border: 2px solid $color-border-secondary;
+    border-radius: rem(4);
+    background-color: $color-background-primary;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: rem(3);
+      left: rem(8);
+      width: rem(6);
+      height: rem(12);
+      border: 2px solid $color-background-primary;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  }
+  
+  input[type="checkbox"]:checked + .pet-card__checkbox-label {
+    background-color: $color-brand-primary;
+    border-color: $color-brand-primary;
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+.pet-card__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.pet-card__number {
+  margin-bottom: rem(8);
+}
+
+.pet-card__number-label {
+  @include typography-ja-2s;
+  color: $color-text-primary;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+  }
+}
+
+.pet-card__number-value {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+  }
+}
+
+.pet-card__breed {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  margin-bottom: rem(6);
+  line-height: 1.4;
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+  }
+}
+
+.pet-card__gender {
+  @include typography-ja-s($font-weight-semibold);
+  margin-left: rem(4);
+  
+  @include breakpoint-up(xl) {
+    @include typography-ja-m($font-weight-semibold);
+  }
+  
+  &.male {
+    color: #7398D5;
+  }
+  
+  &.female {
+    color: #D55665;
+  }
+}
+
+.pet-card__color,
+.pet-card__birthday,
+.pet-card__store {
+  @include typography-ja-2s;
+  color: $color-text-primary;
+  margin-bottom: rem(4);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  @include breakpoint-up(xl) {
+    @include typography-ja-s;
+  }
+}
+
+.pet-modal__footer {
+  padding: rem(20) rem(30) rem(30);
+  border-top: 1px solid $color-border-secondary;
+  text-align: center;
+  background-color: $color-background-secondary;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30) rem(40) rem(40);
+  }
+}
+
+.pet-modal__add-button {
+  background-color: $color-background-accent;
+  color: $color-background-primary;
+  border: none;
+  border-radius: $radius-s;
+  padding: rem(16) rem(40);
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: rem(200);
+  
+  @include breakpoint-up(xl) {
+    padding: rem(20);
+    min-width: rem(250);
+  }
+  
+  &:hover {
+    background-color: darken($color-brand-primary, 10%);
+    transform: translateY(rem(-2));
+  }
+  
+  &:disabled {
+    background-color: $color-text-tertiary;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // タブ切り替え機能
+    const tabs = document.querySelectorAll('.contact-tab');
+    const forms = document.querySelectorAll('.contact-form');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const targetTab = this.getAttribute('data-tab');
+        
+        // すべてのタブからactiveクラスを削除
+        tabs.forEach(t => t.classList.remove('active'));
+        // すべてのフォームからactiveクラスを削除
+        forms.forEach(f => f.classList.remove('active'));
+        
+        // クリックされたタブにactiveクラスを追加
+        this.classList.add('active');
+        // 対応するフォームにactiveクラスを追加
+        const targetForm = document.querySelector(`[data-form="${targetTab}"]`);
+        if (targetForm) {
+          targetForm.classList.add('active');
+        }
+      });
+    });
+    
+    // フォーム送信処理（分離型）
+    const SENDGRID_API_KEY = 'SG.kke-6pqt17yw1rdb'; // SendGridのAPIキーを設定してください
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyiRbjG6idAwHvmM2UJPJk6ZpkDKTBRkjkhrKbRjPddGTWsgrDVwUK5lbwNHP24NwSzLw/exec'; // Google Apps ScriptのウェブアプリURLを設定してください
+    const ADMIN_EMAIL = 'naocreate52@gmail.com';
+    const FROM_EMAIL = 'contact@naocreate.net';
+    
+    forms.forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const formType = this.getAttribute('data-form');
+        
+        // プライバシーポリシーの同意チェック
+        const privacyAgreement = formData.get('privacy-agreement');
+        if (!privacyAgreement) {
+          alert('プライバシーポリシーへの同意が必要です。');
+          return;
+        }
+        
+        // 送信ボタンを無効化
+        const submitButton = this.querySelector('.submit-button');
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = '送信中...';
+        
+        // フォームデータを整理
+        const data = prepareFormData(formType, formData);
+        
+        // 並列処理: SendGrid + Google Apps Script
+        Promise.all([
+          sendEmailViaSendGrid(data),
+          saveToSpreadsheet(data)
+        ])
+        .then(results => {
+          const [emailResult, spreadsheetResult] = results;
+          
+          if (emailResult.success && spreadsheetResult.success) {
+            alert('お問い合わせを受け付けました。ありがとうございます。');
+            form.reset();
+            resetFormState();
+          } else {
+            // 部分的な失敗の場合
+            let errorMessage = '送信に問題が発生しました。\n';
+            if (!emailResult.success) errorMessage += 'メール送信エラー\n';
+            if (!spreadsheetResult.success) errorMessage += 'データ保存エラー\n';
+            alert(errorMessage);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('送信に失敗しました。もう一度お試しください。');
+        })
+        .finally(() => {
+          // 送信ボタンを元に戻す
+          submitButton.disabled = false;
+          submitButton.textContent = originalText;
+        });
+      });
+    });
+    
+    // SendGrid経由でメール送信
+    async function sendEmailViaSendGrid(data) {
+      try {
+        const payload = {
+          personalizations: [{
+            to: [{ email: ADMIN_EMAIL }],
+            subject: getEmailSubject(data.formType, data)
+          }],
+          from: { email: FROM_EMAIL, name: 'カトレア お問い合わせフォーム' },
+          content: [{
+            type: 'text/plain',
+            value: getEmailBody(data.formType, data)
+          }]
+        };
+        
+        const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        if (response.ok) {
+          return { success: true };
+        } else {
+          const errorText = await response.text();
+          console.error('SendGrid error:', errorText);
+          return { success: false, error: errorText };
+        }
+      } catch (error) {
+        console.error('SendGrid request error:', error);
+        return { success: false, error: error.message };
+      }
+    }
+    
+    // スプレッドシートに保存
+    async function saveToSpreadsheet(data) {
+      try {
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error('Spreadsheet save error:', error);
+        return { success: false, error: error.message };
+      }
+    }
+    
+    // メール件名生成
+    function getEmailSubject(formType, data) {
+      const typeMap = {
+        'pet': 'ペットについて',
+        'job': '求人について',
+        'other': 'その他'
+      };
+      return `【カトレア】${typeMap[formType]}のお問い合わせ - ${data.name}様`;
+    }
+    
+    // メール本文生成
+    function getEmailBody(formType, data) {
+      let body = `カトレアのお問い合わせフォームから新しいお問い合わせが届きました。\n\n`;
+      body += `送信日時: ${new Date().toLocaleString('ja-JP')}\n`;
+      body += `フォーム種別: ${formType}\n\n`;
+      
+      if (formType === 'pet') {
+        body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
+        body += `お名前: ${data.name || ''}\n`;
+        body += `メールアドレス: ${data.email || ''}\n`;
+        body += `電話番号: ${data.phone || ''}\n`;
+        body += `来店予約: ${data.visitReservation ? '予約あり' : '予約なし'}\n`;
+        if (data.visitReservation) {
+          body += `来店日: ${data.visitDate || ''}\n`;
+          body += `来店時間: ${data.visitTime || ''}\n`;
+        }
+        body += `選択されたペット: ${data.selectedPets || ''}\n`;
+        body += `お問い合わせ内容: ${data.content || ''}\n`;
+      } else if (formType === 'job') {
+        body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
+        body += `お名前: ${data.name || ''}\n`;
+        body += `メールアドレス: ${data.email || ''}\n`;
+        body += `電話番号: ${data.phone || ''}\n`;
+        body += `お問い合わせ内容: ${data.content || ''}\n`;
+      } else if (formType === 'other') {
+        body += `お名前: ${data.name || ''}\n`;
+        body += `メールアドレス: ${data.email || ''}\n`;
+        body += `電話番号: ${data.phone || ''}\n`;
+        body += `お問い合わせ内容: ${data.content || ''}\n`;
+      }
+      
+      return body;
+    }
+    
+    // フォーム状態リセット
+    function resetFormState() {
+      // 来店予約の詳細を非表示にする
+      const visitReservationDetails = document.getElementById('visit-reservation-details');
+      const visitReservationNotice = document.getElementById('visit-reservation-notice');
+      if (visitReservationDetails) visitReservationDetails.style.display = 'none';
+      if (visitReservationNotice) visitReservationNotice.style.display = 'none';
+      // 選択されたペットをクリア
+      selectedPets = [];
+      updateSelectedPetsDisplay();
+    }
+    
+    // フォームデータを整理する関数
+    function prepareFormData(formType, formData) {
+      const data = {
+        formType: formType,
+        name: formData.get('name') || '',
+        email: formData.get('email') || '',
+        phone: formData.get('phone') || '',
+        content: formData.get('content') || ''
+      };
+      
+      if (formType === 'pet') {
+        data.inquiryType = formData.get('inquiry-type') || '';
+        data.visitReservation = formData.get('visit-reservation') === '1';
+        data.visitDate = formData.get('visit-date') || '';
+        data.visitTime = formData.get('visit-time') || '';
+        data.selectedPets = selectedPets.map(pet => 
+          `${pet.number} ${pet.breed} 【${pet.store}】`
+        ).join(', ');
+      } else if (formType === 'job') {
+        data.inquiryType = formData.get('inquiry-type') || '';
+      }
+      
+      return data;
+    }
+    
+    // ペット選択モーダル機能
+    const petSelectButton = document.getElementById('pet-select-button');
+    const petModal = document.getElementById('pet-select-modal');
+    const petModalClose = document.getElementById('pet-modal-close');
+    const petModalAdd = document.getElementById('pet-modal-add');
+    const selectedPetsContainer = document.getElementById('selected-pets');
+    const petTabs = document.querySelectorAll('.pet-tab');
+    const petGrids = document.querySelectorAll('.pet-grid');
+    
+    // 選択されたペットの情報を保持
+    let selectedPets = [];
+    
+    // モーダルを開く
+    petSelectButton.addEventListener('click', function() {
+      petModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    // モーダルを閉じる
+    function closePetModal() {
+      petModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    petModalClose.addEventListener('click', closePetModal);
+    
+    // モーダルのオーバーレイクリックで閉じる
+    petModal.addEventListener('click', function(e) {
+      if (e.target === petModal || e.target.classList.contains('pet-modal__overlay')) {
+        closePetModal();
+      }
+    });
+    
+    // ペットタブ切り替え
+    petTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const targetTab = this.getAttribute('data-tab');
+        
+        // すべてのタブからactiveクラスを削除
+        petTabs.forEach(t => t.classList.remove('active'));
+        petGrids.forEach(g => g.classList.remove('active'));
+        
+        // クリックされたタブにactiveクラスを追加
+        this.classList.add('active');
+        const targetGrid = document.querySelector(`[data-grid="${targetTab}"]`);
+        if (targetGrid) {
+          targetGrid.classList.add('active');
+        }
+      });
+    });
+    
+    // ペットカードクリック処理
+    document.querySelectorAll('.pet-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        // チェックボックスをクリックした場合は、カードクリック処理をスキップ
+        if (e.target.type === 'checkbox' || e.target.classList.contains('pet-card__checkbox-label')) {
+          return;
+        }
+        
+        // カードクリック時にチェックボックスをトグル
+        const checkbox = this.querySelector('input[type="checkbox"]');
+        if (checkbox) {
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+    
+    // チェックボックスの変更処理
+    document.querySelectorAll('input[name="selected-pets"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const petId = this.value;
+        const petCard = this.closest('.pet-card');
+        
+        if (this.checked) {
+          // ペット情報を取得
+          const petNumber = petCard.querySelector('.pet-card__number').textContent.replace('お問い合わせ番号：', '');
+          const petBreed = petCard.querySelector('.pet-card__breed').textContent.trim();
+          const petStore = petCard.querySelector('.pet-card__store').textContent.replace('店舗：', '');
+          
+          // 選択されたペット情報を追加
+          selectedPets.push({
+            id: petId,
+            number: petNumber,
+            breed: petBreed,
+            store: petStore
+          });
+        } else {
+          // 選択を解除
+          selectedPets = selectedPets.filter(pet => pet.id !== petId);
+        }
+      });
+    });
+    
+    // お問い合わせに追加ボタンの処理
+    petModalAdd.addEventListener('click', function() {
+      // 選択されたペットの表示を更新
+      updateSelectedPetsDisplay();
+      
+      // モーダルを閉じる
+      closePetModal();
+    });
+    
+    // 選択されたペットの表示を更新
+    function updateSelectedPetsDisplay() {
+      selectedPetsContainer.innerHTML = '';
+      
+      selectedPets.forEach(pet => {
+        const petElement = document.createElement('div');
+        petElement.className = 'selected-pet';
+        petElement.textContent = `${pet.number} ${pet.breed} 【${pet.store}】`;
+        selectedPetsContainer.appendChild(petElement);
+      });
+    }
+    
+    // 来店予約チェックボックスの処理
+    const visitReservationCheckbox = document.getElementById('pet-visit-reservation');
+    const visitReservationDetails = document.getElementById('visit-reservation-details');
+    const visitReservationNotice = document.getElementById('visit-reservation-notice');
+    
+    if (visitReservationCheckbox && visitReservationDetails && visitReservationNotice) {
+      visitReservationCheckbox.addEventListener('change', function() {
+        const checkbox = this;
+        if (checkbox.checked) {
+          visitReservationDetails.style.display = 'block';
+          visitReservationNotice.style.display = 'block';
+        } else {
+          visitReservationDetails.style.display = 'none';
+          visitReservationNotice.style.display = 'none';
+          // チェックを外した時に入力値をリセット
+          const visitDate = document.getElementById('visit-date');
+          const visitTime = document.getElementById('visit-time');
+          if (visitDate) (visitDate).value = '';
+          if (visitTime) (visitTime).value = '';
+        }
+      });
+    }
+  });
+</script>
