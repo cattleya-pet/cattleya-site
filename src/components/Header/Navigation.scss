@@ -405,3 +405,33 @@
 :global(body.menu-open) {
   overflow: hidden;
 }
+
+// ソーシャルアイコン
+.nav-social {
+  padding-top: rem(30);
+  display: flex;
+  gap: rem(16);
+  justify-content: flex-start;
+  margin-bottom: rem(20);
+}
+
+.nav-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(30);
+  height: rem(30);
+  border-radius: 50%;
+  color: $color-text-primary;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  
+  &:hover {
+    color: $color-text-secondary;
+  }
+
+  svg {
+    width: rem(24);
+    height: rem(24);
+  }
+}

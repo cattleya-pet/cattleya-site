@@ -50,4 +50,9 @@
       width: 100%;
     }
   }
+  
+  // /voiceページ専用: .voice-cardのmargin-topを0に
+  .voice-card {
+    margin-top: 0;
+  }
 }

@@ -1,0 +1,161 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use '../../styles/tokens/colors' as *;
+@use '../../styles/tokens/typography' as *;
+
+.mobile-cta-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: $color-background;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  
+  // sm以上では非表示
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+.mobile-cta-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  padding: rem(16);
+  background-color: $color-background-quaternary;
+  border: none;
+  border-top: 1px solid $color-border-primary;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: $color-background-quaternary;
+  }
+  
+  &__icon {
+    position: relative;
+    width: rem(16);
+    height: rem(16);
+    
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: $color-text-primary;
+      transition: all 0.3s ease;
+    }
+    
+    // 縦線
+    &::before {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: rem(2);
+      height: rem(16);
+    }
+    
+    // 横線
+    &::after {
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: rem(16);
+      height: rem(2);
+    }
+  }
+  
+  &__text {
+    @include typography-ja-s($font-weight-semibold);
+    color: $color-text-primary;
+  }
+  
+  // 開いた状態での縦線を非表示に（マイナス表示）
+  &--open {
+    .mobile-cta-trigger__icon {
+      &::before {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+.mobile-cta-content {
+  background-color: $color-background-primary;
+  padding: rem(16);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+  
+  &--open {
+    max-height: 300px; // 十分な高さを設定
+    padding: rem(16);
+  }
+  
+  &:not(.mobile-cta-content--open) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.mobile-cta-row {
+  display: flex;
+  gap: rem(8);
+  margin-bottom: rem(8);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.mobile-cta-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  padding: rem(12) rem(8);
+  background-color: $color-background;
+  border: 1px solid $color-border-primary;
+  border-radius: rem(8);
+  text-decoration: none;
+  color: $color-text-primary;
+  transition: all 0.2s ease;
+  min-height: rem(72);
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+  }
+  
+  // フルワイズボタン（メール用）
+  &--full {
+    margin: 0 auto;
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(24);
+    height: rem(24);
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  
+  &__text {
+    font-size: rem(12);
+    font-weight: $font-weight-semibold;
+    text-align: center;
+    line-height: 1.2;
+    color: inherit;
+  }
+}

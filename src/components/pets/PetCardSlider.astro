@@ -68,11 +68,13 @@ const {
           {pets.map((pet) => {
             const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
             const formattedDate = formatDate(pet.birthday);
+            const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
             
             return (
               <div class="pet-card__new">
                 {pet.isNew === 'true' && <span class="pet-card__new-badge">NEW</span>}
-                <div class="pet-card__new-inner">
+                <a href={detailUrl} class="pet-card__new-link">
+                  <div class="pet-card__new-inner">
                   <div class="pet-card__new-image-container">
                     <img
                       class="pet-card__new-image"
@@ -107,7 +109,8 @@ const {
                       <p class="pet-card__new-detail-item">店舗：{pet.storeName}</p>
                     </div>
                   </div>
-                </div>
+                  </div>
+                </a>
               </div>
             );
           })}

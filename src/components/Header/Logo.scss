@@ -13,6 +13,12 @@
   .header-desktop & {
     padding-left: 0; // デスクトップでも左余白なし
   }
+  
+  // モバイル表示用のサイズ設定
+  .header-mobile & {
+    height: rem(40); // imgタグと同じ高さに設定
+    width: auto; // 幅は内容に合わせて自動調整
+  }
 
   &:hover {
     opacity: 0.9;

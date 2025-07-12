@@ -276,7 +276,8 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                           />
                         ) : (
                           <iframe
-                            src={item.url}
+                            src=""
+                            data-video-src={item.url}
                             class="carousel__video"
                             allow="autoplay; fullscreen"
                             allowfullscreen
@@ -618,6 +619,22 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
     // スライドを切り替え
     slides.forEach((slide, i) => {
       slide.classList.toggle('carousel__slide--active', i === index);
+      
+      // 動画の遅延読み込み制御
+      const iframe = slide.querySelector('.carousel__video');
+      if (iframe) {
+        if (i === index) {
+          // アクティブなスライドの動画を読み込み
+          if (iframe.dataset.videoSrc && iframe.src !== iframe.dataset.videoSrc) {
+            iframe.src = iframe.dataset.videoSrc;
+          }
+        } else {
+          // 非アクティブなスライドの動画を停止
+          if (iframe.src && iframe.src !== '') {
+            iframe.src = '';
+          }
+        }
+      }
     });
 
     // サムネイルを切り替え
@@ -652,6 +669,9 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key === 'ArrowRight') nextSlide();
   });
+
+  // 初期表示
+  showSlide(0);
 
 
   // シェア機能

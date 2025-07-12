@@ -1,0 +1,82 @@
+---
+import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
+import lineIcon from '../../assets/icons/icon_line-01.svg';
+import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
+import './MobileCTAButtons.scss';
+---
+
+<!-- sm未満時のみ表示される画面最下端のCTAボタン群 -->
+<div class="mobile-cta-buttons">
+  <!-- トリガーバー -->
+  <button class="mobile-cta-trigger" id="mobile-cta-trigger">
+    <span class="mobile-cta-trigger__icon"></span>
+    <span class="mobile-cta-trigger__text">お問い合わせはこちら</span>
+  </button>
+
+  <!-- CTAボタン群（初期状態では非表示） -->
+  <div class="mobile-cta-content" id="mobile-cta-content">
+    <!-- 上段：店舗ボタン4つ -->
+    <div class="mobile-cta-row">
+      <a href="tel:03-1234-5678" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={phoneIcon.src} alt="電話アイコン" />
+        </div>
+        <div class="mobile-cta-button__text">新宿店電話</div>
+      </a>
+      
+      <a href="https://line.me/R/ti/p/shinjuku-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={lineIcon.src} alt="LINEアイコン" />
+        </div>
+        <div class="mobile-cta-button__text">新宿店LINE</div>
+      </a>
+      
+      <a href="tel:03-8765-4321" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={phoneIcon.src} alt="電話アイコン" />
+        </div>
+        <div class="mobile-cta-button__text">池袋店電話</div>
+      </a>
+      
+      <a href="https://line.me/R/ti/p/ikebukuro-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={lineIcon.src} alt="LINEアイコン" />
+        </div>
+        <div class="mobile-cta-button__text">池袋店LINE</div>
+      </a>
+    </div>
+
+    <!-- 下段：メールボタン -->
+    <div class="mobile-cta-row">
+      <a href="/contact" class="mobile-cta-button mobile-cta-button--full">
+        <div class="mobile-cta-button__icon">
+          <img src={mailIcon.src} alt="メールアイコン" />
+        </div>
+        <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('mobile-cta-trigger');
+    const content = document.getElementById('mobile-cta-content');
+    
+    if (trigger && content) {
+      trigger.addEventListener('click', () => {
+        const isOpen = content.classList.contains('mobile-cta-content--open');
+        
+        if (isOpen) {
+          // 閉じる
+          content.classList.remove('mobile-cta-content--open');
+          trigger.classList.remove('mobile-cta-trigger--open');
+        } else {
+          // 開く
+          content.classList.add('mobile-cta-content--open');
+          trigger.classList.add('mobile-cta-trigger--open');
+        }
+      });
+    }
+  });
+</script>

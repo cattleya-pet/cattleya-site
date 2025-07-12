@@ -24,9 +24,11 @@
     color: inherit;
     display: block;
     height: 100%;
+    cursor: pointer;
     
     &:hover {
       text-decoration: none;
+      cursor: pointer;
     }
     
     &:hover * {
