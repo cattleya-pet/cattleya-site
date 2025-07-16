@@ -24,7 +24,10 @@
       "Bash(timeout:*)",
       "Bash(true)",
       "WebFetch(domain:document.microcms.io)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   },
