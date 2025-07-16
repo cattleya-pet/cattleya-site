@@ -1,6 +1,6 @@
 // MicroCMS認証情報
-export const MICROCMS_SERVICE_DOMAIN = import.meta.env.PUBLIC_MICROCMS_SERVICE_DOMAIN;
-export const MICROCMS_API_KEY = import.meta.env.PUBLIC_MICROCMS_API_KEY;
+export const MICROCMS_SERVICE_DOMAIN = process.env.MICROCMS_SERVICE_DOMAIN;
+export const MICROCMS_API_KEY = process.env.MICROCMS_API_KEY;
 
 // APIエンドポイント
 export const API_ENDPOINTS = {
