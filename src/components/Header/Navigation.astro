@@ -61,6 +61,9 @@ const mainMenuItems = [
   { title: 'お問い合わせ', href: '/contact' }
 ];
 
+// lg以降（デスクトップ）用メニュー（お問い合わせを除外）
+const desktopMenuItems = mainMenuItems.filter(item => item.title !== 'お問い合わせ');
+
 // モバイルとデスクトップで表示するメニュー項目を分離
 const mobileTopItems = [
   { title: '探す', submenu: submenuItems },
@@ -354,7 +357,7 @@ const mobileTopItems = [
     <!-- デスクトップ用ナビゲーション (128rem以上 / 1280px以上) -->
     <div class="nav-desktop">
       <ul class="nav-list">
-        {mainMenuItems.map((item) => (
+        {desktopMenuItems.map((item) => (
           <NavigationItem {...item} />
         ))}
       </ul>

@@ -144,20 +144,17 @@ const {
     const dots = container.querySelectorAll('.slider-dot') as NodeListOf<HTMLButtonElement>;
     
     if (!sliderTrack || !prevButton || !nextButton) {
-      console.error(`スライダー${sliderId}の必要な要素が見つかりません`);
       return null;
     }
     
     const sliderElement = sliderTrack.querySelector('.pets-slider') as HTMLElement;
     if (!sliderElement) {
-      console.error(`スライダー${sliderId}の.pets-sliderが見つかりません`);
       return null;
     }
     
     let currentSlide = 0;
     const petCards = sliderElement.querySelectorAll('.pet-card__new');
     if (!petCards.length) {
-      console.warn(`スライダー${sliderId}にカードが見つかりません`);
       prevButton.style.display = 'none';
       nextButton.style.display = 'none';
       return null;

@@ -22,7 +22,7 @@ const breadcrumbItems = [
   <main>
     <HeroSection 
       title="お客様の声"
-      image="/src/assets/images/backgrounds/img_bg-hero_voice-01.webp"
+      image="/images/backgrounds/img_bg-hero_voice-01.webp"
       breadcrumbItems={breadcrumbItems}
     />
     
@@ -83,7 +83,7 @@ const breadcrumbItems = [
             // VoiceCardコンポーネントと同じ構造のHTMLを生成
             const thumbnailUrl = typeof voice.petThumbnail === 'object' && voice.petThumbnail !== null
               ? voice.petThumbnail.url
-              : (voice.petThumbnail || '/src/assets/images/ui/img_loading-pet-image-01.webp');
+              : (voice.petThumbnail || '/images/ui/img_loading-pet-image-01.webp');
             
             const storeDisplay = typeof voice.store === 'object' && voice.store !== null
               ? (voice.store.name || voice.store.storeName || JSON.stringify(voice.store))
