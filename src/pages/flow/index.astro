@@ -3,14 +3,9 @@ import Layout from '../../layouts/Layout.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
-import heroImage from '../../assets/images/backgrounds/img_bg-hero_flow-01.webp';
 import stepIcon1 from '../../assets/icons/icon_step-menu-01.svg';
 import stepIcon2 from '../../assets/icons/icon_step-menu-02.svg';
 import footprintIcon from '../../assets/icons/icon_step-cat-footprints-01.svg';
-import flowStep1 from '../../assets/images/content/img_flow_step-01.webp';
-import flowStep2 from '../../assets/images/content/img_flow_step-02.webp';
-import flowStep3 from '../../assets/images/content/img_flow_step-03.webp';
-import flowStep4 from '../../assets/images/content/img_flow_step-04.webp';
 import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
 import lineIcon from '../../assets/icons/icon_line-01.svg';
 import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
@@ -19,7 +14,6 @@ import cardMastercard from '../../assets/icons/icon_card-logo-mastercard.svg';
 import cardJcb from '../../assets/icons/icon_card-logo-jcb.svg';
 import cardAmex from '../../assets/icons/icon_card-logo-amex.svg';
 import cardDiners from '../../assets/icons/icon_card-logo-dinersclub.svg';
-import homestayGoods from '../../assets/images/content/img_homestay-goods-01.webp';
 import bubbleWhite from '../../assets/icons/icon_bubbles-white-01.svg';
 import bubbleBeige from '../../assets/icons/icon_bubbles-begie-01.svg';
 import { getAllStores } from '../../lib/api/stores';
@@ -44,7 +38,7 @@ const breadcrumbItems = [
     <section class="hero-section hero-section--flow">
       <div class="hero-background">
         <img 
-          src={heroImage.src} 
+          src="/images/backgrounds/img_bg-hero_flow-01.webp" 
           alt="お迎えまでの流れ" 
           class="hero-background__image"
           loading="eager"
@@ -176,7 +170,7 @@ const breadcrumbItems = [
                 </div>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep1.src} alt="ステップ1" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-01.webp" alt="ステップ1" class="flow-step__img" />
                 <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
               </div>
             </div>
@@ -213,7 +207,7 @@ const breadcrumbItems = [
                 </p>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep2.src} alt="ステップ2" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-02.webp" alt="ステップ2" class="flow-step__img" />
                 <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even flow-step__bubble--step2" />
               </div>
             </div>
@@ -300,7 +294,7 @@ const breadcrumbItems = [
                 </div>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep3.src} alt="ステップ3" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-03.webp" alt="ステップ3" class="flow-step__img" />
                 <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
               </div>
             </div>
@@ -309,7 +303,7 @@ const breadcrumbItems = [
                 <h4>ペット用品をお考えの方</h4>
                 <div class="homestay-section-inner">
                   <div class="homestay-img-wrap">
-                    <img src={homestayGoods.src} alt="ペット用品" class="homestay-img" loading="lazy" />
+                    <img src="/images/content/img_homestay-goods-01.webp" alt="ペット用品" class="homestay-img" loading="lazy" />
                   </div>
                   
                   <div class="homestay-content">
@@ -347,7 +341,7 @@ const breadcrumbItems = [
                 </p>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep4.src} alt="ステップ4" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-04.webp" alt="ステップ4" class="flow-step__img" />
                 <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even" />
               </div>
             </div>
