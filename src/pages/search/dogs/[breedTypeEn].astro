@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import PetCard from '../../../components/pets/PetCard.astro';
 import HeroSection from '../../../components/sections/common/HeroSection.astro';
@@ -9,8 +10,6 @@ import { getLatestPetsByType } from '../../../lib/api/pets/queries';
 import { getBreedsByAnimalType } from '../../../lib/api/pets';
 import { getImageUrl } from '../../../lib/utils/image';
 import '../../../styles/layout/pets-grid.scss';
-
-export const prerender = true;
 
 export async function getStaticPaths() {
   try {
