@@ -136,6 +136,11 @@
     margin: 0 auto;
   }
   
+  // ハーフワイズボタン（3つのボタンが並ぶ場合のメール用）
+  &--half {
+    flex: 0 0 calc(50% - 4px);
+  }
+  
   &__icon {
     display: flex;
     align-items: center;
