@@ -20,7 +20,7 @@ function truncateText(text: string, max: number) {
 // assets配下の画像を参照
 const thumbnail = typeof petThumbnail === 'object' && petThumbnail !== null
   ? petThumbnail.url
-  : (petThumbnail ? petThumbnail : '/src/assets/images/ui/img_loading-pet-image-01.webp');
+  : (petThumbnail ? petThumbnail : '/images/ui/img_loading-pet-image-01.webp');
 ---
 <a href={`/voice/${id}`} class={`voice-card ${className}`}>
   <div class="voice-card-img-wrap">

@@ -61,7 +61,7 @@ if (!storeInfo.storeAddress && !storeInfo.storePostCode) {
 
 // 画像・動画URLを準備
 const mediaItems = [];
-const placeholderImage = '/src/assets/images/ui/img_loading-pet-image-01.webp';
+const placeholderImage = '/images/ui/img_loading-pet-image-01.webp';
 
 // メディアスロットの準備（最大4つ：画像3枚 + 動画1つ）
 const maxImages = 3;
@@ -367,7 +367,7 @@ const breadcrumbItems = [
                           <span class="line-button__line"></span>
                           <span class="line-button__text">{storeInfo.storeName}LINE</span>
                           <span class="line-button__icon">
-                            <img src="/src/assets/icons/icon_line-01.svg" alt="LINE" />
+                            <img src="/icons/icon_line-01.svg" alt="LINE" />
                           </span>
                         </a>
                       </dd>
@@ -435,7 +435,7 @@ const breadcrumbItems = [
                         loading="lazy"
                         width="600"
                         height="600"
-                        onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'" 
+                        onerror="this.src='/images/ui/img_loading-pet-image-01.webp'" 
                         onload="this.style.opacity='1'"
                         style="opacity: 0; transition: opacity 0.3s ease;"
                       />
@@ -498,7 +498,7 @@ const breadcrumbItems = [
           <h2 class="content-box__title">カトレアの安心</h2>
           <div class="relief-section-inner">
             <div class="relief-img-wrap">
-              <img src="/src/assets/images/content/img_relief-main-01.webp" alt="カトレアの安心" class="relief-img" loading="lazy" />
+              <img src="/images/content/img_relief-main-01.webp" alt="カトレアの安心" class="relief-img" loading="lazy" />
             </div>
             
             <div class="relief-content">
