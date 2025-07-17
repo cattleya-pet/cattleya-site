@@ -61,8 +61,10 @@ const mainMenuItems = [
   { title: 'お問い合わせ', href: '/contact' }
 ];
 
-// lg以降（デスクトップ）用メニュー（お問い合わせを除外）
-const desktopMenuItems = mainMenuItems.filter(item => item.title !== 'お問い合わせ');
+// lg以降（デスクトップ）用メニュー（お問い合わせと採用情報を除外）
+const desktopMenuItems = mainMenuItems.filter(item => 
+  item.title !== 'お問い合わせ' && item.title !== '採用情報'
+);
 
 // モバイルとデスクトップで表示するメニュー項目を分離
 const mobileTopItems = [

@@ -2,8 +2,9 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  // サーバーサイドレンダリング（SSR）
-  output: 'server',
+  // 静的生成（デフォルト）+ 個別ページでSSR指定
+  // Astro 5.0以降、hybridはstaticに統合されました
+  output: 'static',
   adapter: vercel(),
   image: {
     // 画像最適化設定
