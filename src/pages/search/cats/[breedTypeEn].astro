@@ -106,7 +106,7 @@ const breedTypeJa = breedData ? breedData.name : (initialCats.length > 0 ? initi
 // HeroSection用の画像（先頭の個体の画像）
 const heroImage = initialCats.length > 0 
   ? getImageUrl(initialCats[0].imageUrl01, 800, 600)
-  : '/src/assets/images/backgrounds/img_bg-hero_search-cats-01.webp';
+  : '/images/backgrounds/img_bg-hero_search-cats-01.webp';
 
 // パンくずリストのデータ
 const breadcrumbItems = [
@@ -201,7 +201,7 @@ const breadcrumbItems = [
                       loading="lazy"
                       width="600"
                       height="600"
-                      onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
+                      onerror="this.src='/images/ui/img_loading-pet-image-01.webp'"
                     />
                   </div>
                   <div class="pet-card__info">
