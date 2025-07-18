@@ -46,9 +46,23 @@ import './MobileCTAButtons.scss';
       </a>
     </div>
 
-    <!-- 下段：メールボタン -->
+    <!-- 下段：渋谷店ボタン2つとメールボタン -->
     <div class="mobile-cta-row">
-      <a href="/contact" class="mobile-cta-button mobile-cta-button--full">
+      <a href="tel:03-2468-1357" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={phoneIcon.src} alt="電話アイコン" />
+        </div>
+        <div class="mobile-cta-button__text">渋谷店電話</div>
+      </a>
+      
+      <a href="https://line.me/R/ti/p/shibuya-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
+        <div class="mobile-cta-button__icon">
+          <img src={lineIcon.src} alt="LINEアイコン" />
+        </div>
+        <div class="mobile-cta-button__text">渋谷店LINE</div>
+      </a>
+      
+      <a href="/contact" class="mobile-cta-button mobile-cta-button--half">
         <div class="mobile-cta-button__icon">
           <img src={mailIcon.src} alt="メールアイコン" />
         </div>
