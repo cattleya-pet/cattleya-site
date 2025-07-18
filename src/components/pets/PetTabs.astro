@@ -51,7 +51,7 @@ const tabs = [
     
     return `
       <div class="pet-card" data-animal-type="${pet.animalType}">
-        <a href="/search/${pet.animalType}s/${encodeURIComponent(breedTypeEn)}/${pet.id}" class="pet-card__link">
+        <a href="/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent(breedTypeEn)}/${pet.contentId}" class="pet-card__link">
           <div class="pet-card__inner">
             <div class="pet-card__image-container">
               <img

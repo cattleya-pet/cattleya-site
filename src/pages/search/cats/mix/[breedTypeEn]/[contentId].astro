@@ -1,34 +1,37 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
-import { getBreedsByAnimalType } from '../../../../lib/api/pets';
-import { getStoreById } from '../../../../lib/api/stores';
-import { getVoices } from '../../../../lib/api/voice';
-import { getImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../lib/utils/image';
-import { formatDate } from '../../../../lib/utils/date';
-import MaleIcon from '../../../../assets/icons/icon_male.svg?raw';
-import FemaleIcon from '../../../../assets/icons/icon_female.svg?raw';
-import BaseButton from '../../../../components/ui/buttons/BaseButton.astro';
-import ButtonWrapper from '../../../../components/ui/buttons/ButtonWrapper.astro';
-import VoiceCard from '../../../../components/voice/VoiceCard.astro';
-import BannerSection from '../../../../components/sections/common/BannerSection.astro';
-import ContactCTASection from '../../../../components/sections/common/ContactCTASection.astro';
-import Breadcrumb from '../../../../components/ui/Breadcrumb.astro';
-import '../../../../styles/layout/pets-grid.scss';
-import '../../../../components/pets/PetCard.scss';
-import '../../../../styles/pages/pet-detail.scss';
+import Layout from '../../../../../layouts/Layout.astro';
+import { getLatestPetsByType } from '../../../../../lib/api/pets/queries';
+import { getBreedsByAnimalType } from '../../../../../lib/api/pets';
+import { getStoreById } from '../../../../../lib/api/stores';
+import { getVoices } from '../../../../../lib/api/voice';
+import { getImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../../lib/utils/image';
+import { formatDate } from '../../../../../lib/utils/date';
+import MaleIcon from '../../../../../assets/icons/icon_male.svg?raw';
+import FemaleIcon from '../../../../../assets/icons/icon_female.svg?raw';
+import BaseButton from '../../../../../components/ui/buttons/BaseButton.astro';
+import ButtonWrapper from '../../../../../components/ui/buttons/ButtonWrapper.astro';
+import VoiceCard from '../../../../../components/voice/VoiceCard.astro';
+import BannerSection from '../../../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../../../components/sections/common/ContactCTASection.astro';
+import Breadcrumb from '../../../../../components/ui/Breadcrumb.astro';
+import '../../../../../styles/layout/pets-grid.scss';
+import '../../../../../components/pets/PetCard.scss';
+import '../../../../../styles/pages/pet-detail.scss';
 
 export async function getStaticPaths() {
   try {
     const allCats = await getLatestPetsByType('cat');
-    const bloodlineCats = allCats.filter(pet => pet.classification === 'bloodline');
+    console.log('[getStaticPaths] ミックス猫詳細ページ - 全猫データ数:', allCats.length);
     
-    if (bloodlineCats.length === 0) {
-      console.log('[getStaticPaths] 血統書付き猫が存在しません');
+    const mixCats = allCats.filter(pet => pet.classification === 'mix');
+    console.log('[getStaticPaths] ミックス猫の数:', mixCats.length);
+    
+    if (mixCats.length === 0) {
+      console.log('[getStaticPaths] ミックス猫が存在しません');
       return [];
     }
     
-    const paths = bloodlineCats
+    const paths = mixCats
       .filter(pet => pet.breedTypeEn && pet.id) // breedTypeEnとidが存在するものだけ
       .map((pet) => ({
         params: { 
@@ -37,50 +40,45 @@ export async function getStaticPaths() {
         }
       }));
     
-    console.log('[getStaticPaths] 生成される猫詳細ページ数:', paths.length);
+    console.log('[getStaticPaths] 生成されるミックス猫詳細ページ数:', paths.length);
     console.log('[getStaticPaths] 最初の5つのパス:', paths.slice(0, 5));
-    
-    // デバッグ用：フィルタリングされたペットの詳細を表示
-    console.log('[getStaticPaths] フィルタリング後のペット数:', bloodlineCats.length);
-    console.log('[getStaticPaths] 最初の5匹のペット:', bloodlineCats.slice(0, 5).map(p => ({ id: p.id, breedTypeEn: p.breedTypeEn, breedTypeJa: p.breedTypeJa })));
     
     return paths;
   } catch (error) {
-    console.error('[getStaticPaths] 猫詳細ページエラー:', error);
+    console.error('[getStaticPaths] ミックス猫詳細ページエラー:', error);
     return [];
   }
 }
 
 const { breedTypeEn, contentId } = Astro.params;
 
-console.log('=== 猫詳細ページ開始 ===');
+console.log('=== ミックス猫詳細ページ開始 ===');
 console.log('breedTypeEn:', breedTypeEn);
 console.log('contentId:', contentId);
 
 // ペット詳細データを取得
 const allCats = await getLatestPetsByType('cat');
+console.log('[ペット詳細] 全猫データ数:', allCats.length);
 const pet = allCats.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
 
 if (!pet) {
-  console.error(`Pet not found: ${contentId}, breedTypeEn: ${breedTypeEn}`);
+  console.error(`Mix pet not found: ${contentId}, breedTypeEn: ${breedTypeEn}`);
   console.log('Available ids:', allCats.map(p => p.id).slice(0, 10));
   console.log('Available breedTypeEns:', [...new Set(allCats.map(p => p.breedTypeEn))]);
-  return new Response('Pet not found', { status: 404 });
+  return new Response('Mix pet not found', { status: 404 });
 }
 
-console.log('見つかったペット:', pet.breedTypeJa, pet.id);
+console.log('見つかったミックスペット:', pet.breedTypeJa, pet.id);
 
 // 品種名を取得（日本語）
-const { pureBreeds } = await getBreedsByAnimalType('cat');
-const breedData = pureBreeds.find(breed => breed.url.split('/').pop() === breedTypeEn);
-const breedTypeJa = breedData ? breedData.name : pet.breedTypeJa;
+const breedTypeJa = pet.breedTypeJa;
 
 // 店舗情報を取得（IDで取得、失敗した場合は名前で検索）
 let storeInfo = await getStoreById(pet.storeId);
 
 // IDで取得できない場合は、全店舗から名前で検索
 if (!storeInfo) {
-  const { getAllStores } = await import('../../../../lib/api/stores');
+  const { getAllStores } = await import('../../../../../lib/api/stores');
   const allStores = await getAllStores();
   storeInfo = allStores.find(store => store.storeName === pet.storeName);
 }
@@ -89,7 +87,10 @@ console.log('=== 店舗情報デバッグ ===');
 console.log('pet.storeId:', pet.storeId);
 console.log('pet.storeName:', pet.storeName);
 console.log('取得した店舗情報:', storeInfo);
-console.log('storeLine:', storeInfo?.storeLine);
+
+// 店舗LINE IDを取得
+const storeLine = storeInfo?.storeLine || '';
+console.log('storeLine:', storeLine);
 
 // 画像・動画URLを準備
 const mediaItems = [];
@@ -138,91 +139,51 @@ mediaSlots.forEach((slot, index) => {
 
 console.log('メディア項目数:', mediaItems.length);
 
-// オススメペットを取得する関数
-function getRecommendedPets(currentPet: any, allPets: any[], count: number = 3) {
-  // 自分自身を除外
-  const otherPets = allPets.filter(p => p.id !== currentPet.id);
-  
-  // スコアリング関数
-  const scoreCalculator = (pet: any) => {
-    let score = 0;
-    
-    // 1. 共通のタグ（最高優先度）
-    if (currentPet.tags && pet.tags) {
-      // タグが配列でない場合は配列に変換
-      const currentTags = Array.isArray(currentPet.tags) ? currentPet.tags : [currentPet.tags];
-      const petTags = Array.isArray(pet.tags) ? pet.tags : [pet.tags];
-      const commonTags = currentTags.filter((tag: string) => petTags.includes(tag));
-      score += commonTags.length * 100; // タグ一致は高得点
-    }
-    
-    // 2. 誕生日の近さ（中優先度）
-    if (currentPet.birthday && pet.birthday) {
-      const currentDate = new Date(currentPet.birthday);
-      const petDate = new Date(pet.birthday);
-      const daysDiff = Math.abs((currentDate.getTime() - petDate.getTime()) / (1000 * 3600 * 24));
-      
-      if (daysDiff <= 30) {
-        score += 50; // 30日以内は高得点
-      } else if (daysDiff <= 90) {
-        score += 25; // 90日以内は中得点
-      } else if (daysDiff <= 180) {
-        score += 10; // 180日以内は低得点
-      }
-    }
-    
-    // 3. 同じ性別（低優先度）
-    if (currentPet.gender === pet.gender) {
-      score += 15;
-    }
-    
-    return score;
-  };
-  
-  // スコア付きでソートして上位を取得
-  return otherPets
-    .map(pet => ({ ...pet, score: scoreCalculator(pet) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, count);
-}
+// おすすめペットを取得（同じ品種のペット）
+const recommendedPets = await getLatestPetsByType(pet.animalType);
+const sameBreedsFilter = recommendedPets.filter(p => 
+  p.id !== pet.id && 
+  p.breedTypeEn === pet.breedTypeEn
+);
 
-// 現在のペットと同じ動物種のペットをすべて取得
-const allSameTypePets = await getLatestPetsByType(pet.animalType);
-const allRecommendedPets = getRecommendedPets(pet, allSameTypePets, 3);
+// 同じ品種がない場合は、他の品種も含める
+const finalRecommendedPets = sameBreedsFilter.length >= 3 
+  ? sameBreedsFilter.slice(0, 3)
+  : [
+      ...sameBreedsFilter,
+      ...recommendedPets.filter(p => p.id !== pet.id && p.breedTypeEn !== pet.breedTypeEn).slice(0, 3 - sameBreedsFilter.length)
+    ];
 
-// レスポンシブ表示用に分割（lg未満は2匹、lg以降は3匹）
-const recommendedPetsMobile = allRecommendedPets.slice(0, 2);
-const recommendedPetsDesktop = allRecommendedPets;
+// スコアリングシステムでオススメペットを選択
+const scoredPets = finalRecommendedPets.map(p => {
+  let score = 0;
+  if (p.breedTypeEn === pet.breedTypeEn) score += 100;
+  if (p.storeName === pet.storeName) score += 50;
+  if (p.gender === pet.gender) score += 25;
+  if (p.isNew === 'true') score += 10;
+  return { ...p, score };
+});
+
+const allRecommendedPets = scoredPets
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3);
 
 console.log('オススメペット:', allRecommendedPets.map(p => ({ id: p.id, score: p.score, breedTypeJa: p.breedTypeJa })));
 
-// お客様の声データを取得
-const allVoices = await getVoices(10); // 多めに取得しておく
-const displayVoices = allVoices.slice(0, 2); // sm以降で最大2件表示
-
+// お客様の声を取得
+const allVoices = await getVoices(10);
+const displayVoices = allVoices.slice(0, 2);
 console.log('お客様の声データ:', displayVoices.length, '件取得');
 
 // パンくずリストのデータ
 const breadcrumbItems = [
   { label: 'ホーム', href: '/' },
-  { label: '子犬・子猫を探す', href: '/search' },
-  { label: '子猫を探す', href: '/search/cats' },
+  { label: '子犬・子猫を探す', href: '/search/' },
+  { label: '子猫を探す', href: '/search/cats/' },
+  { label: 'ミックス', href: '/search/cats/mix/' },
+  { label: breedTypeJa, href: `/search/cats/mix/${breedTypeEn}/` },
+  { label: `${pet.id}` }
 ];
-
-// ミックス猫の場合はミックスリンクを追加
-if (pet.classification === 'mix') {
-  breadcrumbItems.push(
-    { label: 'ミックス', href: '/search/cats/mix' },
-    { label: breedTypeJa, href: `/search/cats/mix/${breedTypeEn}` }
-  );
-} else {
-  breadcrumbItems.push(
-    { label: breedTypeJa, href: `/search/cats/${breedTypeEn}` }
-  );
-}
-
-// 最後に個体情報を追加
-breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || pet.id}）` });
 ---
 
 <Layout title={`${pet.breedTypeJa} | 子猫詳細 | カトレア`}>
@@ -415,7 +376,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
               <div class="pet-detail__actions">
                 <div class="action-buttons">
                   <a 
-                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\\nNo.${pet.id.replace(/^0+/, '') || pet.id}\\nHP`)}` : '#'}
+                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\nNo.${pet.id.replace(/^0+/, '') || pet.id}\nHP`)}` : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="action-button action-button--link"

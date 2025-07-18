@@ -1,5 +1,4 @@
 ---
-export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import { getStoreByStoreId } from '../../lib/api/stores';
 import { getImageUrl } from '../../lib/utils/image';
@@ -426,7 +425,7 @@ const breadcrumbItems = [
           <div class="pets-grid">
             {displayStorePets.map((storePet, index) => (
               <div class="pet-card" data-animal-type={storePet.animalType}>
-                <a href={`/search/${storePet.animalType === 'dog' ? 'dogs' : 'cats'}/${encodeURIComponent(storePet.breedTypeEn?.toLowerCase() || '')}/${storePet.id}`} class="pet-card__link">
+                <a href={`/search/${storePet.animalType === 'dog' ? 'dogs' : 'cats'}/${storePet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent(storePet.breedTypeEn?.toLowerCase() || '')}/${storePet.id}`} class="pet-card__link">
                   <div class="pet-card__inner">
                     <div class="pet-card__image-container">
                       <img

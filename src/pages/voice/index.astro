@@ -5,11 +5,14 @@ import VoiceCard from '../../components/voice/VoiceCard.astro';
 import ViewMoreButton from '../../components/ui/buttons/ViewMoreButton.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
-import { getVoices } from '../../lib/api/voice';
+import { getVoicesWithPagination } from '../../lib/api/voice';
 import '../../styles/pages/voice.scss';
 
-// 初期表示は10件の声を取得
-const initialVoices = await getVoices(10);
+// 全てのお客様の声を取得（SSG対応）
+const allVoicesResponse = await getVoicesWithPagination();
+const allVoices = allVoicesResponse.contents;
+// 初期表示用（最初の10件）
+const initialVoices = allVoices.slice(0, 10);
 
 // パンくずリストのデータ
 const breadcrumbItems = [
@@ -28,14 +31,14 @@ const breadcrumbItems = [
     
     <section class="voice-section">
       <div class="container">
-        <div class="voice-grid">
+        <div class="voice-grid" data-all-voices={JSON.stringify(allVoices)}>
           {initialVoices.map((voice) => (
             <div class="voice-card-wrapper">
               <VoiceCard {...voice} />
             </div>
           ))}
         </div>
-        <ViewMoreButton />
+        {allVoices.length > 10 && <ViewMoreButton />}
       </div>
     </section>
     
@@ -45,100 +48,61 @@ const breadcrumbItems = [
   </main>
 </Layout>
 
-<script define:vars={{ initialVoicesCount: initialVoices.length }}>
-  // 初期表示時のVIEW MOREボタン表示制御
-  const viewMoreButton = document.getElementById('viewMoreButton') as HTMLButtonElement;
-  
-  // 初期状態で10件未満の場合はVIEW MOREボタンを非表示
-  if (viewMoreButton) {
-    if (initialVoicesCount < 10) {
-      viewMoreButton.style.display = 'none';
-    }
-  }
-</script>
-
 <script>
-  let offset = 10; // 声のオフセット
-  let isLoading = false; // 読み込み状態
-
+  let currentIndex = 10;
+  const allVoices = JSON.parse(document.querySelector('.voice-grid')?.dataset.allVoices || '[]');
   const viewMoreButton = document.getElementById('viewMoreButton') as HTMLButtonElement;
   const voiceGrid = document.querySelector('.voice-grid') as HTMLElement;
 
   if (viewMoreButton && voiceGrid) {
-    viewMoreButton.addEventListener('click', async () => {
-      if (isLoading) return;
+    viewMoreButton.addEventListener('click', () => {
+      const nextVoices = allVoices.slice(currentIndex, currentIndex + 10);
       
-      isLoading = true;
-      viewMoreButton.classList.add('loading');
-      viewMoreButton.disabled = true;
-
-      try {
-        const apiUrl = `/api/voice?offset=${offset}&limit=10`;
-        const response = await fetch(apiUrl);
-        const newVoices = await response.json();
-
-        if (newVoices && newVoices.length > 0) {
-          // 新しい声カードを追加
-          newVoices.forEach((voice: any) => {
-            // VoiceCardコンポーネントと同じ構造のHTMLを生成
-            const thumbnailUrl = typeof voice.petThumbnail === 'object' && voice.petThumbnail !== null
-              ? voice.petThumbnail.url
-              : (voice.petThumbnail || '/images/ui/img_loading-pet-image-01.webp');
-            
-            const storeDisplay = typeof voice.store === 'object' && voice.store !== null
-              ? (voice.store.name || voice.store.storeName || JSON.stringify(voice.store))
-              : voice.store || '';
-            
-            const truncatedContent = (voice.voiceContent || '').replace(/<[^>]+>/g, '');
-            const displayContent = truncatedContent.length > 40 ? truncatedContent.slice(0, 40) + '...' : truncatedContent;
-            
-            const voiceCardHTML = `
-              <div class="voice-card-wrapper">
-                <a href="/voice/${voice.id}" class="voice-card">
-                  <div class="voice-card-img-wrap">
-                    <img src="${thumbnailUrl}" alt="${voice.petName}" class="voice-card-img" loading="lazy" />
-                  </div>
-                  <div class="voice-card-body">
-                    <div class="voice-card-title-row">
-                      <span class="voice-card-petname">${voice.petName}</span>
-                    </div>
-                    <div class="voice-card-owner-row">
-                      <span class="voice-card-owner">${voice.ownerName} 様</span>
-                    </div>
-                    <div class="voice-card-meta-table">
-                      <div class="voice-card-meta-label">品種</div>
-                      <div class="voice-card-meta-value">${voice.animalType}</div>
-                      <div class="voice-card-meta-label">お迎え店舗</div>
-                      <div class="voice-card-meta-value">${storeDisplay}</div>
-                    </div>
-                    <div class="voice-card-content">${displayContent}</div>
-                  </div>
-                </a>
+      nextVoices.forEach((voice: any) => {
+        const thumbnailUrl = typeof voice.petThumbnail === 'object' && voice.petThumbnail !== null
+          ? voice.petThumbnail.url
+          : (voice.petThumbnail || '/images/ui/img_loading-pet-image-01.webp');
+        
+        const storeDisplay = typeof voice.store === 'object' && voice.store !== null
+          ? (voice.store.name || voice.store.storeName || JSON.stringify(voice.store))
+          : voice.store || '';
+        
+        const truncatedContent = (voice.voiceContent || '').replace(/<[^>]+>/g, '');
+        const displayContent = truncatedContent.length > 40 ? truncatedContent.slice(0, 40) + '...' : truncatedContent;
+        
+        const voiceCardHTML = `
+          <div class="voice-card-wrapper">
+            <a href="/voice/${voice.id}" class="voice-card">
+              <div class="voice-card-img-wrap">
+                <img src="${thumbnailUrl}" alt="${voice.petName}" class="voice-card-img" loading="lazy" />
               </div>
-            `;
-            voiceGrid.insertAdjacentHTML('beforeend', voiceCardHTML);
-          });
+              <div class="voice-card-body">
+                <div class="voice-card-title-row">
+                  <span class="voice-card-petname">${voice.petName}</span>
+                </div>
+                <div class="voice-card-owner-row">
+                  <span class="voice-card-owner">${voice.ownerName} 様</span>
+                </div>
+                <div class="voice-card-meta-table">
+                  <div class="voice-card-meta-label">品種</div>
+                  <div class="voice-card-meta-value">${voice.animalType}</div>
+                  <div class="voice-card-meta-label">お迎え店舗</div>
+                  <div class="voice-card-meta-value">${storeDisplay}</div>
+                </div>
+                <div class="voice-card-content">${displayContent}</div>
+              </div>
+            </a>
+          </div>
+        `;
+        voiceGrid.insertAdjacentHTML('beforeend', voiceCardHTML);
+      });
 
-          offset += 10;
-          
-          // 取得したデータが10未満の場合、VIEW MOREボタンを非表示
-          if (newVoices.length < 10) {
-            viewMoreButton.style.display = 'none';
-          }
-        } else {
-          // データがない場合はボタンを非表示
-          viewMoreButton.style.display = 'none';
-        }
-      } catch (error) {
-        console.error('Error loading more voices:', error);
-        // エラー時はボタンのテキストを変更
-        viewMoreButton.querySelector('.view-more-text')!.textContent = 'エラーが発生しました';
-        viewMoreButton.disabled = true;
-      } finally {
-        isLoading = false;
-        viewMoreButton.classList.remove('loading');
-        viewMoreButton.disabled = false;
+      currentIndex += 10;
+      
+      if (currentIndex >= allVoices.length) {
+        viewMoreButton.style.display = 'none';
       }
     });
   }
 </script>
+

@@ -1,5 +1,4 @@
 ---
-export const prerender = false;
 import Layout from '../../../../layouts/Layout.astro';
 import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
 import { getBreedsByAnimalType } from '../../../../lib/api/pets';
@@ -21,22 +20,45 @@ import '../../../../styles/pages/pet-detail.scss';
 
 export async function getStaticPaths() {
   try {
-    const allDogs = await getLatestPetsByType('dog', 100);
+    const allDogs = await getLatestPetsByType('dog');
+    console.log('[getStaticPaths] 全犬データ数:', allDogs.length);
+    console.log('[getStaticPaths] 最初の5匹の犬の分類:', allDogs.slice(0, 5).map(p => ({ id: p.id, classification: p.classification, breedTypeJa: p.breedTypeJa })));
+    
     const bloodlineDogs = allDogs.filter(pet => pet.classification === 'bloodline');
+    console.log('[getStaticPaths] 血統書付き犬の数:', bloodlineDogs.length);
     
     if (bloodlineDogs.length === 0) {
       console.log('[getStaticPaths] 血統書付き犬が存在しません');
-      return [];
+      // 血統書付きがない場合でも全ての犬で詳細ページを作成
+      const allValidDogs = allDogs.filter(pet => pet.breedTypeEn && pet.id);
+      console.log('[getStaticPaths] 全犬で詳細ページを作成:', allValidDogs.length);
+      
+      const paths = allValidDogs.map((pet) => ({
+        params: { 
+          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          contentId: pet.id
+        }
+      }));
+      
+      return paths;
     }
     
-    const paths = bloodlineDogs.map((pet) => ({
-      params: { 
-        breedTypeEn: pet.breedTypeEn,
-        contentId: pet.id
-      }
-    }));
+    const paths = bloodlineDogs
+      .filter(pet => pet.breedTypeEn && pet.id) // breedTypeEnとidが存在するものだけ
+      .map((pet) => ({
+        params: { 
+          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          contentId: pet.id
+        }
+      }));
     
     console.log('[getStaticPaths] 生成される犬詳細ページ数:', paths.length);
+    console.log('[getStaticPaths] 最初の5つのパス:', paths.slice(0, 5));
+    
+    // デバッグ用：フィルタリングされたペットの詳細を表示
+    console.log('[getStaticPaths] フィルタリング後のペット数:', bloodlineDogs.length);
+    console.log('[getStaticPaths] 最初の5匹のペット:', bloodlineDogs.slice(0, 5).map(p => ({ id: p.id, breedTypeEn: p.breedTypeEn, breedTypeJa: p.breedTypeJa })));
+    
     return paths;
   } catch (error) {
     console.error('[getStaticPaths] 犬詳細ページエラー:', error);
@@ -51,7 +73,8 @@ console.log('breedTypeEn:', breedTypeEn);
 console.log('contentId:', contentId);
 
 // ペット詳細データを取得
-const allDogs = await getLatestPetsByType('dog', 100);
+const allDogs = await getLatestPetsByType('dog');
+console.log('[ペット詳細] 全犬データ数:', allDogs.length);
 const pet = allDogs.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
 
 if (!pet) {
@@ -180,7 +203,7 @@ function getRecommendedPets(currentPet: any, allPets: any[], count: number = 3) 
 }
 
 // 現在のペットと同じ動物種のペットをすべて取得
-const allSameTypePets = await getLatestPetsByType(pet.animalType, 100);
+const allSameTypePets = await getLatestPetsByType(pet.animalType);
 const allRecommendedPets = getRecommendedPets(pet, allSameTypePets, 3);
 
 // レスポンシブ表示用に分割（lg未満は2匹、lg以降は3匹）
@@ -494,7 +517,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
           <div class="pets-grid">
             {allRecommendedPets.map((recommendedPet, index) => (
               <div class={`pet-card ${index >= 2 ? 'pet-card--lg-only' : ''}`} data-animal-type={recommendedPet.animalType}>
-                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${encodeURIComponent(recommendedPet.breedTypeEn?.toLowerCase() || '')}/${recommendedPet.id}`} class="pet-card__link">
+                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${recommendedPet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((recommendedPet.breedTypeEn || '').toLowerCase())}/${recommendedPet.id}`} class="pet-card__link">
                   <div class="pet-card__inner">
                     <div class="pet-card__image-container">
                       <img

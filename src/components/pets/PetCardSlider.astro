@@ -10,6 +10,8 @@ interface Pet {
   id: string;
   animalType: string;
   breedTypeJa: string;
+  breedTypeEn: string;
+  classification: string;
   gender: string;
   color: string;
   birthday: string;
@@ -68,7 +70,7 @@ const {
           {pets.map((pet) => {
             const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
             const formattedDate = formatDate(pet.birthday);
-            const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
+            const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
             
             return (
               <div class="pet-card__new">
