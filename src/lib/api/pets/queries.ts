@@ -1,12 +1,13 @@
 import { client } from '../client';
 import { API_ENDPOINTS, API_QUERY_PARAMS } from '../../constants';
+import { randomSort30Minutes } from '../../utils/randomSort';
 import type { Pet } from './types';
 
 export async function getLatestPetsByType(animalType: string, limit?: number): Promise<Pet[]> {
   try {
     const queries: any = {
       filters: `animalType[equals]${animalType}`,
-      orders: '-randomId', // ランダムID降順
+      // randomIdによるソートを削除（フロントエンドでランダムソート）
       fields: [
         'id',
         'randomId',
@@ -44,7 +45,11 @@ export async function getLatestPetsByType(animalType: string, limit?: number): P
       endpoint: API_ENDPOINTS.PETS,
       queries
     });
-    return response.contents;
+    
+    // フロントエンドでランダムソート（30分ごとに同じ順序）
+    const sortedPets = randomSort30Minutes(response.contents);
+    
+    return limit ? sortedPets.slice(0, limit) : sortedPets;
   } catch (error) {
     console.error(`Error fetching ${animalType} pets:`, error);
     return [];
@@ -89,14 +94,9 @@ export async function getAllLatestPets(limit?: number): Promise<Pet[]> {
       getLatestPetsByType('cat', fetchLimit)
     ]);
 
-    // 犬と猫を統合し、ランダムIDの降順で並び替え
+    // 犬と猫を統合し、フロントエンドでランダムソート（30分ごとに同じ順序）
     const allPets = [...dogs, ...cats];
-    const sortedPets = allPets.sort((a, b) => {
-      // ランダムIDを数値として比較（大きいIDが先頭）
-      const randomIdA = parseInt(a.randomId) || 0;
-      const randomIdB = parseInt(b.randomId) || 0;
-      return randomIdB - randomIdA;
-    });
+    const sortedPets = randomSort30Minutes(allPets);
 
     // limitが指定されている場合は、ソート後にlimitを適用
     return limit ? sortedPets.slice(0, limit) : sortedPets;
@@ -111,7 +111,7 @@ export async function getAllLatestPets(limit?: number): Promise<Pet[]> {
 export async function getPetsWithOffset(offset: number, limit: number = 18): Promise<Pet[]> {
   try {
     const queries: any = {
-      orders: '-randomId',
+      // randomIdによるソートを削除（フロントエンドでランダムソート）
       fields: [
         'id',
         'randomId',
@@ -137,8 +137,7 @@ export async function getPetsWithOffset(offset: number, limit: number = 18): Pro
         'imageUrl03',
         'videoUrl'
       ].join(','),
-      limit,
-      offset
+      limit: limit + offset // オフセット分も含めて取得
     };
 
     const response = await client.getList<Pet>({
@@ -146,7 +145,11 @@ export async function getPetsWithOffset(offset: number, limit: number = 18): Pro
       queries
     });
     
-    return response.contents;
+    // フロントエンドでランダムソート（30分ごとに同じ順序）
+    const sortedPets = randomSort30Minutes(response.contents);
+    
+    // オフセットとlimitを適用
+    return sortedPets.slice(offset, offset + limit);
   } catch (error) {
     console.error('Error fetching pets with offset:', error);
     return [];
