@@ -408,3 +408,35 @@ const breadcrumbItems = [
     <ContactCTASection />
   </main>
 </Layout>
+
+<script>
+  // step-linksのカスタムスクロール処理
+  document.addEventListener('DOMContentLoaded', function() {
+    const stepLinks = document.querySelectorAll('.step-link[href^="#step"]');
+    
+    stepLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          // レスポンシブに対応したオフセット調整
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -80; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -160; // 大画面
+          } else {
+            yOffset = -140; // sm以降〜1600px未満
+          }
+          
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    });
+  });
+</script>

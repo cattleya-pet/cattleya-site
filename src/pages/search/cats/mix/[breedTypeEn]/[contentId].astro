@@ -389,14 +389,17 @@ const breadcrumbItems = [
                     </div>
                   </a>
 
-                  <button class="action-button">
+                  <a 
+                    href={`/contact?pet=${pet.id}#inquiry-number-label`}
+                    class="action-button action-button--link"
+                  >
                     <div class="action-button__icon">
                       <img src="/icons/icon_store-mail-01.svg" alt="メールアイコン" width="32" height="32" />
                     </div>
                     <div class="action-button__text">
                       この子をメールで<br>問い合わせる
                     </div>
-                  </button>
+                  </a>
 
                   <button class="action-button">
                     <div class="action-button__icon">

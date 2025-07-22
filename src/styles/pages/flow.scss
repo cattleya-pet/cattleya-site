@@ -137,6 +137,10 @@
   width: rem(162);
   flex-shrink: 0;
   
+  &:hover {
+    text-decoration: none;
+  }
+  
   @include breakpoint-up(sm) {
     width: rem(200);
   }
