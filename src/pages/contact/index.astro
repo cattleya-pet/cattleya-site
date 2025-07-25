@@ -1960,17 +1960,12 @@ input[type="date"] {
         console.log('フォーム送信データ:', data);
         
         if (isProduction) {
-          // Preview/本番環境：GAS連携を実行
-          saveToSpreadsheet(data)
-          .then(result => {
-            if (result.success) {
-              alert('お問い合わせを受け付けました。ありがとうございます。');
-              form.reset();
-              resetFormState();
-            } else {
-              console.log('GAS result:', result);
-              alert(`送信に問題が発生しました。\n${result.error || '不明なエラー'}`);
-            }
+          // Preview/本番環境：iframe経由でのGAS送信（CORS回避）
+          submitViaIframe(data)
+          .then(() => {
+            alert('お問い合わせを受け付けました。ありがとうございます。');
+            form.reset();
+            resetFormState();
           })
           .catch(error => {
             console.error('Error:', error);
@@ -1992,7 +1987,64 @@ input[type="date"] {
     });
     
     
-    // スプレッドシートに保存
+    // iframe経由でのGAS送信（CORS回避）
+    async function submitViaIframe(data) {
+      return new Promise((resolve, reject) => {
+        try {
+          console.log('Sending to GAS via iframe:', data);
+          
+          // 隠しiframeを作成
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.name = 'gas-submit-frame';
+          document.body.appendChild(iframe);
+          
+          // 隠しformを作成
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = GAS_URL;
+          form.target = 'gas-submit-frame';
+          form.style.display = 'none';
+          
+          // データをフォームフィールドとして追加
+          Object.keys(data).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = data[key];
+            form.appendChild(input);
+          });
+          
+          document.body.appendChild(form);
+          
+          // iframe読み込み完了を待機
+          iframe.onload = () => {
+            setTimeout(() => {
+              // クリーンアップ
+              document.body.removeChild(iframe);
+              document.body.removeChild(form);
+              resolve();
+            }, 1000);
+          };
+          
+          iframe.onerror = () => {
+            // クリーンアップ
+            document.body.removeChild(iframe);
+            document.body.removeChild(form);
+            reject(new Error('iframe送信エラー'));
+          };
+          
+          // フォーム送信
+          form.submit();
+          
+        } catch (error) {
+          console.error('submitViaIframe error:', error);
+          reject(error);
+        }
+      });
+    }
+    
+    // スプレッドシートに保存（予備用）
     async function saveToSpreadsheet(data) {
       try {
         console.log('Sending to GAS:', data);
