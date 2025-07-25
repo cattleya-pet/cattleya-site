@@ -137,6 +137,10 @@
   width: rem(162);
   flex-shrink: 0;
   
+  &:hover {
+    text-decoration: none;
+  }
+  
   @include breakpoint-up(sm) {
     width: rem(200);
   }
@@ -996,7 +1000,7 @@
   }
   
   &--search-dogs {
-    background-image: url('/src/assets/images/ui/bg_button-search-dogs-link-01.webp');
+    background-image: url('/images/ui/bg_button-search-dogs-link-01.webp');
     background-size: auto 70%;
     background-position: calc(100% - rem(40)) calc(100% + rem(1));
     background-repeat: no-repeat;
@@ -1006,7 +1010,7 @@
   }
   
   &--search-cats {
-    background-image: url('/src/assets/images/ui/bg_button-search-cats-link-01.webp');
+    background-image: url('/images/ui/bg_button-search-cats-link-01.webp');
     background-size: auto 75%;
     background-position: calc(100% - rem(45)) calc(100% + rem(1));
     background-repeat: no-repeat;
