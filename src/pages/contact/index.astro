@@ -2013,18 +2013,32 @@ input[type="date"] {
             input.name = key;
             input.value = data[key];
             form.appendChild(input);
+            console.log(`Form field added: ${key} = ${data[key]}`);
           });
+          
+          console.log('Form action URL:', form.action);
+          console.log('Form method:', form.method);
+          console.log('Form target:', form.target);
           
           document.body.appendChild(form);
           
           // iframe読み込み完了を待機
           iframe.onload = () => {
+            // iframeの内容を確認（デバッグ用）
+            try {
+              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+              const responseText = iframeDoc.body ? iframeDoc.body.innerText : 'No response';
+              console.log('GAS iframe response:', responseText);
+            } catch (e) {
+              console.log('Could not read iframe response (CORS):', e.message);
+            }
+            
             setTimeout(() => {
               // クリーンアップ
               document.body.removeChild(iframe);
               document.body.removeChild(form);
               resolve();
-            }, 1000);
+            }, 2000); // 2秒に延長してレスポンス確認時間を増やす
           };
           
           iframe.onerror = () => {
