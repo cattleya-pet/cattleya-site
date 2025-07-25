@@ -1954,38 +1954,40 @@ input[type="date"] {
         // フォームデータを整理
         const data = prepareFormData(formType, formData);
         
-        // 一時的な対応：開発環境でのCORS回避
-        console.log('フォーム送信データ（GAS CORS問題により一時的にローカル処理）:', data);
+        // 環境判定（localhost以外はPreview/本番環境として扱う）
+        const isProduction = !window.location.hostname.includes('localhost') && window.location.hostname !== '127.0.0.1';
+        console.log('Environment check - isProduction:', isProduction, 'hostname:', window.location.hostname);
+        console.log('フォーム送信データ:', data);
         
-        // 本来の処理をコメントアウト
-        /*
-        saveToSpreadsheet(data)
-        .then(result => {
-          if (result.success) {
-            alert('お問い合わせを受け付けました。ありがとうございます。');
-            form.reset();
-            resetFormState();
-          } else {
-            console.log('GAS result:', result);
-            alert(`送信に問題が発生しました。\n${result.error || '不明なエラー'}`);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('送信に失敗しました。もう一度お試しください。');
-        })
-        .finally(() => {
+        if (isProduction) {
+          // Preview/本番環境：GAS連携を実行
+          saveToSpreadsheet(data)
+          .then(result => {
+            if (result.success) {
+              alert('お問い合わせを受け付けました。ありがとうございます。');
+              form.reset();
+              resetFormState();
+            } else {
+              console.log('GAS result:', result);
+              alert(`送信に問題が発生しました。\n${result.error || '不明なエラー'}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('送信に失敗しました。もう一度お試しください。');
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+          });
+        } else {
+          // ローカル開発環境：テスト用処理
+          alert('開発中：フォーム送信を受け付けました。\n（GAS連携は本番環境で動作します）');
+          form.reset();
+          resetFormState();
           submitButton.disabled = false;
           submitButton.textContent = originalText;
-        });
-        */
-        
-        // 一時的な成功処理
-        alert('開発中：フォーム送信を受け付けました。\n（GAS連携は本番環境で動作します）');
-        form.reset();
-        resetFormState();
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
+        }
       });
     });
     
