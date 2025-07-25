@@ -1793,6 +1793,10 @@ input[type="date"] {
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== CONTACT FORM SCRIPT LOADED ===');
+    console.log('Current hostname:', window.location.hostname);
+    console.log('Current URL:', window.location.href);
+    
     // URLパラメータからペット選択状態を復元
     const urlParams = new URLSearchParams(window.location.search);
     const petId = urlParams.get('pet');
@@ -1921,10 +1925,12 @@ input[type="date"] {
     
     forms.forEach(form => {
       form.addEventListener('submit', function(e) {
+        console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
         e.preventDefault();
         
         const formData = new FormData(this);
         const formType = this.getAttribute('data-form');
+        console.log('Form type:', formType);
         
         // プライバシーポリシーの同意チェック
         const privacyAgreement = formData.get('privacy-agreement');
