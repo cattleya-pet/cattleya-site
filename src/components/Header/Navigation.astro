@@ -960,7 +960,7 @@ const mobileTopItems = [
     // ウィンドウサイズが変更されたときにモバイルメニューを閉じる
     // rem単位で計算してSCSSブレイクポイントと一致させる
     window.addEventListener('resize', () => {
-      const xlBreakpointRem = BREAKPOINTS_REM.xl; // 128rem
+      const xlBreakpointRem = 128; // 128rem (直接値を指定)
       // Use matchMedia with rem units to match CSS behavior exactly
       const mediaQuery = window.matchMedia(`(min-width: ${xlBreakpointRem}rem)`);
       if (mediaQuery.matches) {
