@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const isProduction = !window.location.hostname.includes('localhost') && window.location.hostname !== '127.0.0.1';
   console.log('Environment check - isProduction:', isProduction, 'hostname:', window.location.hostname);
   
-  // GAS URL
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzVngWNDeUkMTy8M98Qx2u7K0O9TJI8buYRGTxEf5SeCHd0D4duOA2ejx3EWUxaATeP9w/exec';
+  // GAS URL (正しいURL)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxiELdZ-o-xiO3muDIaNOIFG1lHqUFWqlh2KNretLk5qKeB7qfIdJuW7drBe6zcCcpvVw/exec';
   console.log('Full GAS URL:', GAS_URL);
   console.log('GAS URL length:', GAS_URL.length);
   
