@@ -153,14 +153,26 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('フォーム送信データ:', data);
       
       if (isProduction) {
-        // Preview/本番環境：iframe経由でのGAS送信（CORS回避）
-        submitViaIframe(data)
+        // Preview/本番環境：直接fetch送信をテスト
+        console.log('Trying direct fetch to GAS...');
+        
+        const formData = new FormData();
+        Object.keys(data).forEach(key => {
+          formData.append(key, data[key]);
+        });
+        
+        fetch(GAS_URL, {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors'
+        })
         .then(() => {
+          console.log('Direct fetch completed (no-cors mode)');
           alert('お問い合わせを受け付けました。ありがとうございます。');
           form.reset();
         })
         .catch(error => {
-          console.error('Error:', error);
+          console.error('Direct fetch error:', error);
           alert('送信に失敗しました。もう一度お試しください。');
         })
         .finally(() => {
