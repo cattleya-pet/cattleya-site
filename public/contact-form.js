@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // GAS URL
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbzVngWNDeUkMTy8M98Qx2u7K0O9TJI8buYRGTxEf5SeCHd0D4duOA2ejx3EWUxaATeP9w/exec';
+  console.log('Full GAS URL:', GAS_URL);
+  console.log('GAS URL length:', GAS_URL.length);
   
   // iframe経由でのGAS送信（CORS回避）
   async function submitViaIframe(data) {
