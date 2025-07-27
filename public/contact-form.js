@@ -164,10 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(GAS_URL, {
           method: 'POST',
           body: formData,
-          mode: 'no-cors'
+          mode: 'cors'
         })
         .then(() => {
-          console.log('Direct fetch completed (no-cors mode)');
+          console.log('Direct fetch completed (cors mode)');
           alert('お問い合わせを受け付けました。ありがとうございます。');
           form.reset();
         })
