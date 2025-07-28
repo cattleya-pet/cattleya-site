@@ -155,8 +155,9 @@ function saveToSheet(data) {
 
 function sendNotificationEmail(data) {
   try {
-    const to = 'naocreate52@gmail.com';
-    const from = 'contact@naocreate.net';
+    const properties = PropertiesService.getScriptProperties();
+    const to = properties.getProperty('ADMIN_EMAIL') || 'naocreate52@gmail.com';
+    const from = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
     const subject = `【カトレア】${getFormTypeName(data.formType)}のお問い合わせ - ${data.name}様`;
     const body = createEmailBody(data);
 
@@ -176,8 +177,9 @@ function sendAutoReplyEmail(data) {
       return;
     }
 
+    const properties = PropertiesService.getScriptProperties();
     const to = data.email;
-    const from = 'contact@naocreate.net';
+    const from = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
     const subject = `【カトレア】お問い合わせを受け付けました`;
     const body = createAutoReplyEmailBody(data);
 
@@ -312,7 +314,9 @@ function createAutoReplyEmailBody(data) {
   
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   body += `カトレア\n`;
-  body += `Email: contact@naocreate.net\n`;
+  const properties = PropertiesService.getScriptProperties();
+  const contactEmail = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
+  body += `Email: ${contactEmail}\n`;
   body += `Website: https://cattleya.naocreate.net\n`;
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
