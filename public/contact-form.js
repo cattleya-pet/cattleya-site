@@ -104,7 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 選択されたペットを取得（複数選択対応）
       const selectedPets = formData.getAll('selected-pets');
+      console.log('Selected pets from form:', selectedPets);
       data.selectedPets = selectedPets.join(', ');
+      console.log('Joined selected pets:', data.selectedPets);
     } else if (formType === 'job') {
       data.inquiryType = formData.get('inquiry-type') || '';
     }
