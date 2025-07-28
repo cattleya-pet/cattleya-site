@@ -92,29 +92,50 @@ function saveToSheet(data) {
     if (!sheet) {
       sheet = spreadsheet.insertSheet(sheetName);
       // 新規シート作成時のみヘッダー行を追加
-      sheet.appendRow([
-        'タイムスタンプ', 'お問い合わせ種別', 'お名前', 'メールアドレス', '電話番号',
-        'お問い合わせ内容', '来店予約',
-        '来店日', '来店時間', '選択されたペット'
-      ]);
+      if (sheetName === 'form-others') {
+        // form-othersはお問い合わせ種別なし
+        sheet.appendRow([
+          'タイムスタンプ', 'お名前', 'メールアドレス', '電話番号', 'お問い合わせ内容'
+        ]);
+      } else {
+        // form-pet, form-job用
+        sheet.appendRow([
+          'タイムスタンプ', 'お問い合わせ種別', 'お名前', 'メールアドレス', '電話番号',
+          'お問い合わせ内容', '来店予約',
+          '来店日', '来店時間', '選択されたペット'
+        ]);
+      }
     } else {
       // 既存シートの場合は1行目が項目名として存在することを前提とする
       // ヘッダー行の追加は行わない
     }
 
-    // データを行に追加 - job/othersフォームでは来店予約関連は空にする
-    const row = [
-      new Date().toLocaleString('ja-JP'),
-      data.inquiryType || '',
-      data.name || '',
-      data.email || '',
-      data.phone || '',
-      data.content || '',
-      data.formType === 'pet' ? (data.visitReservation === 'true' ? '予約あり' : '予約なし') : '',
-      data.formType === 'pet' ? (data.visitDate || '') : '',
-      data.formType === 'pet' ? (data.visitTime || '') : '',
-      data.formType === 'pet' ? (data.selectedPets ? data.selectedPets.replace(/, /g, ',\n') : '') : ''
-    ];
+    // データを行に追加 - フォームタイプに応じて列構成を変更
+    let row;
+    if (data.formType === 'other') {
+      // form-othersはお問い合わせ種別なし（5列）
+      row = [
+        new Date().toLocaleString('ja-JP'),
+        data.name || '',
+        data.email || '',
+        data.phone || '',
+        data.content || ''
+      ];
+    } else {
+      // form-pet, form-job用（10列）
+      row = [
+        new Date().toLocaleString('ja-JP'),
+        data.inquiryType || '',
+        data.name || '',
+        data.email || '',
+        data.phone || '',
+        data.content || '',
+        data.formType === 'pet' ? (data.visitReservation === 'true' ? '予約あり' : '予約なし') : '',
+        data.formType === 'pet' ? (data.visitDate || '') : '',
+        data.formType === 'pet' ? (data.visitTime || '') : '',
+        data.formType === 'pet' ? (data.selectedPets ? data.selectedPets.replace(/, /g, ',\n') : '') : ''
+      ];
+    }
 
     // 最新データを2行目（項目欄の直下）に挿入し、既存データを下にスライド
     sheet.insertRowAfter(1); // 1行目の後に新しい行を挿入
