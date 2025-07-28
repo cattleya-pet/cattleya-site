@@ -375,6 +375,21 @@ function checkSendGridConfig() {
   console.log('ADMIN_EMAIL:', properties.getProperty('ADMIN_EMAIL'));
 }
 
+// 現在の設定を詳細確認する関数
+function checkCurrentSettings() {
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty('SENDGRID_API_KEY');
+  console.log('現在のAPIキー:', apiKey);
+  console.log('期待するAPIキー: SG.5ha81TXBQAClOaBQwlSOzA');
+  console.log('一致:', apiKey === 'SG.5ha81TXBQAClOaBQwlSOzA');
+}
+
+// APIキーを強制更新する関数
+function forceUpdateApiKey() {
+  PropertiesService.getScriptProperties().setProperty('SENDGRID_API_KEY', 'SG.5ha81TXBQAClOaBQwlSOzA');
+  console.log('APIキー強制更新完了');
+}
+
 // SendGrid設定状況を返す関数
 function checkSendGridStatus() {
   const properties = PropertiesService.getScriptProperties();
