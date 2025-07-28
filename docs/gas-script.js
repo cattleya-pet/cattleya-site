@@ -193,13 +193,20 @@ function sendAutoReplyEmail(data) {
 }
 
 function sendEmailViaSendGrid(to, from, subject, body) {
-  // SendGrid API設定（環境変数またはPropertiesServiceで管理することを推奨）
+  // SendGrid API設定の確認
   const SENDGRID_API_KEY = PropertiesService.getScriptProperties().getProperty('SENDGRID_API_KEY');
   
+  console.log('=== SendGrid送信開始 ===');
+  console.log('To:', to);
+  console.log('From:', from);
+  console.log('API Key設定:', SENDGRID_API_KEY ? '設定済み' : '未設定');
+  
   if (!SENDGRID_API_KEY) {
-    console.error('SendGrid API キーが設定されていません');
-    // フォールバック：GmailAppを使用
-    GmailApp.sendEmail(to, subject, body);
+    console.error('SendGrid API キーが設定されていません - GmailAppフォールバック実行');
+    // フォールバック：GmailAppを使用（但し送信者はGoogleアカウントになる）
+    GmailApp.sendEmail(to, subject, body, {
+      name: 'カトレア'
+    });
     return;
   }
 
@@ -225,19 +232,32 @@ function sendEmailViaSendGrid(to, from, subject, body) {
   };
 
   try {
+    console.log('SendGrid API呼び出し実行中...');
     const response = UrlFetchApp.fetch('https://api.sendgrid.com/v3/mail/send', options);
-    console.log('SendGrid Response Status:', response.getResponseCode());
+    const statusCode = response.getResponseCode();
     
-    if (response.getResponseCode() !== 202) {
-      console.error('SendGrid送信エラー:', response.getContentText());
+    console.log('SendGrid Response Status:', statusCode);
+    
+    if (statusCode === 202) {
+      console.log('SendGrid送信成功！');
+    } else {
+      console.error('SendGrid送信失敗:', response.getContentText());
+      console.log('GmailAppフォールバック実行');
       // フォールバック：GmailAppを使用
-      GmailApp.sendEmail(to, subject, body);
+      GmailApp.sendEmail(to, subject, body, {
+        name: 'カトレア'
+      });
     }
   } catch (error) {
-    console.error('SendGrid API呼び出しエラー:', error);
+    console.error('SendGrid API呼び出しエラー:', error.toString());
+    console.log('GmailAppフォールバック実行');
     // フォールバック：GmailAppを使用
-    GmailApp.sendEmail(to, subject, body);
+    GmailApp.sendEmail(to, subject, body, {
+      name: 'カトレア'
+    });
   }
+  
+  console.log('=== SendGrid送信終了 ===');
 }
 
 function getFormTypeName(formType) {
