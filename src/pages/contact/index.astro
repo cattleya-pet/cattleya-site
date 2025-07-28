@@ -2130,9 +2130,19 @@ input[type="date"] {
         data.visitReservation = formData.get('visit-reservation') === '1';
         data.visitDate = formData.get('visit-date') || '';
         data.visitTime = formData.get('visit-time') || '';
+        
+        // デバッグ用ログ追加
+        console.log('=== DEBUG: prepareFormData for pet ===');
+        console.log('selectedPets array:', selectedPets);
+        console.log('selectedPets length:', selectedPets.length);
+        
         data.selectedPets = selectedPets.map(pet => 
           `${pet.number} ${pet.breed} 【${pet.store}】`
         ).join(', ');
+        
+        console.log('Final selectedPets string:', data.selectedPets);
+        console.log('=== END DEBUG ===');
+        
       } else if (formType === 'job') {
         data.inquiryType = formData.get('inquiry-type') || '';
       }
