@@ -452,6 +452,28 @@ const breadcrumbItems = [
       </div>
     </div>
   </div>
+
+  <!-- 送信完了モーダル -->
+  <div class="success-modal" id="success-modal" style="display: none;">
+    <div class="success-modal__overlay"></div>
+    <div class="success-modal__content">
+      <div class="success-modal__icon">✓</div>
+      <h3 class="success-modal__title">送信完了</h3>
+      <p class="success-modal__message">お問い合わせを受け付けました。<br>ありがとうございます。</p>
+      <button class="success-modal__button" id="success-modal-close">閉じる</button>
+    </div>
+  </div>
+
+  <!-- エラーモーダル -->
+  <div class="error-modal" id="error-modal" style="display: none;">
+    <div class="error-modal__overlay"></div>
+    <div class="error-modal__content">
+      <div class="error-modal__icon">!</div>
+      <h3 class="error-modal__title">送信エラー</h3>
+      <p class="error-modal__message">送信に失敗しました。<br>もう一度お試しください。</p>
+      <button class="error-modal__button" id="error-modal-close">閉じる</button>
+    </div>
+  </div>
 </Layout>
 
 <style lang="scss">
@@ -1789,6 +1811,92 @@ input[type="date"] {
   }
 }
 
+// 送信完了・エラーモーダル
+.success-modal,
+.error-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  &__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: $radius-m;
+    padding: rem(32);
+    text-align: center;
+    min-width: rem(320);
+    max-width: rem(400);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  &__icon {
+    width: rem(60);
+    height: rem(60);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto rem(16);
+    font-size: rem(28);
+    font-weight: bold;
+    color: white;
+  }
+  
+  &__title {
+    @include typography-ja-l($font-weight-semibold);
+    color: $color-text-primary;
+    margin-bottom: rem(12);
+  }
+  
+  &__message {
+    @include typography-ja-m($font-weight-regular);
+    color: $color-text-secondary;
+    line-height: 1.6;
+    margin-bottom: rem(24);
+  }
+  
+  &__button {
+    @include button-base;
+    @include typography-ja-m($font-weight-semibold);
+    background-color: $color-primary;
+    color: white;
+    padding: rem(12) rem(24);
+    border-radius: $radius-s;
+    min-width: rem(120);
+    
+    &:hover {
+      background-color: darken($color-primary, 10%);
+    }
+  }
+}
+
+.success-modal {
+  .success-modal__icon {
+    background-color: #10b981;
+  }
+}
+
+.error-modal {
+  .error-modal__icon {
+    background-color: #ef4444;
+  }
+}
+
 </style>
 
 <!-- 外部スクリプトファイルを読み込み -->
@@ -1976,13 +2084,13 @@ input[type="date"] {
           // Preview/本番環境：iframe経由でのGAS送信（CORS回避）
           submitViaIframe(data)
           .then(() => {
-            alert('お問い合わせを受け付けました。ありがとうございます。');
+            showSuccessModal();
             form.reset();
             resetFormState();
           })
           .catch(error => {
             console.error('Error:', error);
-            alert('送信に失敗しました。もう一度お試しください。');
+            showErrorModal();
           })
           .finally(() => {
             submitButton.disabled = false;
@@ -1990,7 +2098,7 @@ input[type="date"] {
           });
         } else {
           // ローカル開発環境：テスト用処理
-          alert('開発中：フォーム送信を受け付けました。\n（GAS連携は本番環境で動作します）');
+          showSuccessModal();
           form.reset();
           resetFormState();
           submitButton.disabled = false;
@@ -2577,5 +2685,49 @@ input[type="date"] {
         }
       });
     });
+  });
+
+  // モーダル表示関数
+  function showSuccessModal() {
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  function showErrorModal() {
+    const modal = document.getElementById('error-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // モーダル閉じるボタンのイベントリスナー
+  document.getElementById('success-modal-close')?.addEventListener('click', function() {
+    hideModal('success-modal');
+  });
+
+  document.getElementById('error-modal-close')?.addEventListener('click', function() {
+    hideModal('error-modal');
+  });
+
+  // モーダルオーバーレイクリックで閉じる
+  document.getElementById('success-modal')?.addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('success-modal__overlay')) {
+      hideModal('success-modal');
+    }
+  });
+
+  document.getElementById('error-modal')?.addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('error-modal__overlay')) {
+      hideModal('error-modal');
+    }
   });
 </script>

@@ -175,12 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(() => {
           console.log('URLSearchParams submission completed');
-          alert('お問い合わせを受け付けました。ありがとうございます。');
+          // アラート削除（メインスクリプトでモーダル表示）
           form.reset();
         })
         .catch(error => {
           console.error('URLSearchParams submission error:', error);
-          alert('送信に失敗しました。もう一度お試しください。');
+          // アラート削除（メインスクリプトでモーダル表示）
         })
         .finally(() => {
           submitButton.disabled = false;
@@ -188,7 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       } else {
         // ローカル開発環境：テスト用処理
-        alert('開発中：フォーム送信を受け付けました。\n（GAS連携は本番環境で動作します）');
+        console.log('開発中：フォーム送信を受け付けました（GAS連携は本番環境で動作）');
+        // アラート削除（メインスクリプトでモーダル表示）
         form.reset();
         submitButton.disabled = false;
         submitButton.textContent = originalText;
