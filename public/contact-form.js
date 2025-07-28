@@ -153,16 +153,29 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('フォーム送信データ:', data);
       
       if (isProduction) {
-        // Preview/本番環境：iframe経由でのGAS送信（CORS回避）
-        console.log('Using iframe submission to GAS...');
-        submitViaIframe(data)
+        // Preview/本番環境：URLSearchParams形式で送信
+        console.log('Sending to GAS with URLSearchParams...');
+        
+        const params = new URLSearchParams();
+        Object.keys(data).forEach(key => {
+          params.append(key, data[key]);
+        });
+        
+        fetch(GAS_URL, {
+          method: 'POST',
+          body: params,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          mode: 'no-cors'
+        })
         .then(() => {
-          console.log('Iframe submission completed');
+          console.log('URLSearchParams submission completed');
           alert('お問い合わせを受け付けました。ありがとうございます。');
           form.reset();
         })
         .catch(error => {
-          console.error('Iframe submission error:', error);
+          console.error('URLSearchParams submission error:', error);
           alert('送信に失敗しました。もう一度お試しください。');
         })
         .finally(() => {
