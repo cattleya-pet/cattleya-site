@@ -459,7 +459,7 @@ const breadcrumbItems = [
     <div class="success-modal__content">
       <div class="success-modal__icon">✓</div>
       <h3 class="success-modal__title">送信完了</h3>
-      <p class="success-modal__message">お問い合わせを受け付けました。<br>ありがとうございます。</p>
+      <p class="success-modal__message">お問い合わせを受け付けました。<br>ありがとうございます。<br>確認次第連絡差し上げます。</p>
       <button class="success-modal__button" id="success-modal-close">閉じる</button>
     </div>
   </div>
@@ -1858,13 +1858,13 @@ input[type="date"] {
   }
   
   &__title {
-    @include typography-ja-l($font-weight-semibold);
+    @include typography-ja-m($font-weight-semibold);
     color: $color-text-primary;
     margin-bottom: rem(12);
   }
   
   &__message {
-    @include typography-ja-m($font-weight-regular);
+    @include typography-ja-s;
     color: $color-text-secondary;
     line-height: 1.6;
     margin-bottom: rem(24);
@@ -1872,7 +1872,7 @@ input[type="date"] {
   
   &__button {
     @include button-base;
-    @include typography-ja-m($font-weight-semibold);
+    @include typography-ja-s($font-weight-semibold);
     background-color: $color-brand-primary;
     color: white;
     padding: rem(12) rem(24);
