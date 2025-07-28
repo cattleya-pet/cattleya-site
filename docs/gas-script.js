@@ -26,6 +26,10 @@ function doPost(e) {
     // スプレッドシートにデータを保存
     const result = saveToSheet(requestData);
 
+    // SendGrid設定確認を追加
+    const sendGridStatus = checkSendGridStatus();
+    logToSheet('SendGrid設定状況', sendGridStatus);
+
     // メール送信
     sendNotificationEmail(requestData);
     
@@ -362,4 +366,44 @@ function checkSendGridConfig() {
   console.log('SENDGRID_API_KEY:', properties.getProperty('SENDGRID_API_KEY') ? '設定済み' : '未設定');
   console.log('SENDGRID_FROM_EMAIL:', properties.getProperty('SENDGRID_FROM_EMAIL'));
   console.log('ADMIN_EMAIL:', properties.getProperty('ADMIN_EMAIL'));
+}
+
+// SendGrid設定状況を返す関数
+function checkSendGridStatus() {
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty('SENDGRID_API_KEY');
+  const fromEmail = properties.getProperty('SENDGRID_FROM_EMAIL');
+  const adminEmail = properties.getProperty('ADMIN_EMAIL');
+  
+  return {
+    apiKeySet: apiKey ? '設定済み' : '未設定',
+    fromEmail: fromEmail || 'なし',
+    adminEmail: adminEmail || 'なし',
+    timestamp: new Date().toLocaleString('ja-JP')
+  };
+}
+
+// スプレッドシートにログを記録する関数
+function logToSheet(action, data) {
+  try {
+    const spreadsheetId = '1FnIpk88kEEmanvuEEgKO3aqHpHtOVh6aXbTtEd_n8m4';
+    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+    
+    // デバッグシートを取得（存在しない場合は作成）
+    let debugSheet = spreadsheet.getSheetByName('debug-log');
+    if (!debugSheet) {
+      debugSheet = spreadsheet.insertSheet('debug-log');
+      debugSheet.appendRow(['タイムスタンプ', 'アクション', 'データ']);
+    }
+    
+    const logData = [
+      new Date().toLocaleString('ja-JP'),
+      action,
+      JSON.stringify(data)
+    ];
+    
+    debugSheet.appendRow(logData);
+  } catch (error) {
+    console.error('ログ記録エラー:', error);
+  }
 }
