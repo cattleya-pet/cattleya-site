@@ -91,12 +91,15 @@ function saveToSheet(data) {
     let sheet = spreadsheet.getSheetByName(sheetName);
     if (!sheet) {
       sheet = spreadsheet.insertSheet(sheetName);
-      // ヘッダー行を追加
+      // 新規シート作成時のみヘッダー行を追加
       sheet.appendRow([
         'タイムスタンプ', 'お問い合わせ種別', 'お名前', 'メールアドレス', '電話番号',
         'お問い合わせ内容', '来店予約',
         '来店日', '来店時間', '選択されたペット'
       ]);
+    } else {
+      // 既存シートの場合は1行目が項目名として存在することを前提とする
+      // ヘッダー行の追加は行わない
     }
 
     // データを行に追加 - job/othersフォームでは来店予約関連は空にする
@@ -113,8 +116,11 @@ function saveToSheet(data) {
       data.formType === 'pet' ? (data.selectedPets ? data.selectedPets.replace(/, /g, ',\n') : '') : ''
     ];
 
-    sheet.appendRow(row);
-    console.log(`${sheetName}に保存完了`);
+    // 最新データを2行目（項目欄の直下）に挿入し、既存データを下にスライド
+    sheet.insertRowAfter(1); // 1行目の後に新しい行を挿入
+    sheet.getRange(2, 1, 1, row.length).setValues([row]); // 2行目にデータを設定
+    
+    console.log(`${sheetName}の2行目に保存完了（既存データは下にスライド）`);
     return { success: true };
 
   } catch (error) {
