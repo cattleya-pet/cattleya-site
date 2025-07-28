@@ -104,7 +104,7 @@ function saveToSheet(data) {
 
     // データを行に追加 - job/othersフォームでは来店予約関連は空にする
     const row = [
-      new Date(),
+      new Date().toLocaleString('ja-JP'),
       data.inquiryType || '',
       data.name || '',
       data.email || '',
