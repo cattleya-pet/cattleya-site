@@ -26,10 +26,6 @@ function doPost(e) {
     // スプレッドシートにデータを保存
     const result = saveToSheet(requestData);
 
-    // SendGrid設定確認を追加
-    const sendGridStatus = checkSendGridStatus();
-    logToSheet('SendGrid設定状況', sendGridStatus);
-
     // メール送信
     sendNotificationEmail(requestData);
     
@@ -159,14 +155,13 @@ function saveToSheet(data) {
 
 function sendNotificationEmail(data) {
   try {
-    const properties = PropertiesService.getScriptProperties();
-    const to = properties.getProperty('ADMIN_EMAIL') || 'naocreate52@gmail.com';
-    const from = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
+    const to = 'naocreate52@gmail.com';
     const subject = `【カトレア】${getFormTypeName(data.formType)}のお問い合わせ - ${data.name}様`;
     const body = createEmailBody(data);
 
-    // SendGridを使用したメール送信
-    sendEmailViaSendGrid(to, from, subject, body);
+    GmailApp.sendEmail(to, subject, body, {
+      name: 'カトレア'
+    });
     console.log('通知メール送信完了');
 
   } catch (error) {
@@ -181,14 +176,13 @@ function sendAutoReplyEmail(data) {
       return;
     }
 
-    const properties = PropertiesService.getScriptProperties();
     const to = data.email;
-    const from = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
     const subject = `【カトレア】お問い合わせを受け付けました`;
     const body = createAutoReplyEmailBody(data);
 
-    // SendGridを使用したメール送信
-    sendEmailViaSendGrid(to, from, subject, body);
+    GmailApp.sendEmail(to, subject, body, {
+      name: 'カトレア'
+    });
     console.log('自動返信メール送信完了:', data.email);
 
   } catch (error) {
@@ -196,80 +190,6 @@ function sendAutoReplyEmail(data) {
   }
 }
 
-function sendEmailViaSendGrid(to, from, subject, body) {
-  // SendGrid API設定の確認
-  const SENDGRID_API_KEY = PropertiesService.getScriptProperties().getProperty('SENDGRID_API_KEY');
-  
-  console.log('=== SendGrid送信開始 ===');
-  console.log('To:', to);
-  console.log('From:', from);
-  console.log('API Key設定:', SENDGRID_API_KEY ? '設定済み' : '未設定');
-  
-  if (!SENDGRID_API_KEY) {
-    console.error('SendGrid API キーが設定されていません - GmailAppフォールバック実行');
-    // フォールバック：GmailAppを使用（但し送信者はGoogleアカウントになる）
-    GmailApp.sendEmail(to, subject, body, {
-      name: 'カトレア'
-    });
-    return;
-  }
-
-  const payload = {
-    personalizations: [{
-      to: [{ email: to }],
-      subject: subject
-    }],
-    from: { email: from, name: 'カトレア' },
-    content: [{
-      type: 'text/plain',
-      value: body
-    }]
-  };
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    payload: JSON.stringify(payload)
-  };
-
-  try {
-    console.log('SendGrid API呼び出し実行中...');
-    const response = UrlFetchApp.fetch('https://api.sendgrid.com/v3/mail/send', options);
-    const statusCode = response.getResponseCode();
-    
-    console.log('SendGrid Response Status:', statusCode);
-    
-    if (statusCode === 202) {
-      console.log('SendGrid送信成功！');
-      logToSheet('SendGrid送信', { status: '成功', to: to, from: from, statusCode: statusCode });
-    } else {
-      const errorText = response.getContentText();
-      console.error('SendGrid送信失敗:', errorText);
-      console.log('GmailAppフォールバック実行');
-      logToSheet('SendGrid送信', { status: '失敗', to: to, from: from, statusCode: statusCode, error: errorText });
-      // フォールバック：GmailAppを使用
-      GmailApp.sendEmail(to, subject, body, {
-        name: 'カトレア'
-      });
-      logToSheet('Gmail送信', { status: 'フォールバック実行', to: to });
-    }
-  } catch (error) {
-    const errorMessage = error.toString();
-    console.error('SendGrid API呼び出しエラー:', errorMessage);
-    console.log('GmailAppフォールバック実行');
-    logToSheet('SendGrid送信', { status: 'API呼び出しエラー', to: to, from: from, error: errorMessage });
-    // フォールバック：GmailAppを使用
-    GmailApp.sendEmail(to, subject, body, {
-      name: 'カトレア'
-    });
-    logToSheet('Gmail送信', { status: 'フォールバック実行', to: to });
-  }
-  
-  console.log('=== SendGrid送信終了 ===');
-}
 
 function getFormTypeName(formType) {
   const typeMap = {
@@ -345,87 +265,10 @@ function createAutoReplyEmailBody(data) {
   
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   body += `カトレア\n`;
-  const properties = PropertiesService.getScriptProperties();
-  const contactEmail = properties.getProperty('SENDGRID_FROM_EMAIL') || 'contact@naocreate.net';
-  body += `Email: ${contactEmail}\n`;
+  body += `Email: naocreate52@gmail.com\n`;
   body += `Website: https://cattleya.naocreate.net\n`;
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
   return body;
 }
 
-// SendGrid設定用関数（初回のみ実行）
-function setupSendGridConfig() {
-  const properties = PropertiesService.getScriptProperties();
-  
-  properties.setProperties({
-    'SENDGRID_API_KEY': 'SG.5ha81TXBQAClOaBQwlSOzA',
-    'SENDGRID_FROM_EMAIL': 'contact@naocreate.net',
-    'ADMIN_EMAIL': 'naocreate52@gmail.com'
-  });
-  
-  console.log('SendGrid設定完了');
-}
-
-// 設定確認用関数
-function checkSendGridConfig() {
-  const properties = PropertiesService.getScriptProperties();
-  console.log('SENDGRID_API_KEY:', properties.getProperty('SENDGRID_API_KEY') ? '設定済み' : '未設定');
-  console.log('SENDGRID_FROM_EMAIL:', properties.getProperty('SENDGRID_FROM_EMAIL'));
-  console.log('ADMIN_EMAIL:', properties.getProperty('ADMIN_EMAIL'));
-}
-
-// 現在の設定を詳細確認する関数
-function checkCurrentSettings() {
-  const properties = PropertiesService.getScriptProperties();
-  const apiKey = properties.getProperty('SENDGRID_API_KEY');
-  console.log('現在のAPIキー:', apiKey);
-  console.log('期待するAPIキー: SG.5ha81TXBQAClOaBQwlSOzA');
-  console.log('一致:', apiKey === 'SG.5ha81TXBQAClOaBQwlSOzA');
-}
-
-// APIキーを強制更新する関数
-function forceUpdateApiKey() {
-  PropertiesService.getScriptProperties().setProperty('SENDGRID_API_KEY', 'SG.5ha81TXBQAClOaBQwlSOzA');
-  console.log('APIキー強制更新完了');
-}
-
-// SendGrid設定状況を返す関数
-function checkSendGridStatus() {
-  const properties = PropertiesService.getScriptProperties();
-  const apiKey = properties.getProperty('SENDGRID_API_KEY');
-  const fromEmail = properties.getProperty('SENDGRID_FROM_EMAIL');
-  const adminEmail = properties.getProperty('ADMIN_EMAIL');
-  
-  return {
-    apiKeySet: apiKey ? '設定済み' : '未設定',
-    fromEmail: fromEmail || 'なし',
-    adminEmail: adminEmail || 'なし',
-    timestamp: new Date().toLocaleString('ja-JP')
-  };
-}
-
-// スプレッドシートにログを記録する関数
-function logToSheet(action, data) {
-  try {
-    const spreadsheetId = '1FnIpk88kEEmanvuEEgKO3aqHpHtOVh6aXbTtEd_n8m4';
-    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
-    
-    // デバッグシートを取得（存在しない場合は作成）
-    let debugSheet = spreadsheet.getSheetByName('debug-log');
-    if (!debugSheet) {
-      debugSheet = spreadsheet.insertSheet('debug-log');
-      debugSheet.appendRow(['タイムスタンプ', 'アクション', 'データ']);
-    }
-    
-    const logData = [
-      new Date().toLocaleString('ja-JP'),
-      action,
-      JSON.stringify(data)
-    ];
-    
-    debugSheet.appendRow(logData);
-  } catch (error) {
-    console.error('ログ記録エラー:', error);
-  }
-}
