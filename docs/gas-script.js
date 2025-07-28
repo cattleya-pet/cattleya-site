@@ -28,6 +28,9 @@ function doPost(e) {
 
     // メール送信
     sendNotificationEmail(requestData);
+    
+    // お問い合わせ者への自動返信メール送信
+    sendAutoReplyEmail(requestData);
 
     // 成功レスポンス（CORSヘッダー付き）
     const response = {
@@ -153,14 +156,85 @@ function saveToSheet(data) {
 function sendNotificationEmail(data) {
   try {
     const to = 'naocreate52@gmail.com';
+    const from = 'contact@naocreate.net';
     const subject = `【カトレア】${getFormTypeName(data.formType)}のお問い合わせ - ${data.name}様`;
     const body = createEmailBody(data);
 
-    GmailApp.sendEmail(to, subject, body);
+    // SendGridを使用したメール送信
+    sendEmailViaSendGrid(to, from, subject, body);
     console.log('通知メール送信完了');
 
   } catch (error) {
     console.error('メール送信エラー:', error);
+  }
+}
+
+function sendAutoReplyEmail(data) {
+  try {
+    if (!data.email) {
+      console.log('お問い合わせ者のメールアドレスが空のため、自動返信をスキップします');
+      return;
+    }
+
+    const to = data.email;
+    const from = 'contact@naocreate.net';
+    const subject = `【カトレア】お問い合わせを受け付けました`;
+    const body = createAutoReplyEmailBody(data);
+
+    // SendGridを使用したメール送信
+    sendEmailViaSendGrid(to, from, subject, body);
+    console.log('自動返信メール送信完了:', data.email);
+
+  } catch (error) {
+    console.error('自動返信メール送信エラー:', error);
+  }
+}
+
+function sendEmailViaSendGrid(to, from, subject, body) {
+  // SendGrid API設定（環境変数またはPropertiesServiceで管理することを推奨）
+  const SENDGRID_API_KEY = PropertiesService.getScriptProperties().getProperty('SENDGRID_API_KEY');
+  
+  if (!SENDGRID_API_KEY) {
+    console.error('SendGrid API キーが設定されていません');
+    // フォールバック：GmailAppを使用
+    GmailApp.sendEmail(to, subject, body);
+    return;
+  }
+
+  const payload = {
+    personalizations: [{
+      to: [{ email: to }],
+      subject: subject
+    }],
+    from: { email: from, name: 'カトレア' },
+    content: [{
+      type: 'text/plain',
+      value: body
+    }]
+  };
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    payload: JSON.stringify(payload)
+  };
+
+  try {
+    const response = UrlFetchApp.fetch('https://api.sendgrid.com/v3/mail/send', options);
+    console.log('SendGrid Response Status:', response.getResponseCode());
+    
+    if (response.getResponseCode() !== 202) {
+      console.error('SendGrid送信エラー:', response.getContentText());
+      // フォールバック：GmailAppを使用
+      GmailApp.sendEmail(to, subject, body);
+    }
+  } catch (error) {
+    console.error('SendGrid API呼び出しエラー:', error);
+    // フォールバック：GmailAppを使用
+    GmailApp.sendEmail(to, subject, body);
   }
 }
 
@@ -195,6 +269,52 @@ function createEmailBody(data) {
   }
 
   body += `お問い合わせ内容: ${data.content || ''}\n`;
+
+  return body;
+}
+
+function createAutoReplyEmailBody(data) {
+  let body = `${data.name || 'お客様'}へ\n\n`;
+  body += `この度は、カトレアにお問い合わせいただき、誠にありがとうございます。\n`;
+  body += `以下の内容でお問い合わせを受け付けいたしました。\n\n`;
+  
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  body += `【お問い合わせ内容】\n`;
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  
+  body += `受付日時: ${new Date().toLocaleString('ja-JP')}\n`;
+  body += `フォーム種別: ${getFormTypeName(data.formType)}\n`;
+  body += `お名前: ${data.name || ''}\n`;
+  body += `メールアドレス: ${data.email || ''}\n`;
+  body += `電話番号: ${data.phone || ''}\n`;
+
+  if (data.formType === 'pet') {
+    body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
+    if (data.visitReservation === 'true') {
+      body += `来店予約: 予約あり\n`;
+      body += `来店日: ${data.visitDate || ''}\n`;
+      body += `来店時間: ${data.visitTime || ''}\n`;
+    }
+    if (data.selectedPets) {
+      body += `選択されたペット: ${data.selectedPets.replace(/,\n/g, ', ')}\n`;
+    }
+  } else if (data.formType === 'job') {
+    body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
+  }
+
+  body += `お問い合わせ内容:\n${data.content || ''}\n\n`;
+  
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  body += `担当者より確認次第、お返事させていただきます。\n`;
+  body += `しばらくお待ちください。\n\n`;
+  body += `※このメールは自動送信されています。\n`;
+  body += `※このメールに返信いただいても対応できませんので、ご了承ください。\n\n`;
+  
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  body += `カトレア\n`;
+  body += `Email: contact@naocreate.net\n`;
+  body += `Website: https://cattleya.naocreate.net\n`;
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
   return body;
 }
