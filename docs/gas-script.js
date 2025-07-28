@@ -93,24 +93,24 @@ function saveToSheet(data) {
       sheet = spreadsheet.insertSheet(sheetName);
       // ヘッダー行を追加
       sheet.appendRow([
-        'タイムスタンプ', 'お名前', 'メールアドレス', '電話番号',
-        'お問い合わせ内容', 'お問い合わせ種別', '来店予約',
+        'タイムスタンプ', 'お問い合わせ種別', 'お名前', 'メールアドレス', '電話番号',
+        'お問い合わせ内容', '来店予約',
         '来店日', '来店時間', '選択されたペット'
       ]);
     }
 
-    // データを行に追加
+    // データを行に追加 - job/othersフォームでは来店予約関連は空にする
     const row = [
       new Date(),
+      data.inquiryType || '',
       data.name || '',
       data.email || '',
       data.phone || '',
       data.content || '',
-      data.inquiryType || '',
-      data.visitReservation === 'true' ? '予約あり' : '予約なし',
-      data.visitDate || '',
-      data.visitTime || '',
-      data.selectedPets || ''
+      data.formType === 'pet' ? (data.visitReservation === 'true' ? '予約あり' : '予約なし') : '',
+      data.formType === 'pet' ? (data.visitDate || '') : '',
+      data.formType === 'pet' ? (data.visitTime || '') : '',
+      data.formType === 'pet' ? (data.selectedPets ? data.selectedPets.replace(/, /g, ',\n') : '') : ''
     ];
 
     sheet.appendRow(row);

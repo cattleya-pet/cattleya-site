@@ -2477,8 +2477,23 @@ input[type="date"] {
       });
     }
     
-    // 来店予約チェックボックスの処理
+    // お問い合わせ種別の変更処理
+    const petInquiryTypeSelect = document.getElementById('pet-inquiry-type');
     const visitReservationCheckbox = document.getElementById('pet-visit-reservation');
+    
+    if (petInquiryTypeSelect && visitReservationCheckbox) {
+      petInquiryTypeSelect.addEventListener('change', function() {
+        if (this.value === '来店予約をする') {
+          // 来店予約チェックボックスを自動でONにする
+          visitReservationCheckbox.checked = true;
+          // チェック状態の変更イベントを手動で発火
+          const changeEvent = new Event('change');
+          visitReservationCheckbox.dispatchEvent(changeEvent);
+        }
+      });
+    }
+
+    // 来店予約チェックボックスの処理
     const visitReservationDetails = document.getElementById('visit-reservation-details');
     const visitReservationNotice = document.getElementById('visit-reservation-notice');
     
