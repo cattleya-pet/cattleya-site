@@ -2113,6 +2113,8 @@ input[type="date"] {
       // 選択されたペットをクリア
       selectedPets = [];
       updateSelectedPetsDisplay();
+      // hidden inputもクリア
+      updateHiddenPetInputs();
     }
     
     // フォームデータを整理する関数
@@ -2281,6 +2283,9 @@ input[type="date"] {
     function updateSelectedPetsDisplay() {
       selectedPetsContainer.innerHTML = '';
       
+      // hidden input要素を更新
+      updateHiddenPetInputs();
+      
       selectedPets.forEach(pet => {
         const petElement = document.createElement('div');
         petElement.className = 'selected-pet';
@@ -2400,6 +2405,27 @@ input[type="date"] {
       }
       
       console.log('Pet removed:', petId, 'Remaining pets:', selectedPets.length);
+    }
+    
+    // hidden input要素を更新する関数
+    function updateHiddenPetInputs() {
+      const petForm = document.getElementById('pet-form');
+      if (!petForm) return;
+      
+      // 既存のhidden input要素を削除
+      const existingInputs = petForm.querySelectorAll('input[name="selected-pets"]');
+      existingInputs.forEach(input => input.remove());
+      
+      // 選択されたペットごとにhidden input要素を作成
+      selectedPets.forEach(pet => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'selected-pets';
+        hiddenInput.value = `${pet.number} ${pet.breed} 【${pet.store}】`;
+        petForm.appendChild(hiddenInput);
+      });
+      
+      console.log('Updated hidden pet inputs:', selectedPets.length, 'pets');
     }
     
     // 来店予約時の店舗制限処理
