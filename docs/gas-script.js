@@ -322,3 +322,24 @@ function createAutoReplyEmailBody(data) {
 
   return body;
 }
+
+// SendGrid設定用関数（初回のみ実行）
+function setupSendGridConfig() {
+  const properties = PropertiesService.getScriptProperties();
+  
+  properties.setProperties({
+    'SENDGRID_API_KEY': 'SG.kke-6pqt17yw1rdb',
+    'SENDGRID_FROM_EMAIL': 'contact@naocreate.net',
+    'ADMIN_EMAIL': 'naocreate52@gmail.com'
+  });
+  
+  console.log('SendGrid設定完了');
+}
+
+// 設定確認用関数
+function checkSendGridConfig() {
+  const properties = PropertiesService.getScriptProperties();
+  console.log('SENDGRID_API_KEY:', properties.getProperty('SENDGRID_API_KEY') ? '設定済み' : '未設定');
+  console.log('SENDGRID_FROM_EMAIL:', properties.getProperty('SENDGRID_FROM_EMAIL'));
+  console.log('ADMIN_EMAIL:', properties.getProperty('ADMIN_EMAIL'));
+}
