@@ -359,7 +359,7 @@ function setupSendGridConfig() {
   const properties = PropertiesService.getScriptProperties();
   
   properties.setProperties({
-    'SENDGRID_API_KEY': 'SG.kke-6pqt17yw1rdb',
+    'SENDGRID_API_KEY': 'SG.5ha81TXBQAClOaBQwlSOzA',
     'SENDGRID_FROM_EMAIL': 'contact@naocreate.net',
     'ADMIN_EMAIL': 'naocreate52@gmail.com'
   });
