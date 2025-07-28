@@ -244,21 +244,28 @@ function sendEmailViaSendGrid(to, from, subject, body) {
     
     if (statusCode === 202) {
       console.log('SendGrid送信成功！');
+      logToSheet('SendGrid送信', { status: '成功', to: to, from: from, statusCode: statusCode });
     } else {
-      console.error('SendGrid送信失敗:', response.getContentText());
+      const errorText = response.getContentText();
+      console.error('SendGrid送信失敗:', errorText);
       console.log('GmailAppフォールバック実行');
+      logToSheet('SendGrid送信', { status: '失敗', to: to, from: from, statusCode: statusCode, error: errorText });
       // フォールバック：GmailAppを使用
       GmailApp.sendEmail(to, subject, body, {
         name: 'カトレア'
       });
+      logToSheet('Gmail送信', { status: 'フォールバック実行', to: to });
     }
   } catch (error) {
-    console.error('SendGrid API呼び出しエラー:', error.toString());
+    const errorMessage = error.toString();
+    console.error('SendGrid API呼び出しエラー:', errorMessage);
     console.log('GmailAppフォールバック実行');
+    logToSheet('SendGrid送信', { status: 'API呼び出しエラー', to: to, from: from, error: errorMessage });
     // フォールバック：GmailAppを使用
     GmailApp.sendEmail(to, subject, body, {
       name: 'カトレア'
     });
+    logToSheet('Gmail送信', { status: 'フォールバック実行', to: to });
   }
   
   console.log('=== SendGrid送信終了 ===');
