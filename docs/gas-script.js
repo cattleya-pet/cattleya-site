@@ -13,10 +13,14 @@ function doPost(e) {
       const params = e.parameter; // GASが自動的にパースしたパラメータ
       requestData = params;
       console.log('フォーム形式で受信データ:', requestData);
-    } else {
+    } else if (contentType === 'application/json') {
       // JSON形式（予備）
       requestData = JSON.parse(e.postData.contents);
       console.log('JSON形式で受信データ:', requestData);
+    } else {
+      // その他の形式の場合はパラメータを使用
+      requestData = e.parameter;
+      console.log('その他形式で受信データ:', requestData);
     }
 
     // スプレッドシートにデータを保存
@@ -32,15 +36,10 @@ function doPost(e) {
       timestamp: new Date().toISOString()
     };
 
+    // CORSヘッダー付きでレスポンス作成
     return ContentService
       .createTextOutput(JSON.stringify(response))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Max-Age': '86400'
-      });
+      .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     console.error('エラー:', error);
@@ -53,35 +52,18 @@ function doPost(e) {
 
     return ContentService
       .createTextOutput(JSON.stringify(errorResponse))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 function doGet(e) {
   return ContentService
     .createTextOutput('GAS endpoint is working')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function doOptions(e) {
-  return ContentService
-    .createTextOutput('')
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '86400'
-    });
+  return ContentService.createTextOutput('');
 }
 
 function saveToSheet(data) {
@@ -111,22 +93,21 @@ function saveToSheet(data) {
       sheet = spreadsheet.insertSheet(sheetName);
       // ヘッダー行を追加
       sheet.appendRow([
-        'タイムスタンプ', 'フォーム種別', 'お名前', 'メールアドレス',
-        '電話番号', 'お問い合わせ内容', 'お問い合わせ種別',
-        '来店予約', '来店日', '来店時間', '選択されたペット'
+        'タイムスタンプ', 'お名前', 'メールアドレス', '電話番号',
+        'お問い合わせ内容', 'お問い合わせ種別', '来店予約',
+        '来店日', '来店時間', '選択されたペット'
       ]);
     }
 
     // データを行に追加
     const row = [
       new Date(),
-      data.formType || '',
       data.name || '',
       data.email || '',
       data.phone || '',
       data.content || '',
       data.inquiryType || '',
-      data.visitReservation || '',
+      data.visitReservation === 'true' ? '予約あり' : '予約なし',
       data.visitDate || '',
       data.visitTime || '',
       data.selectedPets || ''

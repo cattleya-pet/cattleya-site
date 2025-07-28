@@ -101,8 +101,10 @@ document.addEventListener('DOMContentLoaded', function() {
       data.visitReservation = formData.get('visit-reservation') === '1';
       data.visitDate = formData.get('visit-date') || '';
       data.visitTime = formData.get('visit-time') || '';
-      // selectedPetsは後で実装
-      data.selectedPets = '';
+      
+      // 選択されたペットを取得（複数選択対応）
+      const selectedPets = formData.getAll('selected-pets');
+      data.selectedPets = selectedPets.join(', ');
     } else if (formType === 'job') {
       data.inquiryType = formData.get('inquiry-type') || '';
     }
