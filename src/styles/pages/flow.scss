@@ -1,4 +1,5 @@
 @use '../mixins' as *;
+@use '../variables' as *;
 @use '../tokens/_colors' as *;
 @use '../tokens/_typography' as *;
 @use '../tokens/_radius' as *;
@@ -397,7 +398,10 @@
   flex: 1;
   
   @include breakpoint-up(lg) {
-    max-width: 60%;
+    max-width: 70%;
+  }
+  @include breakpoint-up(xl) {
+    padding-top: rem(60);
   }
 }
 
@@ -408,6 +412,177 @@
   margin-bottom: rem(30);
 }
 
+.flow-step__buttons {
+  margin-top: rem(40);
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(60);
+  }
+}
+
+// デスクトップ用お問い合わせセクション（sm以降のみ表示）
+.flow-step__desktop-contact {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: block;
+  }
+}
+
+// content-box内のデスクトップ用お問い合わせボタン（sm以降のみ表示）
+.content-box__desktop-contact {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: flex;
+  }
+}
+
+// content-box内のモバイル用CTA（sm未満のみ表示）
+.content-box__mobile-cta {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+// モバイル用CTA（mobile-cta-contentと同じデザイン、paddingなし）
+.flow-step__mobile-cta {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+// searchタイプのmobile-cta-rowのスタイル（検索ボタン用）
+.mobile-cta-row--search {
+  display: flex;
+  gap: rem(16);
+  margin-bottom: 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  :global(.base-button--primary) {
+    flex: 1;
+    justify-content: center;
+    padding: rem(16) rem(24);
+    font-size: rem(14);
+    font-weight: 600;
+    border-radius: rem(8);
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: $color-primary;
+    color: white;
+    border: none;
+    
+    &:hover {
+      background-color: darken($color-primary, 10%);
+    }
+  }
+  
+  :global(.base-button--secondary) {
+    flex: 1;
+    justify-content: center;
+    padding: rem(16) rem(24);
+    font-size: rem(14);
+    font-weight: 600;
+    border-radius: rem(8);
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    color: $color-primary;
+    border: 2px solid $color-primary;
+    
+    &:hover {
+      background-color: $color-primary;
+      color: white;
+    }
+  }
+}
+
+// flow-step内のmobile-cta-row（gap設定、margin-bottom: 0）
+.flow-step__mobile-cta .mobile-cta-row {
+  gap: rem(8);
+  margin-bottom: 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// content-box内のmobile-cta-row（gap設定、margin-bottom: 0）
+.content-box__mobile-cta .mobile-cta-row {
+  gap: rem(8);
+  margin-bottom: 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// mobile-cta-buttonのスタイル（元のMobileCTAButtons.scssと同じ）
+.mobile-cta-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  padding: rem(12) rem(2);
+  background-color: $color-background;
+  border: 1px solid $color-border-primary;
+  border-radius: rem(8);
+  text-decoration: none;
+  color: $color-text-primary;
+  transition: all 0.2s ease;
+  min-height: rem(72);
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  
+  &--full {
+    margin: 0 auto;
+  }
+  
+  &--half {
+    flex: 0 0 calc(50% - 4px);
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(24);
+    height: rem(24);
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  
+  &__text {
+    font-size: rem(12);
+    font-weight: $font-weight-semibold;
+    text-align: center;
+    line-height: 1.2;
+    color: inherit;
+  }
+}
+
 .flow-step__image {
   position: relative;
   width: 80%;
@@ -416,7 +591,7 @@
   order: -1;
   
   @include breakpoint-up(sm) {
-    flex: 0 0 40%;
+    flex: 0 0 26%;
     width: 100%;
     height: auto;
     margin: 0;
@@ -439,13 +614,13 @@
   left: 0;
   
   @include breakpoint-up(sm) {
-    width: rem(80);
-    height: rem(80);
+    width: rem(60);
+    height: rem(60);
   }
   
   @include breakpoint-up(xl) {
-    width: rem(100);
-    height: rem(100);
+    width: rem(80);
+    height: rem(80);
   }
   
   &--step2 {
@@ -529,7 +704,7 @@
 }
 
 // コンタクトセクション
-.contact-sections {
+.contact-sections:not(.flow-step__desktop-contact) {
   display: flex;
   flex-direction: column;
   gap: rem(30);
@@ -542,6 +717,22 @@
   // 各セクション最小幅300px + gap 40px = 640px が画面幅の60%に収まる場合
   // 640px ÷ 0.6 = 1067px以上で横並び
   @media (min-width: 66.6875rem) { // 1067px
+    flex-direction: row;
+  }
+}
+
+// フローステップ内のコンタクトセクション
+.contact-sections.flow-step__desktop-contact {
+  display: none;
+  flex-direction: column;
+  gap: rem(30);
+  
+  @include breakpoint-up(sm) {
+    display: flex;
+    gap: rem(40);
+  }
+  
+  @media (min-width: 66.6875rem) {
     flex-direction: row;
   }
 }
@@ -945,15 +1136,14 @@
 
 // コンタクトボタンラッパー（お問い合わせ用）
 .contact-buttons-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: rem(16);
-  align-items: center;
-  width: 100%;
+  display: none;
   
   @include breakpoint-up(sm) {
+    display: flex;
     flex-direction: column;
     gap: rem(24);
+    align-items: center;
+    width: 100%;
   }
 }
 
@@ -969,6 +1159,13 @@
     gap: rem(45);
     justify-content: center;
   }
+}
+
+// メールコンタクトグループ（中央配置）
+.mail-contact-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 // 背景画像付きボタン

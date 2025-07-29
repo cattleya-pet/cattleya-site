@@ -51,7 +51,7 @@ const tabs = [
     
     return `
       <div class="pet-card" data-animal-type="${pet.animalType}">
-        <a href="/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent(breedTypeEn)}/${pet.contentId}" class="pet-card__link">
+        <a href="/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent(breedTypeEn)}/${pet.id || pet.contentId}" class="pet-card__link">
           <div class="pet-card__inner">
             <div class="pet-card__image-container">
               <img
@@ -70,7 +70,7 @@ const tabs = [
                 ${genderIcon}
               </h3>
               <div class="pet-card__details">
-                <p class="pet-card__detail-item">色：${pet.color}</p>
+                <p class="pet-card__detail-item">カラー：${pet.color}</p>
                 <p class="pet-card__detail-item">誕生日：${formatDate(pet.birthday)}</p>
                 <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
               </div>
@@ -79,6 +79,32 @@ const tabs = [
         </a>
       </div>
     `;
+  }
+
+  // ペット表示を更新する関数
+  function updatePetsDisplay(selectedTab) {
+    const dataMap = { all: allPets, dog: dogs, cat: cats };
+    const currentPets = dataMap[selectedTab] || [];
+
+    if (petsGrid) {
+      // DocumentFragmentを使用してDOMの更新を最適化
+      const fragment = document.createDocumentFragment();
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = currentPets.map(generatePetCard).join('');
+      
+      while (tempDiv.firstChild) {
+        fragment.appendChild(tempDiv.firstChild);
+      }
+      
+      petsGrid.replaceChildren(fragment);
+    }
+  }
+
+  // 初期表示時に現在のアクティブタブに応じたペットを表示
+  const activeButton = document.querySelector('.pet-tabs__item--active');
+  if (activeButton) {
+    const initialTab = activeButton.dataset.tab || 'all';
+    updatePetsDisplay(initialTab);
   }
 
   tabButtons.forEach(button => {
@@ -90,21 +116,7 @@ const tabs = [
       button.classList.add('pet-tabs__item--active');
 
       const selectedTab = button.dataset.tab;
-      const dataMap = { all: allPets, dog: dogs, cat: cats };
-      const currentPets = dataMap[selectedTab] || [];
-
-      if (petsGrid) {
-        // DocumentFragmentを使用してDOMの更新を最適化
-        const fragment = document.createDocumentFragment();
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = currentPets.map(generatePetCard).join('');
-        
-        while (tempDiv.firstChild) {
-          fragment.appendChild(tempDiv.firstChild);
-        }
-        
-        petsGrid.replaceChildren(fragment);
-      }
+      updatePetsDisplay(selectedTab);
 
       // カスタムイベント発行
       document.dispatchEvent(new CustomEvent('tabChanged', { 

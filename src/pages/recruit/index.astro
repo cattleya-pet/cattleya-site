@@ -211,7 +211,7 @@ const recruitmentRequirementsData = [
               </div>
               <div class="recruit-process-step-desc">
                 <p>お問い合わせフォームより、まずは求人申し込みの旨をご連絡ください。<br>※フォームの「求人申し込み」にチェックを入れてください。</p>
-                <a href="/contact" class="recruit-process-step-link">&gt;お申し込み</a>
+                <a href="/contact#mail-contact" class="recruit-process-step-link">お申し込み</a>
               </div>
             </div>
           </div>
@@ -965,21 +965,38 @@ const recruitmentRequirementsData = [
 }
 
 .recruit-process-step-link {
+  background-color: $color-background-gender-female;
+  color: $color-background-primary;
+  border: none;
+  border-radius: $radius-s;
+  padding: rem(6) rem(20);
   @include typography-ja-s($font-weight-semibold);
-  color: $color-brand-primary;
-  text-decoration: underline;
-  display: inline-block;
-  position: relative;
+  cursor: pointer;
   transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  
+  @include breakpoint-up(sm) {
+    display: inline-block;
+    margin: 0;
+  }
+  
+  @include breakpoint-up(xl) {
+    padding: rem(10) rem(24);
+  }
   
   &:hover {
-    color: darken($color-brand-primary, 10%);
+    background-color: darken($color-background-gender-female, 10%);
+    transform: translateY(rem(-2));
     text-decoration: none;
-    transform: translateX(rem(3));
   }
   
   &:focus {
-    outline: 2px solid $color-brand-primary;
+    outline: 2px solid $color-background-gender-female;
     outline-offset: 2px;
   }
 }

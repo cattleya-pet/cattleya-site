@@ -1,0 +1,198 @@
+@use '../mixins' as *;
+@use '../tokens/_colors' as *;
+@use '../tokens/_typography' as *;
+@use '../tokens/_radius' as *;
+
+// パンくずリスト
+.breadcrumb-container {
+  background-color: $color-background-primary;
+  padding: rem(20) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(30) 0;
+  }
+}
+
+// メインコンテンツセクション
+.smart-el-content-section {
+  background-color: $color-background-primary;
+  padding: rem(60) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(100) 0;
+  }
+}
+
+// コンテンツ幅制御（privacy-policy-contentと同様）
+.smart-el-content {
+  max-width: rem(1400);
+  margin: 0 auto;
+}
+
+// メインタイトル
+.smart-el-main-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  margin: 0 0 rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    @include typography-ja-2l($font-weight-semibold);
+    margin: 0 0 rem(60) 0;
+  }
+}
+
+// メイン画像
+.smart-el-main-image {
+  margin-bottom: rem(60);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+  
+  img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: $radius-s;
+    
+    @include breakpoint-up(sm) {
+      max-width: rem(600);
+      width: auto;
+    }
+  }
+}
+
+// プライバシーポリシーのスタイルを流用
+.privacy-policy-articles {
+  margin-bottom: rem(60);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(80);
+  }
+}
+
+.privacy-policy-article {
+  margin-bottom: rem(50);
+  
+  @include breakpoint-up(sm) {
+    margin-bottom: rem(60);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.privacy-policy-article-title {
+  @include typography-ja-m($font-weight-semibold);
+  color: $color-text-secondary;
+  margin-bottom: rem(10);
+  padding-bottom: rem(10);
+  border-bottom: 1px solid $color-text-secondary;
+  
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(15);
+    padding-bottom: rem(15);
+  }
+}
+
+.privacy-policy-article-content {
+  p {
+    @include typography-ja-s;
+    color: $color-text-primary;
+    line-height: 1.7;
+    margin: 0 0 rem(20) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+    text-decoration-color: $color-text-link;
+    font-weight: $font-weight-semibold;
+    
+    &:hover {
+      color: $color-text-link-hover;
+      text-decoration-color: $color-text-link-hover;
+    }
+  }
+  
+  // 注釈スタイル
+  .footnote {
+    font-size: rem(11);
+    color: $color-text-secondary;
+    
+    @include breakpoint-up(sm) {
+      font-size: rem(12);
+    }
+  }
+  
+  .footnote-text {
+    margin-top: rem(16) !important;
+    font-size: rem(12);
+    color: $color-text-secondary;
+    line-height: 1.6;
+    
+    @include breakpoint-up(sm) {
+      font-size: rem(13);
+    }
+  }
+  
+  // 保険コード（右揃え）
+  .insurance-code {
+    text-align: right;
+    font-size: rem(12);
+    color: $color-text-secondary;
+    margin-top: rem(10) !important;
+    
+    @include breakpoint-up(sm) {
+      font-size: rem(13);
+    }
+  }
+  
+  ul, ol {
+    margin: rem(16) 0;
+    padding-left: rem(20);
+    
+    li {
+      @include typography-ja-s;
+      color: $color-text-primary;
+      line-height: 1.7;
+      margin-bottom: rem(8);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: rem(20) 0;
+    
+    th, td {
+      @include typography-ja-s;
+      color: $color-text-primary;
+      padding: rem(12) rem(16);
+      border: 1px solid $color-border-primary;
+      text-align: left;
+    }
+    
+    th {
+      background-color: $color-background-secondary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}

@@ -1,0 +1,129 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumb from '../../../components/ui/Breadcrumb.astro';
+import BannerSection from '../../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../../components/sections/common/ContactCTASection.astro';
+import '../../../styles/pages/insurance-smart-el.scss';
+
+// パンくずリストのデータ
+const breadcrumbItems = [
+  { label: 'ホーム', href: '/' },
+  { label: 'ペット保険', href: '/insurance' },
+  { label: 'げんきナンバーわんスマートエル' }
+];
+---
+
+<Layout title="げんきナンバーわんスマートエル | カトレア" description="ペット&ファミリーのペット保険「げんきナンバーわんスマートエル」についてご紹介します。">
+  <main>
+    <!-- パンくずリスト -->
+    <div class="breadcrumb-container">
+      <div class="container">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+    </div>
+
+    <!-- メインコンテンツセクション -->
+    <section class="smart-el-content-section">
+      <div class="container">
+        <div class="smart-el-content">
+          <h2 class="smart-el-main-title">
+            ペット&ファミリーのペット保険<br>「げんきナンバーわんスマートエル」
+          </h2>
+          
+          <!-- メイン画像 -->
+          <div class="smart-el-main-image">
+            <img src="/images/banners/banner_insurance_link-01.webp" alt="げんきナンバーわんスマートエル" />
+          </div>
+
+          <!-- 詳細情報 -->
+          <div class="privacy-policy-articles">
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">「げんきナンバーわんスマートエル」のポイント</h2>
+            <div class="privacy-policy-article-content">
+              <ul>
+                <li>子犬・子猫の病気やケガを１年間補償します。</li>
+                <li>生体のお引渡し当日から1ヵ月間は治療費の100％を補償（20万円限度）。<br>2ヵ月目以降は治療費の70 ％を補償（年間70万円限度）。<span class="footnote">※1</span></li>
+                <li>時間外診療費・往診料も保険のお支払対象となります。<span class="footnote">※2</span></li>
+                <li>保険開始以降に発症した先天性疾患もお支払対象となります。<span class="footnote">※2</span></li>
+              </ul>
+              <p class="footnote-text">
+                <span class="footnote">※1</span> プラン70にご加入の場合<br>
+                <span class="footnote">※2</span> 保険金のお支払い対象とならない治療費がありますので、詳しくは重要事項説明書をご確認ください。
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">補償期間</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                保険契約の始期日から１年間（更新可能）
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">保険料(1年間)</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                小型犬（０歳）　月払5,160円　年払53,640円（ひと月あたり約4,470円）<br>
+                猫（０歳）　　　月払3,850円　年払40,090円（ひと月あたり約3,340円）
+              </p>
+              <p class="footnote-text">
+                <span class="footnote">※</span>プラン70ご加入の場合
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">お申し込み</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                お引渡し時、当店にてご加入手続き後、すぐに補償が開始します。
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">お支払い方法</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                クレジットカードもしくは口座振替でお支払いただけます。
+              </p>
+              <p class="footnote-text">
+                <span class="footnote">※</span>商品内容は2022年4月現在のものです。詳しくは「パンフレット」「重要事項説明書」等をご覧ください。<br>
+                <span class="footnote">※</span>別途、先住犬・猫用の商品もご用意しております（7歳11ヶ月まで申込み可）。ぜひ、当店までお問合せください。
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">取扱代理店</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                株式会社 Cattleya​<br>
+                〒170-0013 東京都豊島区東池袋1-9-8東葉ビル3F
+              </p>
+            </div>
+          </article>
+
+          <article class="privacy-policy-article">
+            <h2 class="privacy-policy-article-title">引受保険会社</h2>
+            <div class="privacy-policy-article-content">
+              <p>
+                ペット＆ファミリー損害保険株式会社<br>
+                〒110-0015 東京都台東区東上野四丁目27番3号<br>
+                TEL.0120-584-412
+              </p>
+              <p class="insurance-code">24D250-25310</p>
+            </div>
+          </article>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <BannerSection />
+    <ContactCTASection />
+  </main>
+</Layout>

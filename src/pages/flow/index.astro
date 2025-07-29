@@ -119,7 +119,8 @@ const breadcrumbItems = [
                   お問い合わせの際に、来店予約していただくと、待ち時間なく担当スタッフがご案内します。
                 </p>
 
-                <div class="contact-sections">
+                <!-- sm以降: 従来のお問い合わせセクション -->
+                <div class="contact-sections flow-step__desktop-contact">
                   <!-- 電話でのお問い合わせ -->
                   <div class="contact-section contact-section--phone">
                     <h4 class="contact-section__title">電話でのお問い合わせ</h4>
@@ -156,10 +157,10 @@ const breadcrumbItems = [
                 </div>
 
                 <!-- メールでのお問い合わせ -->
-                <div class="contact-section contact-section--mail">
+                <div class="contact-section contact-section--mail flow-step__desktop-contact">
                   <h4 class="contact-section__title">メールでのお問い合わせ</h4>
                   <div class="contact-buttons">
-                    <a href="/contact" class="contact-button contact-button--mail">
+                    <a href="/contact#mail-contact" class="contact-button contact-button--mail">
                       <span class="contact-button__line"></span>
                       <div class="contact-button__content">
                         <span class="contact-button__text">メールお問い合わせ</span>
@@ -168,6 +169,65 @@ const breadcrumbItems = [
                     </a>
                   </div>
                 </div>
+
+                <!-- sm未満: mobile-cta-contentと同じ内容 -->
+                <div class="flow-step__mobile-cta">
+                  <!-- 上段：最初の2店舗のボタン4つ -->
+                  <div class="mobile-cta-row">
+                    <a href={`tel:${stores[0]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[0]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[0]?.storeName}LINE</div>
+                    </a>
+                    
+                    <a href={`tel:${stores[1]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[1]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[1]?.storeName}LINE</div>
+                    </a>
+                  </div>
+
+                  <!-- 下段：3つ目の店舗のボタン2つとメールボタン -->
+                  <div class="mobile-cta-row">
+                    <a href={`tel:${stores[2]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[2]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[2]?.storeName}LINE</div>
+                    </a>
+                    
+                    <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
+                      <div class="mobile-cta-button__icon">
+                        <img src={mailIcon.src} alt="メールアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+                    </a>
+                  </div>
+                </div>
+
               </div>
               <div class="flow-step__image">
                 <img src="/images/content/img_flow_step-01.webp" alt="ステップ1" class="flow-step__img" />
@@ -201,7 +261,7 @@ const breadcrumbItems = [
             <div class="flow-step__body">
               <div class="flow-step__description">
                 <p class="flow-step__intro">
-                  実際にご来店いただき、ワンちゃん・ネコちゃんを抱っこしたり触れ合っていただけます。<br><br>
+                  実際にご来店いただき、ワンちゃん・ネコちゃんを抱っこしたり触れ合ったりしていただけます。<br><br>
                   お客様がパートナーを迎えるにあたって抱かれる不安や悩みが少しでも解消できるよう、スタッフが真心を持って対応いたします。<br>
                   お客様の環境に合わせたお世話の仕方等もレクチャーしますので、お気軽に質問してください。
                 </p>
@@ -358,7 +418,9 @@ const breadcrumbItems = [
         <!-- お問い合わせボックス -->
         <div class="content-box">
           <h2 class="content-box__title">お問い合わせ</h2>
-          <div class="contact-buttons-wrapper">
+          
+          <!-- sm以降: 従来のお問い合わせボタン -->
+          <div class="contact-buttons-wrapper content-box__desktop-contact">
             {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
               <div class="store-contact-group">
                 <!-- 電話ボタン -->
@@ -381,6 +443,75 @@ const breadcrumbItems = [
                 </a>
               </div>
             ))}
+            
+            <!-- メールでお問い合わせボタン（4段目・中央配置） -->
+            <div class="mail-contact-group">
+              <a href="/contact#mail-contact" class="contact-button contact-button--mail">
+                <span class="contact-button__line"></span>
+                <div class="contact-button__content">
+                  <span class="contact-button__text">メールお問い合わせ</span>
+                </div>
+                <img src={mailIcon.src} alt="" class="contact-button__icon" />
+              </a>
+            </div>
+          </div>
+
+          <!-- sm未満: mobile-cta-contentと同じ内容 -->
+          <div class="content-box__mobile-cta">
+            <!-- 上段：最初の2店舗のボタン4つ -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[0]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}LINE</div>
+              </a>
+              
+              <a href={`tel:${stores[1]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}LINE</div>
+              </a>
+            </div>
+
+            <!-- 下段：3つ目の店舗のボタン2つとメールボタン -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[2]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}LINE</div>
+              </a>
+              
+              <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
+                <div class="mobile-cta-button__icon">
+                  <img src={mailIcon.src} alt="メールアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+              </a>
+            </div>
           </div>
         </div>
         

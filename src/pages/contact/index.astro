@@ -403,7 +403,7 @@ const breadcrumbItems = [
                           {pet.gender === 'male' ? '♂' : '♀'}
                         </span>
                       </div>
-                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__color">カラー：{pet.color}</div>
                       <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
                       <div class="pet-card__store">店舗：{pet.storeName}</div>
                     </div>
@@ -435,7 +435,7 @@ const breadcrumbItems = [
                           {pet.gender === 'male' ? '♂' : '♀'}
                         </span>
                       </div>
-                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__color">カラー：{pet.color}</div>
                       <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
                       <div class="pet-card__store">店舗：{pet.storeName}</div>
                     </div>
@@ -660,6 +660,13 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: rem(20);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  @include breakpoint-up(lg) {
     gap: rem(45);
     justify-content: center;
   }
@@ -782,6 +789,13 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: rem(20);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  @include breakpoint-up(lg) {
     gap: rem(45);
     justify-content: center;
   }
@@ -2657,6 +2671,29 @@ input[type="date"] {
     }
   });
 
+  // ページ読み込み時のハッシュスクロール処理（外部リンク対応）
+  document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash;
+    if (hash) {
+      setTimeout(() => {
+        const targetElement = document.getElementById(hash.substring(1));
+        if (targetElement) {
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -100; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -180; // 大画面
+          } else {
+            yOffset = -160; // sm以降〜1600px未満
+          }
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  });
+
   // contact-methodsのカスタムスクロール処理
   document.addEventListener('DOMContentLoaded', function() {
     const contactMethodLinks = document.querySelectorAll('.contact-method-link[href^="#"]');
@@ -2669,15 +2706,15 @@ input[type="date"] {
         const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
-          // レスポンシブに対応したオフセット調整（お問い合わせ番号ラベルと同じ数値）
+          // レスポンシブに対応したオフセット調整（見出しがヘッダーと被らないように20px分上に調整）
           const screenWidth = window.innerWidth;
           let yOffset;
           if (screenWidth < 768) {
-            yOffset = -80; // sm未満（モバイル）
+            yOffset = -100; // sm未満（モバイル）
           } else if (screenWidth >= 1600) {
-            yOffset = -160; // 大画面
+            yOffset = -180; // 大画面
           } else {
-            yOffset = -140; // sm以降〜1600px未満
+            yOffset = -160; // sm以降〜1600px未満
           }
           
           const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;

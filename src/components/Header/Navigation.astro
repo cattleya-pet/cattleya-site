@@ -49,7 +49,7 @@ const stores = await getAllStores();
 console.log('店舗情報データ:', stores);
 
 const mainMenuItems = [
-  { title: '探す', submenu: submenuItems },
+  { title: 'ペットを探す', submenu: submenuItems },
   { title: '店舗情報', storeSubmenu: true },
   { title: 'カトレアの安心', href: siteConfig.links.about },
   { title: 'ホームステイ', href: '/homestay' },
@@ -68,7 +68,7 @@ const desktopMenuItems = mainMenuItems.filter(item =>
 
 // モバイルとデスクトップで表示するメニュー項目を分離
 const mobileTopItems = [
-  { title: '探す', submenu: submenuItems },
+  { title: 'ペットを探す', submenu: submenuItems },
   { title: '店舗情報', storeSubmenu: true },
 ];
 ---
@@ -122,7 +122,7 @@ const mobileTopItems = [
                     class="menu-item"
                     data-menu-trigger
                     data-menu-target-level="1"
-                    data-menu-type={item.title === '探す' ? 'search' : item.title === '店舗情報' ? 'store' : ''}
+                    data-menu-type={item.title === 'ペットを探す' ? 'search' : item.title === '店舗情報' ? 'store' : ''}
                   >
                     {item.title}
                     <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -162,7 +162,7 @@ const mobileTopItems = [
 
         <!-- Level 1: 動物種選択または店舗情報 -->
         <div class="menu-level" id="menu-level-1">
-          <h2 class="menu-level-title">探す</h2>
+          <h2 class="menu-level-title">ペットを探す</h2>
           <ul class="menu-items search-items">
             <li>
               <a
@@ -213,6 +213,11 @@ const mobileTopItems = [
                 </a>
               </li>
             ))}
+            <li>
+              <a href="/stores" class="menu-item menu-all-link">
+                すべての店舗を見る
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -494,7 +499,7 @@ const mobileTopItems = [
             storeItems.style.display = 'block';
           } else {
             // 探すメニュー
-            level1Title.textContent = '探す';
+            level1Title.textContent = 'ペットを探す';
             searchItems.style.display = 'block';
             storeItems.style.display = 'none';
           }
@@ -593,7 +598,7 @@ const mobileTopItems = [
 
       // 現在のレベル1のタイトルを取得
       const level1Title = document.querySelector('#menu-level-1 .menu-level-title');
-      const level1MenuType = level1Title ? level1Title.textContent : '探す';
+      const level1MenuType = level1Title ? level1Title.textContent : 'ペットを探す';
       
       // 現在のレベル2のタイトルを取得
       const level2Title = document.querySelector('#menu-level-2 .menu-level-title');

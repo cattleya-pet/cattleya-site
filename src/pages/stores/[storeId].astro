@@ -9,6 +9,9 @@ import BaseButton from '../../components/ui/buttons/BaseButton.astro';
 import ButtonWrapper from '../../components/ui/buttons/ButtonWrapper.astro';
 import VoiceCard from '../../components/voice/VoiceCard.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import PetTabs from '../../components/pets/PetTabs.astro';
+import PetCard from '../../components/pets/PetCard.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import '../../styles/layout/pets-grid.scss';
@@ -148,28 +151,28 @@ mediaSlots.forEach((slot, index) => {
 console.log('メディア項目数:', mediaItems.length);
 console.log('メディア項目詳細:', mediaItems.map(item => ({ type: item.type, hasUrl: !!item.url, hasThumbnail: !!item.thumbnail })));
 
-// 店舗のペットデータを取得（犬猫問わず最大36体をランダム表示）
-const { getLatestPetsByType } = await import('../../lib/api/pets/queries');
+// 店舗のペットデータを取得（トップページと同じロジック）
+const { getAllLatestPets } = await import('../../lib/api/pets/queries');
 try {
-  const [allDogs, allCats] = await Promise.all([
-    getLatestPetsByType('dog', 50),
-    getLatestPetsByType('cat', 50)
-  ]);
+  // 全ペットを取得（既にシャッフル済み）
+  const allPets = await getAllLatestPets();
   
-  // 当該店舗のペットをフィルタリング
-  const storeDogs = allDogs.filter(pet => pet.storeName === storeInfo.storeName);
-  const storeCats = allCats.filter(pet => pet.storeName === storeInfo.storeName);
+  // 当該店舗のペットをフィルタリング（シャッフル順序を維持）
+  const allStorePets = allPets.filter(pet => pet.storeName === storeInfo.storeName);
   
-  // 犬猫を合わせてランダムソートし、6体を選択
-  const allStorePets = [...storeDogs, ...storeCats];
-  const shuffledStorePets = allStorePets.sort(() => Math.random() - 0.5);
-  var displayStorePets = shuffledStorePets.slice(0, 6);
+  // トップページと同じロジックで各タブ用のデータを準備
+  var storeDogs = allStorePets.filter(pet => pet.animalType === 'dog').slice(0, 6);
+  var storeCats = allStorePets.filter(pet => pet.animalType === 'cat').slice(0, 6);
+  var initialPets = allStorePets.slice(0, 6); // 犬猫混合でシャッフル順の最初6匹
+  
 } catch (error) {
   console.error('ペットデータの取得に失敗しました:', error);
-  var displayStorePets = [];
+  var initialPets = [];
+  var storeDogs = [];
+  var storeCats = [];
 }
 
-console.log('店舗ペット数:', displayStorePets?.length || 0, '件取得');
+console.log('店舗ペット数 - 初期表示:', initialPets?.length || 0, '犬:', storeDogs?.length || 0, '猫:', storeCats?.length || 0);
 
 // お客様の声データを取得（最大2件を表示）
 let displayVoices = [];
@@ -388,12 +391,35 @@ const breadcrumbItems = [
       </div>
     </section>
 
-    {displayStorePets.length === 0 && (
+    {initialPets.length === 0 && (
       <section class="no-pets-section">
         <div class="container">
           <div class="no-pets-message">
             <p>この店舗には現在、表示できるペットがいません。</p>
             <p>最新情報については直接店舗にお問い合わせください。</p>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 店舗のDogs&Catsセクション -->
+    {initialPets.length > 0 && (
+      <section class="pets-section">
+        <div class="container">
+          <SectionHeading 
+            subtitle={`${storeInfo.storeName} Dogs and Cats`}
+            title={`${storeInfo.storeName}のDogs&Cats`}
+            subtitleClass="text-disabled"
+            titleClass="text-primary"
+          />
+          <PetTabs activeTab="all" />
+          <div class="pets-grid" 
+            data-all-pets={JSON.stringify(initialPets)}
+            data-dogs={JSON.stringify(storeDogs)}
+            data-cats={JSON.stringify(storeCats)}>
+            {initialPets.map((pet) => (
+              <PetCard pet={pet} />
+            ))}
           </div>
         </div>
       </section>
@@ -416,56 +442,6 @@ const breadcrumbItems = [
                 <span class="bg-button__text">来店予約をする</span>
               </div>
             </a>
-          </div>
-        </div>
-
-        <!-- 店舗のDogs&Catsセクション -->
-        <div class="content-box">
-          <h2 class="content-box__title">{storeInfo.storeName}のDogs&Cats</h2>
-          <div class="pets-grid">
-            {displayStorePets.map((storePet, index) => (
-              <div class="pet-card" data-animal-type={storePet.animalType}>
-                <a href={`/search/${storePet.animalType === 'dog' ? 'dogs' : 'cats'}/${storePet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent(storePet.breedTypeEn?.toLowerCase() || '')}/${storePet.id}`} class="pet-card__link">
-                  <div class="pet-card__inner">
-                    <div class="pet-card__image-container">
-                      <img
-                        class="pet-card__image"
-                        src={getImageUrl(storePet.imageUrl01, 600, 600)}
-                        alt={`${storePet.breedTypeJa}の写真`}
-                        loading="lazy"
-                        width="600"
-                        height="600"
-                        onerror="this.src='/images/ui/img_loading-pet-image-01.webp'" 
-                        onload="this.style.opacity='1'"
-                        style="opacity: 0; transition: opacity 0.3s ease;"
-                      />
-                    </div>
-                    <div class="pet-card__info">
-                      <h3 class="pet-card__title">
-                        {storePet.breedTypeJa}
-                        {storePet.gender === '男の子' && (
-                          <span 
-                            class="pet-card__gender male" 
-                            set:html={MaleIcon}
-                          />
-                        )}
-                        {storePet.gender === '女の子' && (
-                          <span 
-                            class="pet-card__gender female" 
-                            set:html={FemaleIcon}
-                          />
-                        )}
-                      </h3>
-                      <div class="pet-card__details">
-                        <p class="pet-card__detail-item">色：{storePet.color}</p>
-                        <p class="pet-card__detail-item">誕生日：{formatDate(storePet.birthday)}</p>
-                        <p class="pet-card__detail-item">店舗：{storePet.storeName}</p>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            ))}
           </div>
         </div>
 

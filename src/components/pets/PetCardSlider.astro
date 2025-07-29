@@ -106,7 +106,7 @@ const {
                       )}
                     </h3>
                     <div class="pet-card__new-details">
-                      <p class="pet-card__new-detail-item">色：{pet.color}</p>
+                      <p class="pet-card__new-detail-item">カラー：{pet.color}</p>
                       <p class="pet-card__new-detail-item">誕生日：{formattedDate}</p>
                       <p class="pet-card__new-detail-item">店舗：{pet.storeName}</p>
                     </div>
@@ -261,6 +261,126 @@ const {
         updateSlidePosition();
       });
     });
+
+    // スワイプ機能を追加
+    let startX = 0;
+    let startY = 0;
+    let isSwipeScrolling = false;
+    
+    sliderTrack.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      isSwipeScrolling = false;
+      clearInterval(interval); // スワイプ開始時は自動スライドを停止
+    }, { passive: true });
+    
+    sliderTrack.addEventListener('touchmove', (e) => {
+      if (isSwipeScrolling) return;
+      
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - startX);
+      const deltaY = Math.abs(touch.clientY - startY);
+      
+      // 縦スクロールの判定：縦の移動量が横より大きい場合は縦スクロール
+      if (deltaY > deltaX && deltaY > 10) {
+        isSwipeScrolling = true;
+        return;
+      }
+      
+      // 横スワイプの場合はデフォルト動作を阻止
+      if (deltaX > 10) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    sliderTrack.addEventListener('touchend', (e) => {
+      if (isSwipeScrolling) {
+        // 縦スクロールの場合は自動スライドを再開して終了
+        interval = setInterval(autoSlide, autoSlideInterval);
+        return;
+      }
+      
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - startX;
+      const deltaY = Math.abs(touch.clientY - startY);
+      
+      // スワイプの最小距離（50px）と縦移動の最大許容値（30px）を設定
+      if (Math.abs(deltaX) > 50 && deltaY < 30) {
+        const columnsPerView = getColumnsPerView();
+        const maxSlide = Math.max(0, petCards.length - columnsPerView);
+        
+        if (deltaX > 0 && currentSlide > 0) {
+          // 右スワイプ（前のスライドへ）
+          currentSlide--;
+          updateSlidePosition();
+        } else if (deltaX < 0 && currentSlide < maxSlide) {
+          // 左スワイプ（次のスライドへ）
+          currentSlide++;
+          updateSlidePosition();
+        }
+      }
+      
+      // 自動スライドを再開
+      interval = setInterval(autoSlide, autoSlideInterval);
+    }, { passive: true });
+
+    // マウスドラッグでのスワイプ機能を追加（デスクトップ対応）
+    let isMouseDown = false;
+    let mouseStartX = 0;
+    
+    sliderTrack.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      mouseStartX = e.clientX;
+      clearInterval(interval); // ドラッグ開始時は自動スライドを停止
+      sliderTrack.style.cursor = 'grabbing';
+      e.preventDefault(); // テキスト選択を防止
+    });
+    
+    sliderTrack.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      e.preventDefault();
+    });
+    
+    sliderTrack.addEventListener('mouseup', (e) => {
+      if (!isMouseDown) return;
+      
+      isMouseDown = false;
+      sliderTrack.style.cursor = 'grab';
+      
+      const deltaX = e.clientX - mouseStartX;
+      
+      // ドラッグの最小距離（30px）を設定
+      if (Math.abs(deltaX) > 30) {
+        const columnsPerView = getColumnsPerView();
+        const maxSlide = Math.max(0, petCards.length - columnsPerView);
+        
+        if (deltaX > 0 && currentSlide > 0) {
+          // 右ドラッグ（前のスライドへ）
+          currentSlide--;
+          updateSlidePosition();
+        } else if (deltaX < 0 && currentSlide < maxSlide) {
+          // 左ドラッグ（次のスライドへ）
+          currentSlide++;
+          updateSlidePosition();
+        }
+      }
+      
+      // 自動スライドを再開
+      interval = setInterval(autoSlide, autoSlideInterval);
+    });
+    
+    sliderTrack.addEventListener('mouseleave', () => {
+      if (isMouseDown) {
+        isMouseDown = false;
+        sliderTrack.style.cursor = 'grab';
+        // 自動スライドを再開
+        interval = setInterval(autoSlide, autoSlideInterval);
+      }
+    });
+    
+    // スライダートラックにグラブカーソルを設定
+    sliderTrack.style.cursor = 'grab';
 
     
     // カード幅はレイアウトクラスで設定するため、JSからの直接設定は不要

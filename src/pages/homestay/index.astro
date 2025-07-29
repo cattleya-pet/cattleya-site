@@ -6,6 +6,7 @@ import BaseButton from '../../components/ui/buttons/BaseButton.astro';
 import footprintIcon from '../../assets/icons/icon_step-cat-footprints-01.svg';
 import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
 import lineIcon from '../../assets/icons/icon_line-01.svg';
+import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
 import { getAllStores } from '../../lib/api/stores';
 
 // 店舗データを取得
@@ -337,7 +338,7 @@ const breadcrumbItems = [
                   </div>
                 </div>
                 <div class="homestay-flow-step-desc">
-                  <p>ごはん、簡易サークル、トイレ、おもちゃなど必要なものはすべて、当店でご用意しています。</p>
+                  <p>ごはん、簡易サークル、トイレ、おもちゃなど必要なものはすべて、店舗でご用意しています。</p>
                 </div>
               </div>
             </div>
@@ -682,7 +683,9 @@ const breadcrumbItems = [
         <!-- お問い合わせボックス -->
         <div class="content-box">
           <h2 class="content-box__title">お問い合わせ</h2>
-          <div class="contact-buttons-wrapper">
+          
+          <!-- sm以降: 従来のお問い合わせボタン -->
+          <div class="contact-buttons-wrapper content-box__desktop-contact">
             {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
               <div class="store-contact-group">
                 <!-- 電話ボタン -->
@@ -705,6 +708,75 @@ const breadcrumbItems = [
                 </a>
               </div>
             ))}
+            
+            <!-- メールでお問い合わせボタン（4段目・中央配置） -->
+            <div class="mail-contact-group">
+              <a href="/contact#mail-contact" class="contact-button contact-button--mail">
+                <span class="contact-button__line"></span>
+                <div class="contact-button__content">
+                  <span class="contact-button__text">メールお問い合わせ</span>
+                </div>
+                <img src={mailIcon.src} alt="" class="contact-button__icon" />
+              </a>
+            </div>
+          </div>
+
+          <!-- sm未満: mobile-cta-contentと同じ内容 -->
+          <div class="content-box__mobile-cta">
+            <!-- 上段：最初の2店舗のボタン4つ -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[0]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}LINE</div>
+              </a>
+              
+              <a href={`tel:${stores[1]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}LINE</div>
+              </a>
+            </div>
+
+            <!-- 下段：3つ目の店舗のボタン2つとメールボタン -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[2]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}LINE</div>
+              </a>
+              
+              <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
+                <div class="mobile-cta-button__icon">
+                  <img src={mailIcon.src} alt="メールアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+              </a>
+            </div>
           </div>
         </div>
         
@@ -736,8 +808,9 @@ const breadcrumbItems = [
 
 <style lang="scss">
 @use '../../styles/mixins' as *;
-@use '../../styles/tokens/_typography' as *;
+@use '../../styles/variables' as *;
 @use '../../styles/tokens/_colors' as *;
+@use '../../styles/tokens/_typography' as *;
 @use '../../styles/tokens/_radius' as *;
 
 .homestay-hero {
@@ -2627,15 +2700,107 @@ const breadcrumbItems = [
 
 // コンタクトボタンラッパー（お問い合わせ用）
 .contact-buttons-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: rem(16);
-  align-items: center;
-  width: 100%;
+  display: none;
   
   @include breakpoint-up(sm) {
+    display: flex;
     flex-direction: column;
     gap: rem(24);
+    align-items: center;
+    width: 100%;
+  }
+}
+
+// content-box内のデスクトップ用お問い合わせボタン（sm以降のみ表示）
+.content-box__desktop-contact {
+  display: none;
+  
+  @include breakpoint-up(sm) {
+    display: flex;
+  }
+}
+
+// content-box内のモバイル用CTA（sm未満のみ表示）
+.content-box__mobile-cta {
+  display: flex;
+  flex-direction: column;
+  gap: rem(8);
+  
+  @include breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+// content-box内のmobile-cta-row（gap設定、margin-bottom: 0）
+.content-box__mobile-cta .mobile-cta-row {
+  display: flex;
+  gap: rem(8);
+  margin-bottom: 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// メールコンタクトグループ（中央配置）
+.mail-contact-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// mobile-cta-buttonのスタイル（元のMobileCTAButtons.scssと同じ）
+.mobile-cta-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  padding: rem(12) rem(2);
+  background-color: $color-background;
+  border: 1px solid $color-border-primary;
+  border-radius: rem(8);
+  text-decoration: none;
+  color: $color-text-primary;
+  transition: all 0.2s ease;
+  min-height: rem(72);
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  
+  &--full {
+    margin: 0 auto;
+  }
+  
+  &--half {
+    flex: 0 0 calc(50% - 4px);
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(24);
+    height: rem(24);
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  
+  &__text {
+    font-size: rem(12);
+    font-weight: $font-weight-semibold;
+    text-align: center;
+    line-height: 1.2;
+    color: inherit;
   }
 }
 

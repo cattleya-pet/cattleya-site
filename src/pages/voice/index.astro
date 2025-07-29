@@ -5,14 +5,18 @@ import VoiceCard from '../../components/voice/VoiceCard.astro';
 import ViewMoreButton from '../../components/ui/buttons/ViewMoreButton.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
-import { getVoicesWithPagination } from '../../lib/api/voice';
+import { getVoices } from '../../lib/api/voice';
 import '../../styles/pages/voice.scss';
 
 // 全てのお客様の声を取得（SSG対応）
-const allVoicesResponse = await getVoicesWithPagination();
-const allVoices = allVoicesResponse.contents;
+console.log('=== Voice データ取得開始 ===');
+const allVoices = await getVoices(100, 0); // 100件まで取得
+console.log('All voices:', allVoices.length);
+console.log('First voice:', allVoices[0]);
+
 // 初期表示用（最初の10件）
 const initialVoices = allVoices.slice(0, 10);
+console.log('Initial voices:', initialVoices.length);
 
 // パンくずリストのデータ
 const breadcrumbItems = [
