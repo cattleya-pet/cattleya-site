@@ -14,8 +14,8 @@ const { pet } = Astro.props;
 // カード画像用のサイズを指定
 const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
 
-// 詳細ページのURLを生成
-const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
+// 詳細ページのURLを生成（ミックス個体の場合は/mix/パスを含める）
+const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' + pet.breedTypeEn.toLowerCase() : pet.breedTypeEn.toLowerCase()}/${pet.id}`;
 ---
 
 <div class="pet-card" data-animal-type={pet.animalType}>
@@ -29,7 +29,7 @@ const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/$
         loading="lazy"
         width="600"
         height="600"
-        onerror="this.src='/src/assets/images/ui/img_loading-pet-image-01.webp'"
+        onerror="this.src='/images/ui/img_loading-pet-image-01.webp'"
       />
     </div>
     <div class="pet-card__info">
@@ -49,7 +49,7 @@ const detailUrl = `/search/${pet.animalType}s/${pet.breedTypeEn.toLowerCase()}/$
         )}
       </h3>
       <div class="pet-card__details">
-        <p class="pet-card__detail-item">色：{pet.color}</p>
+        <p class="pet-card__detail-item">カラー：{pet.color}</p>
         <p class="pet-card__detail-item">誕生日：{formatDate(pet.birthday)}</p>
         <p class="pet-card__detail-item">店舗：{pet.storeName}</p>
       </div>

@@ -1,7 +1,6 @@
 // ペットの基本情報の型定義
 export type PetBase = {
   id: string;
-  randomId: string;
   animalType: string;
   classification: 'bloodline' | 'mix';
   breedTypeJa: string;

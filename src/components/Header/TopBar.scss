@@ -73,4 +73,11 @@
     background-color: #ece9e7;
     text-decoration: none;
   }
+  
+  // 採用情報ボタンのスタイル（xl以降）
+  &--recruit {
+    @include breakpoint-up(xl) {
+      background-color: rgba($color-border-new, 0.6);
+    }
+  }
 }

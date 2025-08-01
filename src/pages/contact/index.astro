@@ -25,7 +25,7 @@ const breadcrumbItems = [
   <main>
     <HeroSection 
       title="お問い合わせ"
-      image="/src/assets/images/backgrounds/img_bg-hero_contact-01.webp"
+      image="/images/backgrounds/img_bg-hero_contact-01.webp"
       breadcrumbItems={breadcrumbItems}
     />
 
@@ -223,7 +223,7 @@ const breadcrumbItems = [
             </div>
             
             <div class="form-group">
-              <label class="form-label">お問い合わせ番号</label>
+              <label class="form-label" id="inquiry-number-label">お問い合わせ番号</label>
               <div class="form-pet-select">
                 <div class="visit-reservation-notice" id="visit-reservation-notice" style="display: none;">
                   <p>※来店予約では、店舗が異なるペットは選べません</p>
@@ -242,12 +242,16 @@ const breadcrumbItems = [
             
             <div class="form-privacy">
               <label class="privacy-checkbox">
-                <input type="checkbox" name="privacy-agreement" required>
+                <input type="checkbox" name="privacy-agreement">
                 <span class="checkmark"></span>
                 <span class="privacy-text">
                   <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
                 </span>
               </label>
+            </div>
+            
+            <div class="privacy-error" id="privacy-error-pet" style="display: none;">
+              プライバシーポリシーへの同意が必要です。
             </div>
             
             <div class="form-submit">
@@ -289,12 +293,16 @@ const breadcrumbItems = [
             
             <div class="form-privacy">
               <label class="privacy-checkbox">
-                <input type="checkbox" name="privacy-agreement" required>
+                <input type="checkbox" name="privacy-agreement">
                 <span class="checkmark"></span>
                 <span class="privacy-text">
                   <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
                 </span>
               </label>
+            </div>
+            
+            <div class="privacy-error" id="privacy-error-job" style="display: none;">
+              プライバシーポリシーへの同意が必要です。
             </div>
             
             <div class="form-submit">
@@ -326,12 +334,16 @@ const breadcrumbItems = [
             
             <div class="form-privacy">
               <label class="privacy-checkbox">
-                <input type="checkbox" name="privacy-agreement" required>
+                <input type="checkbox" name="privacy-agreement">
                 <span class="checkmark"></span>
                 <span class="privacy-text">
                   <a href="/privacy-policy" target="_blank">プライバシーポリシー</a>をご確認の上、<br class="sm-down-only">よろしければ「送信する」をクリックしてください
                 </span>
               </label>
+            </div>
+            
+            <div class="privacy-error" id="privacy-error-other" style="display: none;">
+              プライバシーポリシーへの同意が必要です。
             </div>
             
             <div class="form-submit">
@@ -383,7 +395,7 @@ const breadcrumbItems = [
                     <div class="pet-card__info">
                       <div class="pet-card__number">
                         <span class="pet-card__number-label">お問い合わせ番号：</span>
-                        <span class="pet-card__number-value">{pet.id}</span>
+                        <span class="pet-card__number-value">{pet.id.replace(/^0+/, '') || pet.id}</span>
                       </div>
                       <div class="pet-card__breed">
                         {pet.breedTypeJa}
@@ -391,7 +403,7 @@ const breadcrumbItems = [
                           {pet.gender === 'male' ? '♂' : '♀'}
                         </span>
                       </div>
-                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__color">カラー：{pet.color}</div>
                       <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
                       <div class="pet-card__store">店舗：{pet.storeName}</div>
                     </div>
@@ -415,7 +427,7 @@ const breadcrumbItems = [
                     <div class="pet-card__info">
                       <div class="pet-card__number">
                         <span class="pet-card__number-label">お問い合わせ番号：</span>
-                        <span class="pet-card__number-value">{pet.id}</span>
+                        <span class="pet-card__number-value">{pet.id.replace(/^0+/, '') || pet.id}</span>
                       </div>
                       <div class="pet-card__breed">
                         {pet.breedTypeJa}
@@ -423,7 +435,7 @@ const breadcrumbItems = [
                           {pet.gender === 'male' ? '♂' : '♀'}
                         </span>
                       </div>
-                      <div class="pet-card__color">色：{pet.color}</div>
+                      <div class="pet-card__color">カラー：{pet.color}</div>
                       <div class="pet-card__birthday">誕生日：{new Date(pet.birthday).toLocaleDateString('ja-JP')}</div>
                       <div class="pet-card__store">店舗：{pet.storeName}</div>
                     </div>
@@ -438,6 +450,28 @@ const breadcrumbItems = [
           <button class="pet-modal__add-button" id="pet-modal-add">お問い合わせに追加する</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 送信完了モーダル -->
+  <div class="success-modal" id="success-modal" style="display: none;">
+    <div class="success-modal__overlay"></div>
+    <div class="success-modal__content">
+      <div class="success-modal__icon">✓</div>
+      <h3 class="success-modal__title">送信完了</h3>
+      <p class="success-modal__message">お問い合わせを受け付けました。<br>ありがとうございます。<br>確認次第連絡差し上げます。</p>
+      <button class="success-modal__button" id="success-modal-close">閉じる</button>
+    </div>
+  </div>
+
+  <!-- エラーモーダル -->
+  <div class="error-modal" id="error-modal" style="display: none;">
+    <div class="error-modal__overlay"></div>
+    <div class="error-modal__content">
+      <div class="error-modal__icon">!</div>
+      <h3 class="error-modal__title">送信エラー</h3>
+      <p class="error-modal__message">送信に失敗しました。<br>もう一度お試しください。</p>
+      <button class="error-modal__button" id="error-modal-close">閉じる</button>
     </div>
   </div>
 </Layout>
@@ -494,6 +528,10 @@ const breadcrumbItems = [
   color: inherit;
   width: 30%;
   flex-shrink: 0;
+  
+  &:hover {
+    text-decoration: none;
+  }
   
   @include breakpoint-up(sm) {
     width: 25%;
@@ -622,6 +660,13 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: rem(20);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  @include breakpoint-up(lg) {
     gap: rem(45);
     justify-content: center;
   }
@@ -744,6 +789,13 @@ const breadcrumbItems = [
   
   @include breakpoint-up(sm) {
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: rem(20);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  @include breakpoint-up(lg) {
     gap: rem(45);
     justify-content: center;
   }
@@ -1044,17 +1096,33 @@ input[type="date"] {
   }
 }
 
+.privacy-error {
+  color: #dc3545;
+  font-size: rem(14);
+  text-align: center;
+  margin-bottom: rem(16);
+  font-weight: $font-weight-semibold;
+}
+
 .privacy-checkbox {
   display: flex;
   align-items: flex-start;
   gap: rem(12);
-  cursor: pointer;
+  cursor: default;
   @include typography-ja-s;
   color: $color-text-primary;
   line-height: 1.6;
   
   input[type="checkbox"] {
     display: none;
+  }
+  
+  .checkmark {
+    cursor: pointer;
+  }
+  
+  .privacy-text {
+    cursor: default;
   }
   
   .checkmark {
@@ -1288,18 +1356,62 @@ input[type="date"] {
   margin-top: rem(12);
   
   .selected-pet {
-    background-color: $color-background-tertiary;
-    border: 1px solid $color-border-secondary;
-    border-radius: $radius-s;
-    padding: rem(8) rem(12);
-    margin-bottom: rem(8);
-    @include typography-ja-s;
-    color: $color-text-primary;
+    background-color: #F3F4F6;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
     
     &:last-child {
       margin-bottom: 0;
     }
   }
+}
+
+.selected-pet__remove {
+  background-color: $color-text-link-hover;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  min-width: 20px;
+  min-height: 20px;
+  
+  &:hover {
+    background-color: $color-text-link;
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.selected-pet__text {
+  flex: 1;
+  font-size: 14px;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 // ペット選択モーダル
@@ -1700,10 +1812,220 @@ input[type="date"] {
   }
 }
 
+// 来店予約時の店舗制限でグレーアウトされたペットカード
+.pet-card--disabled {
+  .pet-card__checkbox input[type="checkbox"]:disabled + .pet-card__checkbox-label {
+    background-color: $color-text-tertiary !important;
+    border-color: $color-text-tertiary !important;
+    cursor: not-allowed;
+  }
+  
+  .pet-card__info {
+    color: $color-text-tertiary;
+  }
+}
+
+// 送信完了・エラーモーダル
+.success-modal,
+.error-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  &__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: $radius-m;
+    padding: rem(32);
+    text-align: center;
+    min-width: rem(320);
+    max-width: rem(400);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  &__icon {
+    width: rem(60);
+    height: rem(60);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto rem(16);
+    font-size: rem(28);
+    font-weight: bold;
+    color: white;
+  }
+  
+  &__title {
+    @include typography-ja-m($font-weight-semibold);
+    color: $color-text-primary;
+    margin-bottom: rem(12);
+  }
+  
+  &__message {
+    @include typography-ja-s;
+    color: $color-text-secondary;
+    line-height: 1.6;
+    margin-bottom: rem(24);
+  }
+  
+  &__button {
+    @include button-base;
+    @include typography-ja-s($font-weight-semibold);
+    background-color: $color-brand-primary;
+    color: white;
+    padding: rem(12) rem(24);
+    border-radius: $radius-s;
+    min-width: rem(120);
+    
+    &:hover {
+      background-color: darken($color-brand-primary, 10%);
+    }
+  }
+}
+
+.success-modal {
+  .success-modal__icon {
+    background-color: #10b981;
+  }
+}
+
+.error-modal {
+  .error-modal__icon {
+    background-color: #ef4444;
+  }
+}
+
 </style>
 
+<!-- 外部スクリプトファイルを読み込み -->
+<script is:inline src="/contact-form.js"></script>
+
 <script>
+  // @ts-nocheck
+  // 最も基本的なテスト
+  console.log('BASIC TEST: Script tag is executing');
+  
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== CONTACT FORM SCRIPT LOADED ===');
+    console.log('Current hostname:', window.location.hostname);
+    console.log('Current URL:', window.location.href);
+    
+    // URLパラメータからペット選択状態を復元
+    const urlParams = new URLSearchParams(window.location.search);
+    const petId = urlParams.get('pet');
+    
+    console.log('URL params:', window.location.search);
+    console.log('Pet ID from URL:', petId);
+    
+    if (petId) {
+      console.log('Processing pet ID:', petId);
+      
+      // ペットフォームタブをアクティブにする
+      const petTab = document.querySelector('.contact-tab[data-tab="pet"]');
+      const petForm = document.querySelector('[data-form="pet"]');
+      
+      if (petTab && petForm) {
+        console.log('Activating pet tab and form');
+        // 全タブを非アクティブにして、ペットタブをアクティブに
+        document.querySelectorAll('.contact-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.contact-form').forEach(f => f.classList.remove('active'));
+        
+        petTab.classList.add('active');
+        petForm.classList.add('active');
+      }
+      
+      // お問い合わせ番号ラベルにスクロール
+      setTimeout(() => {
+        const inquiryLabel = document.getElementById('inquiry-number-label');
+        if (inquiryLabel) {
+          console.log('Scrolling to inquiry number label');
+          // レスポンシブに対応したオフセット調整
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -80; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -160; // 大画面
+          } else {
+            yOffset = -140; // sm以降〜1600px未満
+          }
+          const y = inquiryLabel.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+      
+      // 指定されたペットを自動選択して表示
+      setTimeout(() => {
+        console.log('Looking for pet checkbox:', petId);
+        const targetCheckbox = document.querySelector(`input[name="selected-pets"][value="${petId}"]`);
+        console.log('Found checkbox:', targetCheckbox);
+        
+        if (targetCheckbox) {
+          console.log('Checking pet checkbox and triggering change');
+          targetCheckbox.checked = true;
+          
+          // チェックボックスの変更イベントを発火
+          const changeEvent = new Event('change', { bubbles: true });
+          targetCheckbox.dispatchEvent(changeEvent);
+          
+          // 少し待ってから選択されたペット情報を表示に追加
+          setTimeout(() => {
+            console.log('Auto-clicking add button');
+            const addButton = document.getElementById('pet-modal-add');
+            if (addButton) {
+              addButton.click();
+            } else {
+              // モーダルが開かれていない場合、直接選択状態を更新
+              console.log('Add button not found, updating display directly');
+              updateSelectedPetsDisplayForDirectPetId(petId);
+            }
+          }, 200);
+        } else {
+          console.log('Checkbox not found for pet ID:', petId);
+        }
+      }, 500);
+    }
+    
+    // 直接ペットIDから選択表示を更新する関数
+    function updateSelectedPetsDisplayForDirectPetId(petId) {
+      const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
+      if (petCard) {
+        console.log('Found pet card, extracting info');
+        const petNumberRaw = petCard.querySelector('.pet-card__number-value')?.textContent || petId;
+        const petNumber = petNumberRaw.replace(/^0+/, '') || petNumberRaw;
+        const petBreed = petCard.querySelector('.pet-card__breed')?.textContent?.trim() || '';
+        const petStore = petCard.querySelector('.pet-card__store')?.textContent?.replace('店舗：', '') || '';
+        
+        // selectedPets配列に追加
+        selectedPets.push({
+          id: petId,
+          number: petNumber,
+          breed: petBreed,
+          store: petStore
+        });
+        
+        // 表示を更新
+        updateSelectedPetsDisplay();
+        console.log('Updated selected pets display directly');
+      }
+    }
+    
     // タブ切り替え機能
     const tabs = document.querySelectorAll('.contact-tab');
     const forms = document.querySelectorAll('.contact-form');
@@ -1727,24 +2049,35 @@ input[type="date"] {
       });
     });
     
-    // フォーム送信処理（分離型）
-    const SENDGRID_API_KEY = 'SG.kke-6pqt17yw1rdb';
+    // フォーム送信処理（GAS経由）
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbzVngWNDeUkMTy8M98Qx2u7K0O9TJI8buYRGTxEf5SeCHd0D4duOA2ejx3EWUxaATeP9w/exec';
-    const ADMIN_EMAIL = 'naocreate52@gmail.com';
-    const FROM_EMAIL = 'contact@naocreate.net';
     
     forms.forEach(form => {
       form.addEventListener('submit', function(e) {
+        console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
         e.preventDefault();
         
         const formData = new FormData(this);
         const formType = this.getAttribute('data-form');
+        console.log('Form type:', formType);
         
         // プライバシーポリシーの同意チェック
         const privacyAgreement = formData.get('privacy-agreement');
+        
         if (!privacyAgreement) {
-          alert('プライバシーポリシーへの同意が必要です。');
+          // 警告メッセージを表示
+          const errorElement = document.getElementById(`privacy-error-${formType}`);
+          if (errorElement) {
+            errorElement.style.display = 'block';
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
           return;
+        } else {
+          // チェックされている場合は警告メッセージを隠す
+          const errorElement = document.getElementById(`privacy-error-${formType}`);
+          if (errorElement) {
+            errorElement.style.display = 'none';
+          }
         }
         
         // 送信ボタンを無効化
@@ -1756,136 +2089,140 @@ input[type="date"] {
         // フォームデータを整理
         const data = prepareFormData(formType, formData);
         
-        // 並列処理: SendGrid + Google Apps Script
-        Promise.all([
-          sendEmailViaSendGrid(data),
-          saveToSpreadsheet(data)
-        ])
-        .then(results => {
-          const [emailResult, spreadsheetResult] = results;
-          
-          if (emailResult.success && spreadsheetResult.success) {
-            alert('お問い合わせを受け付けました。ありがとうございます。');
+        // 環境判定（localhost以外はPreview/本番環境として扱う）
+        const isProduction = !window.location.hostname.includes('localhost') && window.location.hostname !== '127.0.0.1';
+        console.log('Environment check - isProduction:', isProduction, 'hostname:', window.location.hostname);
+        console.log('フォーム送信データ:', data);
+        
+        if (isProduction) {
+          // Preview/本番環境：iframe経由でのGAS送信（CORS回避）
+          submitViaIframe(data)
+          .then(() => {
+            showSuccessModal();
             form.reset();
             resetFormState();
-          } else {
-            // 部分的な失敗の場合
-            let errorMessage = '送信に問題が発生しました。\n';
-            if (!emailResult.success) errorMessage += 'メール送信エラー\n';
-            if (!spreadsheetResult.success) errorMessage += 'データ保存エラー\n';
-            alert(errorMessage);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('送信に失敗しました。もう一度お試しください。');
-        })
-        .finally(() => {
-          // 送信ボタンを元に戻す
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showErrorModal();
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+          });
+        } else {
+          // ローカル開発環境：テスト用処理
+          showSuccessModal();
+          form.reset();
+          resetFormState();
           submitButton.disabled = false;
           submitButton.textContent = originalText;
-        });
+        }
       });
     });
     
-    // SendGrid経由でメール送信
-    async function sendEmailViaSendGrid(data) {
-      try {
-        const payload = {
-          personalizations: [{
-            to: [{ email: ADMIN_EMAIL }],
-            subject: getEmailSubject(data.formType, data)
-          }],
-          from: { email: FROM_EMAIL, name: 'カトレア お問い合わせフォーム' },
-          content: [{
-            type: 'text/plain',
-            value: getEmailBody(data.formType, data)
-          }]
-        };
-        
-        const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-        
-        if (response.ok) {
-          return { success: true };
-        } else {
-          const errorText = await response.text();
-          console.error('SendGrid error:', errorText);
-          return { success: false, error: errorText };
+    
+    // iframe経由でのGAS送信（CORS回避）
+    async function submitViaIframe(data) {
+      return new Promise((resolve, reject) => {
+        try {
+          console.log('Sending to GAS via iframe:', data);
+          
+          // 隠しiframeを作成
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.name = 'gas-submit-frame';
+          document.body.appendChild(iframe);
+          
+          // 隠しformを作成
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = GAS_URL;
+          form.target = 'gas-submit-frame';
+          form.style.display = 'none';
+          
+          // データをフォームフィールドとして追加
+          Object.keys(data).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = data[key];
+            form.appendChild(input);
+            console.log(`Form field added: ${key} = ${data[key]}`);
+          });
+          
+          console.log('Form action URL:', form.action);
+          console.log('Form method:', form.method);
+          console.log('Form target:', form.target);
+          
+          document.body.appendChild(form);
+          
+          // iframe読み込み完了を待機
+          iframe.onload = () => {
+            // iframeの内容を確認（デバッグ用）
+            try {
+              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+              const responseText = iframeDoc.body ? iframeDoc.body.innerText : 'No response';
+              console.log('GAS iframe response:', responseText);
+            } catch (e) {
+              console.log('Could not read iframe response (CORS):', e.message);
+            }
+            
+            setTimeout(() => {
+              // クリーンアップ
+              document.body.removeChild(iframe);
+              document.body.removeChild(form);
+              resolve();
+            }, 2000); // 2秒に延長してレスポンス確認時間を増やす
+          };
+          
+          iframe.onerror = () => {
+            // クリーンアップ
+            document.body.removeChild(iframe);
+            document.body.removeChild(form);
+            reject(new Error('iframe送信エラー'));
+          };
+          
+          // フォーム送信
+          form.submit();
+          
+        } catch (error) {
+          console.error('submitViaIframe error:', error);
+          reject(error);
         }
-      } catch (error) {
-        console.error('SendGrid request error:', error);
-        return { success: false, error: error.message };
-      }
+      });
     }
     
-    // スプレッドシートに保存
+    // スプレッドシートに保存（予備用）
     async function saveToSpreadsheet(data) {
       try {
+        console.log('Sending to GAS:', data);
         const response = await fetch(GAS_URL, {
           method: 'POST',
+          mode: 'cors',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify(data)
+          body: new URLSearchParams(data).toString()
         });
         
-        const result = await response.json();
-        return result;
+        console.log('GAS response status:', response.status, response.statusText);
+        const result = await response.text();
+        console.log('GAS result:', result);
+        
+        // GASからのレスポンスをJSONとしてパース
+        try {
+          const jsonResult = JSON.parse(result);
+          return jsonResult;
+        } catch (parseError) {
+          // JSONパースに失敗した場合は成功として扱う（GASの仕様）
+          console.log('Response is not JSON, treating as success:', result);
+          return { success: true, message: result };
+        }
       } catch (error) {
         console.error('Spreadsheet save error:', error);
         return { success: false, error: error.message };
       }
-    }
-    
-    // メール件名生成
-    function getEmailSubject(formType, data) {
-      const typeMap = {
-        'pet': 'ペットについて',
-        'job': '求人について',
-        'other': 'その他'
-      };
-      return `【カトレア】${typeMap[formType]}のお問い合わせ - ${data.name}様`;
-    }
-    
-    // メール本文生成
-    function getEmailBody(formType, data) {
-      let body = `カトレアのお問い合わせフォームから新しいお問い合わせが届きました。\n\n`;
-      body += `送信日時: ${new Date().toLocaleString('ja-JP')}\n`;
-      body += `フォーム種別: ${formType}\n\n`;
-      
-      if (formType === 'pet') {
-        body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
-        body += `お名前: ${data.name || ''}\n`;
-        body += `メールアドレス: ${data.email || ''}\n`;
-        body += `電話番号: ${data.phone || ''}\n`;
-        body += `来店予約: ${data.visitReservation ? '予約あり' : '予約なし'}\n`;
-        if (data.visitReservation) {
-          body += `来店日: ${data.visitDate || ''}\n`;
-          body += `来店時間: ${data.visitTime || ''}\n`;
-        }
-        body += `選択されたペット: ${data.selectedPets || ''}\n`;
-        body += `お問い合わせ内容: ${data.content || ''}\n`;
-      } else if (formType === 'job') {
-        body += `お問い合わせ種別: ${data.inquiryType || ''}\n`;
-        body += `お名前: ${data.name || ''}\n`;
-        body += `メールアドレス: ${data.email || ''}\n`;
-        body += `電話番号: ${data.phone || ''}\n`;
-        body += `お問い合わせ内容: ${data.content || ''}\n`;
-      } else if (formType === 'other') {
-        body += `お名前: ${data.name || ''}\n`;
-        body += `メールアドレス: ${data.email || ''}\n`;
-        body += `電話番号: ${data.phone || ''}\n`;
-        body += `お問い合わせ内容: ${data.content || ''}\n`;
-      }
-      
-      return body;
     }
     
     // フォーム状態リセット
@@ -1898,6 +2235,8 @@ input[type="date"] {
       // 選択されたペットをクリア
       selectedPets = [];
       updateSelectedPetsDisplay();
+      // hidden inputもクリア
+      updateHiddenPetInputs();
     }
     
     // フォームデータを整理する関数
@@ -1915,9 +2254,19 @@ input[type="date"] {
         data.visitReservation = formData.get('visit-reservation') === '1';
         data.visitDate = formData.get('visit-date') || '';
         data.visitTime = formData.get('visit-time') || '';
+        
+        // デバッグ用ログ追加
+        console.log('=== DEBUG: prepareFormData for pet ===');
+        console.log('selectedPets array:', selectedPets);
+        console.log('selectedPets length:', selectedPets.length);
+        
         data.selectedPets = selectedPets.map(pet => 
           `${pet.number} ${pet.breed} 【${pet.store}】`
         ).join(', ');
+        
+        console.log('Final selectedPets string:', data.selectedPets);
+        console.log('=== END DEBUG ===');
+        
       } else if (formType === 'job') {
         data.inquiryType = formData.get('inquiry-type') || '';
       }
@@ -2001,9 +2350,22 @@ input[type="date"] {
         
         if (this.checked) {
           // ペット情報を取得
-          const petNumber = petCard.querySelector('.pet-card__number').textContent.replace('お問い合わせ番号：', '');
+          const petNumberRaw = petCard.querySelector('.pet-card__number').textContent.replace('お問い合わせ番号：', '');
+          const petNumber = petNumberRaw.replace(/^0+/, '') || petNumberRaw;
           const petBreed = petCard.querySelector('.pet-card__breed').textContent.trim();
           const petStore = petCard.querySelector('.pet-card__store').textContent.replace('店舗：', '');
+          
+          // 来店予約がチェックされていて、既に選択済みペットがある場合の店舗制限チェック
+          const isVisitReservation = document.getElementById('pet-visit-reservation')?.checked || false;
+          if (isVisitReservation && selectedPets.length > 0) {
+            const existingStore = selectedPets[0].store;
+            if (petStore !== existingStore) {
+              // 異なる店舗のペットを選択しようとした場合
+              this.checked = false;
+              alert(`来店予約では同じ店舗のペットのみしか選択できません。現在は${existingStore}のペットが選択されています。`);
+              return;
+            }
+          }
           
           // 選択されたペット情報を追加
           selectedPets.push({
@@ -2012,9 +2374,20 @@ input[type="date"] {
             breed: petBreed,
             store: petStore
           });
+          
+          // 来店予約チェック時は、新しく選択されたペットの店舗に基づいて制限を更新
+          if (isVisitReservation) {
+            updatePetModalStoreRestriction();
+          }
         } else {
           // 選択を解除
           selectedPets = selectedPets.filter(pet => pet.id !== petId);
+          
+          // 来店予約チェック時で、すべてのペットが解除された場合は制限をクリア
+          const isVisitReservation = document.getElementById('pet-visit-reservation')?.checked || false;
+          if (isVisitReservation && selectedPets.length === 0) {
+            clearPetModalStoreRestriction();
+          }
         }
       });
     });
@@ -2032,16 +2405,217 @@ input[type="date"] {
     function updateSelectedPetsDisplay() {
       selectedPetsContainer.innerHTML = '';
       
+      // hidden input要素を更新
+      updateHiddenPetInputs();
+      
       selectedPets.forEach(pet => {
         const petElement = document.createElement('div');
         petElement.className = 'selected-pet';
-        petElement.textContent = `${pet.number} ${pet.breed} 【${pet.store}】`;
+        
+        // 確実にflexレイアウトが適用されるようにインラインスタイルも追加
+        petElement.style.cssText = `
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          box-sizing: border-box;
+          background-color: #F3F4F6;
+          border: 1px solid #D1D5DB;
+          border-radius: 4px;
+          padding: 8px 12px;
+          margin-bottom: 8px;
+          font-size: 14px;
+          color: #111827;
+        `;
+        
+        // 削除ボタンを作成
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'selected-pet__remove';
+        removeButton.setAttribute('data-pet-id', pet.id);
+        removeButton.innerHTML = '×';
+        removeButton.title = 'このペットを削除';
+        
+        // 確実にスタイルが適用されるようにインラインスタイルも追加
+        removeButton.style.cssText = `
+          background-color: #7f7f7f;
+          color: #FFFFFF;
+          border: none;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          min-width: 20px;
+          min-height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: bold;
+          line-height: 1;
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+        `;
+        
+        // ペット情報テキスト
+        const petText = document.createElement('span');
+        petText.className = 'selected-pet__text';
+        petText.textContent = `${pet.number} ${pet.breed} 【${pet.store}】`;
+        
+        // テキストのスタイルも確実に適用
+        petText.style.cssText = `
+          flex: 1;
+          font-size: 14px;
+          color: #111827;
+          line-height: 1.4;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        `;
+        
+        // 削除ボタンのクリックイベント
+        removeButton.addEventListener('click', function() {
+          const petIdToRemove = this.getAttribute('data-pet-id');
+          removePetFromSelection(petIdToRemove);
+        });
+        
+        // ホバーエフェクトを追加
+        removeButton.addEventListener('mouseenter', function() {
+          this.style.backgroundColor = '#666666';
+          this.style.transform = 'scale(1.1)';
+        });
+        
+        removeButton.addEventListener('mouseleave', function() {
+          this.style.backgroundColor = '#7f7f7f';
+          this.style.transform = 'scale(1)';
+        });
+        
+        removeButton.addEventListener('mousedown', function() {
+          this.style.transform = 'scale(0.95)';
+        });
+        
+        removeButton.addEventListener('mouseup', function() {
+          this.style.transform = 'scale(1.1)';
+        });
+        
+        petElement.appendChild(removeButton);
+        petElement.appendChild(petText);
         selectedPetsContainer.appendChild(petElement);
       });
     }
     
-    // 来店予約チェックボックスの処理
+    // 選択からペットを削除する関数
+    function removePetFromSelection(petId) {
+      // selectedPets配列から削除
+      selectedPets = selectedPets.filter(pet => pet.id !== petId);
+      
+      // モーダル内のチェックボックス状態を更新
+      const checkbox = document.querySelector(`input[name="selected-pets"][value="${petId}"]`);
+      if (checkbox) {
+        checkbox.checked = false;
+      }
+      
+      // 表示を更新
+      updateSelectedPetsDisplay();
+      
+      // 来店予約チェック時で、すべてのペットが削除された場合は制限をクリア
+      const isVisitReservation = document.getElementById('pet-visit-reservation')?.checked || false;
+      if (isVisitReservation && selectedPets.length === 0) {
+        clearPetModalStoreRestriction();
+      } else if (isVisitReservation && selectedPets.length > 0) {
+        // まだペットが残っている場合は制限を更新
+        updatePetModalStoreRestriction();
+      }
+      
+      console.log('Pet removed:', petId, 'Remaining pets:', selectedPets.length);
+    }
+    
+    // hidden input要素を更新する関数
+    function updateHiddenPetInputs() {
+      const petForm = document.getElementById('pet-form');
+      if (!petForm) return;
+      
+      // 既存のhidden input要素を削除
+      const existingInputs = petForm.querySelectorAll('input[name="selected-pets"]');
+      existingInputs.forEach(input => input.remove());
+      
+      // 選択されたペットごとにhidden input要素を作成
+      selectedPets.forEach(pet => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'selected-pets';
+        hiddenInput.value = `${pet.number} ${pet.breed} 【${pet.store}】`;
+        petForm.appendChild(hiddenInput);
+      });
+      
+      console.log('Updated hidden pet inputs:', selectedPets.length, 'pets');
+    }
+    
+    // 来店予約時の店舗制限処理
+    function handleStoreRestrictionForVisitReservation() {
+      if (selectedPets.length === 0) return;
+      
+      // この関数が呼ばれる時点では単一店舗のペットのみが選択されている
+      // （複数店舗の場合は事前にチェックボックスがブロックされている）
+      console.log('来店予約チェック：単一店舗のペット選択を確認');
+    }
+    
+    // ペットモーダル内の店舗制限表示更新
+    function updatePetModalStoreRestriction() {
+      const isVisitReservation = document.getElementById('pet-visit-reservation')?.checked || false;
+      
+      if (!isVisitReservation) {
+        clearPetModalStoreRestriction();
+        return;
+      }
+      
+      if (selectedPets.length === 0) return;
+      
+      // 選択済みペットの店舗を取得
+      const allowedStore = selectedPets[0].store;
+      
+      // すべてのペットカードを確認
+      document.querySelectorAll('.pet-card').forEach(card => {
+        const petStore = card.querySelector('.pet-card__store')?.textContent?.replace('店舗：', '') || '';
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        
+        if (petStore !== allowedStore && !checkbox.checked) {
+          // 異なる店舗かつ未選択のペットをグレーアウト+選択不可
+          card.classList.add('pet-card--disabled');
+          checkbox.disabled = true;
+          card.style.opacity = '0.5';
+          card.style.pointerEvents = 'none';
+        }
+      });
+    }
+    
+    // ペットモーダル内の店舗制限をクリア
+    function clearPetModalStoreRestriction() {
+      document.querySelectorAll('.pet-card').forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        card.classList.remove('pet-card--disabled');
+        checkbox.disabled = false;
+        card.style.opacity = '';
+        card.style.pointerEvents = '';
+      });
+    }
+    
+    // お問い合わせ種別の変更処理
+    const petInquiryTypeSelect = document.getElementById('pet-inquiry-type');
     const visitReservationCheckbox = document.getElementById('pet-visit-reservation');
+    
+    if (petInquiryTypeSelect && visitReservationCheckbox) {
+      petInquiryTypeSelect.addEventListener('change', function() {
+        if (this.value === '来店予約をする') {
+          // 来店予約チェックボックスを自動でONにする
+          visitReservationCheckbox.checked = true;
+          // チェック状態の変更イベントを手動で発火
+          const changeEvent = new Event('change');
+          visitReservationCheckbox.dispatchEvent(changeEvent);
+        }
+      });
+    }
+
+    // 来店予約チェックボックスの処理
     const visitReservationDetails = document.getElementById('visit-reservation-details');
     const visitReservationNotice = document.getElementById('visit-reservation-notice');
     
@@ -2049,18 +2623,148 @@ input[type="date"] {
       visitReservationCheckbox.addEventListener('change', function() {
         const checkbox = this;
         if (checkbox.checked) {
+          // 複数店舗のペットが選択されている場合のチェック
+          if (selectedPets.length > 0) {
+            // 店舗を確認
+            const storeGroups = {};
+            selectedPets.forEach(pet => {
+              if (!storeGroups[pet.store]) {
+                storeGroups[pet.store] = [];
+              }
+              storeGroups[pet.store].push(pet);
+            });
+            
+            const storeNames = Object.keys(storeGroups);
+            
+            if (storeNames.length > 1) {
+              // 複数店舗のペットが選択されている場合、チェックを無効化
+              checkbox.checked = false;
+              
+              const storeList = storeNames.join('、');
+              alert(`来店予約では同じ店舗のペットのみしか選択できません。\n\n現在、以下の店舗のペットが選択されています：\n${storeList}\n\n下記のお問い合わせ番号欄にある×ボタンから不要なペットを削除して、1つの店舗のペットのみになるよう調整してから、再度来店予約をチェックしてください。`);
+              
+              return; // 処理を終了
+            }
+          }
+          
           visitReservationDetails.style.display = 'block';
           visitReservationNotice.style.display = 'block';
+          
+          // 来店予約チェック時：異店舗ペットを自動解除（この時点では単一店舗のみ）
+          handleStoreRestrictionForVisitReservation();
+          
+          // ペットモーダル内の表示を更新（店舗制限適用）
+          updatePetModalStoreRestriction();
         } else {
           visitReservationDetails.style.display = 'none';
           visitReservationNotice.style.display = 'none';
           // チェックを外した時に入力値をリセット
           const visitDate = document.getElementById('visit-date');
           const visitTime = document.getElementById('visit-time');
-          if (visitDate) (visitDate).value = '';
-          if (visitTime) (visitTime).value = '';
+          if (visitDate) visitDate.value = '';
+          if (visitTime) visitTime.value = '';
+          
+          // 来店予約チェック解除時：店舗制限を解除
+          clearPetModalStoreRestriction();
         }
       });
+    }
+  });
+
+  // ページ読み込み時のハッシュスクロール処理（外部リンク対応）
+  document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash;
+    if (hash) {
+      setTimeout(() => {
+        const targetElement = document.getElementById(hash.substring(1));
+        if (targetElement) {
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -100; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -180; // 大画面
+          } else {
+            yOffset = -160; // sm以降〜1600px未満
+          }
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  });
+
+  // contact-methodsのカスタムスクロール処理
+  document.addEventListener('DOMContentLoaded', function() {
+    const contactMethodLinks = document.querySelectorAll('.contact-method-link[href^="#"]');
+    
+    contactMethodLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          // レスポンシブに対応したオフセット調整（見出しがヘッダーと被らないように20px分上に調整）
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -100; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -180; // 大画面
+          } else {
+            yOffset = -160; // sm以降〜1600px未満
+          }
+          
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    });
+  });
+
+  // モーダル表示関数
+  function showSuccessModal() {
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  function showErrorModal() {
+    const modal = document.getElementById('error-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // モーダル閉じるボタンのイベントリスナー
+  document.getElementById('success-modal-close')?.addEventListener('click', function() {
+    hideModal('success-modal');
+  });
+
+  document.getElementById('error-modal-close')?.addEventListener('click', function() {
+    hideModal('error-modal');
+  });
+
+  // モーダルオーバーレイクリックで閉じる
+  document.getElementById('success-modal')?.addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('success-modal__overlay')) {
+      hideModal('success-modal');
+    }
+  });
+
+  document.getElementById('error-modal')?.addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('error-modal__overlay')) {
+      hideModal('error-modal');
     }
   });
 </script>

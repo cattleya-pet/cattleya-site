@@ -6,7 +6,7 @@
 .voice-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   background: $color-background-primary;
   border-radius: $radius-l;
   box-shadow: 0 4px 24px rgba(0,0,0,0.07);

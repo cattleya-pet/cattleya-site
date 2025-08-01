@@ -3,14 +3,9 @@ import Layout from '../../layouts/Layout.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
-import heroImage from '../../assets/images/backgrounds/img_bg-hero_flow-01.webp';
 import stepIcon1 from '../../assets/icons/icon_step-menu-01.svg';
 import stepIcon2 from '../../assets/icons/icon_step-menu-02.svg';
 import footprintIcon from '../../assets/icons/icon_step-cat-footprints-01.svg';
-import flowStep1 from '../../assets/images/content/img_flow_step-01.webp';
-import flowStep2 from '../../assets/images/content/img_flow_step-02.webp';
-import flowStep3 from '../../assets/images/content/img_flow_step-03.webp';
-import flowStep4 from '../../assets/images/content/img_flow_step-04.webp';
 import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
 import lineIcon from '../../assets/icons/icon_line-01.svg';
 import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
@@ -19,7 +14,6 @@ import cardMastercard from '../../assets/icons/icon_card-logo-mastercard.svg';
 import cardJcb from '../../assets/icons/icon_card-logo-jcb.svg';
 import cardAmex from '../../assets/icons/icon_card-logo-amex.svg';
 import cardDiners from '../../assets/icons/icon_card-logo-dinersclub.svg';
-import homestayGoods from '../../assets/images/content/img_homestay-goods-01.webp';
 import bubbleWhite from '../../assets/icons/icon_bubbles-white-01.svg';
 import bubbleBeige from '../../assets/icons/icon_bubbles-begie-01.svg';
 import { getAllStores } from '../../lib/api/stores';
@@ -44,7 +38,7 @@ const breadcrumbItems = [
     <section class="hero-section hero-section--flow">
       <div class="hero-background">
         <img 
-          src={heroImage.src} 
+          src="/images/backgrounds/img_bg-hero_flow-01.webp" 
           alt="お迎えまでの流れ" 
           class="hero-background__image"
           loading="eager"
@@ -125,7 +119,8 @@ const breadcrumbItems = [
                   お問い合わせの際に、来店予約していただくと、待ち時間なく担当スタッフがご案内します。
                 </p>
 
-                <div class="contact-sections">
+                <!-- sm以降: 従来のお問い合わせセクション -->
+                <div class="contact-sections flow-step__desktop-contact">
                   <!-- 電話でのお問い合わせ -->
                   <div class="contact-section contact-section--phone">
                     <h4 class="contact-section__title">電話でのお問い合わせ</h4>
@@ -162,10 +157,10 @@ const breadcrumbItems = [
                 </div>
 
                 <!-- メールでのお問い合わせ -->
-                <div class="contact-section contact-section--mail">
+                <div class="contact-section contact-section--mail flow-step__desktop-contact">
                   <h4 class="contact-section__title">メールでのお問い合わせ</h4>
                   <div class="contact-buttons">
-                    <a href="/contact" class="contact-button contact-button--mail">
+                    <a href="/contact#mail-contact" class="contact-button contact-button--mail">
                       <span class="contact-button__line"></span>
                       <div class="contact-button__content">
                         <span class="contact-button__text">メールお問い合わせ</span>
@@ -174,9 +169,68 @@ const breadcrumbItems = [
                     </a>
                   </div>
                 </div>
+
+                <!-- sm未満: mobile-cta-contentと同じ内容 -->
+                <div class="flow-step__mobile-cta">
+                  <!-- 上段：最初の2店舗のボタン4つ -->
+                  <div class="mobile-cta-row">
+                    <a href={`tel:${stores[0]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[0]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[0]?.storeName}LINE</div>
+                    </a>
+                    
+                    <a href={`tel:${stores[1]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[1]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[1]?.storeName}LINE</div>
+                    </a>
+                  </div>
+
+                  <!-- 下段：3つ目の店舗のボタン2つとメールボタン -->
+                  <div class="mobile-cta-row">
+                    <a href={`tel:${stores[2]?.storePhoneNumber}`} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={phoneIcon.src} alt="電話アイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[2]?.storeName}電話</div>
+                    </a>
+                    
+                    <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+                      <div class="mobile-cta-button__icon">
+                        <img src={lineIcon.src} alt="LINEアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">{stores[2]?.storeName}LINE</div>
+                    </a>
+                    
+                    <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
+                      <div class="mobile-cta-button__icon">
+                        <img src={mailIcon.src} alt="メールアイコン" />
+                      </div>
+                      <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+                    </a>
+                  </div>
+                </div>
+
               </div>
               <div class="flow-step__image">
-                <img src={flowStep1.src} alt="ステップ1" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-01.webp" alt="ステップ1" class="flow-step__img" />
                 <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
               </div>
             </div>
@@ -207,13 +261,13 @@ const breadcrumbItems = [
             <div class="flow-step__body">
               <div class="flow-step__description">
                 <p class="flow-step__intro">
-                  実際にご来店いただき、ワンちゃん・ネコちゃんを抱っこしたり触れ合っていただけます。<br><br>
+                  実際にご来店いただき、ワンちゃん・ネコちゃんを抱っこしたり触れ合ったりしていただけます。<br><br>
                   お客様がパートナーを迎えるにあたって抱かれる不安や悩みが少しでも解消できるよう、スタッフが真心を持って対応いたします。<br>
                   お客様の環境に合わせたお世話の仕方等もレクチャーしますので、お気軽に質問してください。
                 </p>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep2.src} alt="ステップ2" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-02.webp" alt="ステップ2" class="flow-step__img" />
                 <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even flow-step__bubble--step2" />
               </div>
             </div>
@@ -222,7 +276,7 @@ const breadcrumbItems = [
                 <h4>ホームステイ</h4>
                 <div class="homestay-section-inner">
                   <div class="homestay-img-wrap">
-                    <img src="/src/assets/images/content/img_homestay_main-01.webp" alt="ホームステイ" class="homestay-img" loading="lazy" />
+                    <img src="/images/content/img_homestay_main-01.webp" alt="ホームステイ" class="homestay-img" loading="lazy" />
                   </div>
                   
                   <div class="homestay-content">
@@ -300,7 +354,7 @@ const breadcrumbItems = [
                 </div>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep3.src} alt="ステップ3" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-03.webp" alt="ステップ3" class="flow-step__img" />
                 <img src={bubbleWhite.src} alt="" class="flow-step__bubble flow-step__bubble--odd" />
               </div>
             </div>
@@ -309,7 +363,7 @@ const breadcrumbItems = [
                 <h4>ペット用品をお考えの方</h4>
                 <div class="homestay-section-inner">
                   <div class="homestay-img-wrap">
-                    <img src={homestayGoods.src} alt="ペット用品" class="homestay-img" loading="lazy" />
+                    <img src="/images/content/img_homestay-goods-01.webp" alt="ペット用品" class="homestay-img" loading="lazy" />
                   </div>
                   
                   <div class="homestay-content">
@@ -347,7 +401,7 @@ const breadcrumbItems = [
                 </p>
               </div>
               <div class="flow-step__image">
-                <img src={flowStep4.src} alt="ステップ4" class="flow-step__img" />
+                <img src="/images/content/img_flow_step-04.webp" alt="ステップ4" class="flow-step__img" />
                 <img src={bubbleBeige.src} alt="" class="flow-step__bubble flow-step__bubble--even" />
               </div>
             </div>
@@ -364,7 +418,9 @@ const breadcrumbItems = [
         <!-- お問い合わせボックス -->
         <div class="content-box">
           <h2 class="content-box__title">お問い合わせ</h2>
-          <div class="contact-buttons-wrapper">
+          
+          <!-- sm以降: 従来のお問い合わせボタン -->
+          <div class="contact-buttons-wrapper content-box__desktop-contact">
             {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
               <div class="store-contact-group">
                 <!-- 電話ボタン -->
@@ -387,6 +443,75 @@ const breadcrumbItems = [
                 </a>
               </div>
             ))}
+            
+            <!-- メールでお問い合わせボタン（4段目・中央配置） -->
+            <div class="mail-contact-group">
+              <a href="/contact#mail-contact" class="contact-button contact-button--mail">
+                <span class="contact-button__line"></span>
+                <div class="contact-button__content">
+                  <span class="contact-button__text">メールお問い合わせ</span>
+                </div>
+                <img src={mailIcon.src} alt="" class="contact-button__icon" />
+              </a>
+            </div>
+          </div>
+
+          <!-- sm未満: mobile-cta-contentと同じ内容 -->
+          <div class="content-box__mobile-cta">
+            <!-- 上段：最初の2店舗のボタン4つ -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[0]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[0]?.storeName}LINE</div>
+              </a>
+              
+              <a href={`tel:${stores[1]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[1]?.storeName}LINE</div>
+              </a>
+            </div>
+
+            <!-- 下段：3つ目の店舗のボタン2つとメールボタン -->
+            <div class="mobile-cta-row">
+              <a href={`tel:${stores[2]?.storePhoneNumber}`} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={phoneIcon.src} alt="電話アイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}電話</div>
+              </a>
+              
+              <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+                <div class="mobile-cta-button__icon">
+                  <img src={lineIcon.src} alt="LINEアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">{stores[2]?.storeName}LINE</div>
+              </a>
+              
+              <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
+                <div class="mobile-cta-button__icon">
+                  <img src={mailIcon.src} alt="メールアイコン" />
+                </div>
+                <div class="mobile-cta-button__text">メールでお問い合わせ</div>
+              </a>
+            </div>
           </div>
         </div>
         
@@ -414,3 +539,35 @@ const breadcrumbItems = [
     <ContactCTASection />
   </main>
 </Layout>
+
+<script>
+  // step-linksのカスタムスクロール処理
+  document.addEventListener('DOMContentLoaded', function() {
+    const stepLinks = document.querySelectorAll('.step-link[href^="#step"]');
+    
+    stepLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          // レスポンシブに対応したオフセット調整
+          const screenWidth = window.innerWidth;
+          let yOffset;
+          if (screenWidth < 768) {
+            yOffset = -80; // sm未満（モバイル）
+          } else if (screenWidth >= 1600) {
+            yOffset = -160; // 大画面
+          } else {
+            yOffset = -140; // sm以降〜1600px未満
+          }
+          
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    });
+  });
+</script>

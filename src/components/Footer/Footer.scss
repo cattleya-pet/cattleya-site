@@ -186,7 +186,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: rem(20);
-  padding: rem(16) 0;
+  padding: rem(8) 0;
+  
+  @include breakpoint-up(lg) {
+    padding: rem(16) 0;
+  }
 }
 
 .footer-nav-link {
@@ -204,7 +208,7 @@
 .footer-divider {
   height: 1px;
   background-color: $color-border-tertiary;
-  margin: rem(30) 0;
+  margin: rem(20) 0;
 }
 
 // 最下部：コピーライト
