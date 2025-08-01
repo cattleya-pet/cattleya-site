@@ -155,7 +155,7 @@ function saveToSheet(data) {
 
 function sendNotificationEmail(data) {
   try {
-    const to = 'naocreate52@gmail.com';
+    const to = 'info@cattleya-pet.com';
     const subject = `【カトレア】${getFormTypeName(data.formType)}のお問い合わせ - ${data.name}様`;
     const body = createEmailBody(data);
 
@@ -265,7 +265,7 @@ function createAutoReplyEmailBody(data) {
   
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   body += `カトレア\n`;
-  body += `Email: naocreate52@gmail.com\n`;
+  body += `Email: info@cattleya-pet.com\n`;
   body += `Website: https://cattleya.naocreate.net\n`;
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 

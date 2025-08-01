@@ -1,7 +1,7 @@
 // Google Apps Script - Spreadsheet Handler Only
 // このコードをGoogle Apps Scriptにコピーして使用してください
 
-const SPREADSHEET_ID = '1FnIpk88kEEmanvuEEgKO3aqHpHtOVh6aXbTtEd_n8m4';
+const SPREADSHEET_ID = '10fNuDyJlgCXK1uHSK9Gv9t7d6q7AO4hABMmu-DXIwlU';
 
 function doPost(e) {
   try {

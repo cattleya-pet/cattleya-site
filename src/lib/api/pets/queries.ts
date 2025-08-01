@@ -10,7 +10,6 @@ export async function getLatestPetsByType(animalType: string, limit?: number): P
       // randomIdによるソートを削除（フロントエンドでランダムソート）
       fields: [
         'id',
-        'randomId',
         'animalType',
         'breedTypeJa',
         'color',
@@ -114,7 +113,6 @@ export async function getPetsWithOffset(offset: number, limit: number = 18): Pro
       // randomIdによるソートを削除（フロントエンドでランダムソート）
       fields: [
         'id',
-        'randomId',
         'animalType',
         'breedTypeJa',
         'color',

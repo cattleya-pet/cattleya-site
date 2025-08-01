@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('Environment check - isProduction:', isProduction, 'hostname:', window.location.hostname);
   
   // GAS URL (正しいURL)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbya5IriFXfHSujaDP8HRYXThSDTB4szfduY9BA-Fk7Pv4YrOh1WVNSWqpRlJifHg04Mpw/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzCWWp_hm25tkAUG5BkYsKgHwEEBxMlinm-2jkT18afJ4QH2YRXQsEAZpDs9O77NvDT/exec';
   console.log('Full GAS URL:', GAS_URL);
   console.log('GAS URL length:', GAS_URL.length);
   
