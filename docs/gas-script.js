@@ -71,7 +71,7 @@ function doOptions(e) {
 
 function saveToSheet(data) {
   try {
-    const spreadsheetId = '1FnIpk88kEEmanvuEEgKO3aqHpHtOVh6aXbTtEd_n8m4';
+    const spreadsheetId = '10fNuDyJlgCXK1uHSK9Gv9t7d6q7AO4hABMmu-DXIwlU';
     const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
 
     // フォームタイプに応じてシートを選択
@@ -227,7 +227,7 @@ function createEmailBody(data) {
 }
 
 function createAutoReplyEmailBody(data) {
-  let body = `${data.name || 'お客様'}へ\n\n`;
+  let body = `${data.name || 'お客様'}様へ\n\n`;
   body += `この度は、カトレアにお問い合わせいただき、誠にありがとうございます。\n`;
   body += `以下の内容でお問い合わせを受け付けいたしました。\n\n`;
   

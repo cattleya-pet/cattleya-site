@@ -183,6 +183,10 @@
   line-height: 1.4;
 }
 
+.store-card-hours {
+  white-space: pre-line;
+}
+
 .store-card-traffic {
   @include typography-ja-2s();
   color: $color-text-secondary;

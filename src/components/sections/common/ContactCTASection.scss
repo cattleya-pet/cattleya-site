@@ -8,11 +8,15 @@
   position: relative;
   min-height: rem(500);
   background-size: cover;
-  background-position: center;
+  background-position: 72% center;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  @include breakpoint-up(sm) {
+    background-position: center;
+  }
   
   @include breakpoint-up(lg) {
     min-height: rem(600);
