@@ -43,6 +43,15 @@
     padding-right: rem(50);
   }
   
+  @include breakpoint-up(xl) {
+    // xl以降はpets-gridと同じ中央寄せ + max-width設定で左端を一致
+    max-width: rem(1200);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
   .pets-count__number {
     font-size: $font-size-ja-m;
     font-weight: 600;
@@ -77,9 +86,9 @@
 /* search系ページ専用のpets-grid調整 (.containerの中にネストされている場合) */
 .pets-section .container .pets-grid {
   @include breakpoint-up(lg) {
-    /* 通常のコンテンツ幅内での3列表示 */
-    max-width: calc(100% - rem(100)); /* 左右50px×2のパディングを考慮 */
+    /* 通常のコンテンツ幅内での3列表示、ただしmax-widthは維持 */
     grid-template-columns: repeat(3, 1fr); /* 3等分 */
+    /* max-widthは基本設定のrem(1200)を維持 */
   }
 }
 

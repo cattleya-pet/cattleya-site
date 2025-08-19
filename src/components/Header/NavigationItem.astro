@@ -32,7 +32,7 @@ const mixBreeds = await getMixBreedsByAnimalType(submenu);
       <a href={storeSubmenu ? "/stores" : "/search"} class="nav-title">{title}</a>
       <button class="dropdown-button" aria-label="サブメニューを開く">
         <svg
-          class="icon"
+          class="icon dropdown-icon"
           width="16"
           height="16"
           viewBox="0 0 16 16"
@@ -254,6 +254,10 @@ const mixBreeds = await getMixBreedsByAnimalType(submenu);
     width: 1.2rem;
     height: 1.2rem;
     transition: transform 0.2s;
+  }
+
+  .dropdown-icon {
+    transform: translateY(3px);
   }
 
   /* PC表示用スタイル */

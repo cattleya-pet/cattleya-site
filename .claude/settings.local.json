@@ -30,7 +30,8 @@
       "Bash(git commit:*)",
       "Bash(kill:*)",
       "Bash(git remote add:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(open \"http://localhost:4323/\")"
     ],
     "deny": []
   },

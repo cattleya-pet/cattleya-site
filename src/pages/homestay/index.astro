@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import BaseButton from '../../components/ui/buttons/BaseButton.astro';
@@ -21,79 +22,70 @@ const breadcrumbItems = [
 
 <Layout title="ホームステイ" description="ワンちゃん&ネコちゃんのホームステイサービス。1泊2日または2泊3日、一律税込10,000円でご利用いただけます。">
   <main>
-    <!-- ヒーローセクション -->
-    <section class="homestay-hero">
-      <!-- パンくずリスト（モバイルではコンテナ内、デスクトップではコンテナ外） -->
-      <nav class="breadcrumb-nav breadcrumb-nav--mobile">
-        <div class="breadcrumb-container">
-          <ol class="breadcrumb">
-            {breadcrumbItems.map((item, index) => (
-              <li class="breadcrumb-item">
-                {item.href ? (
-                  <a href={item.href} class="breadcrumb-link">{item.label}</a>
-                ) : (
-                  <span class="breadcrumb-current">{item.label}</span>
-                )}
-                {index < breadcrumbItems.length - 1 && (
-                  <span class="breadcrumb-separator">></span>
-                )}
-              </li>
-            ))}
-          </ol>
-        </div>
-      </nav>
-      
-      <div class="homestay-hero-container">
+    <HeroSection 
+      title="ホームステイ"
+      image="/images/backgrounds/img_bg-hero_homestay-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
 
-        <!-- ヒーローコンテンツ -->
-        <div class="homestay-hero-content">
+    <!-- ホームステイサービス紹介セクション -->
+    <section class="homestay-intro-section">
+      <div class="container">
+        <div class="homestay-intro-content">
           <!-- 見出し -->
-          <h1 class="homestay-hero-title">
+          <h2 class="homestay-hero-title">
             <span class="homestay-hero-title-main">ワンちゃん&ネコちゃんの</span>
             <span class="homestay-hero-title-sub">
               <!-- 肉球アイコン -->
               <img src="/icons/icon_step-cat-footprints-02.svg" alt="肉球" class="homestay-hero-icon" />
               ホームステイ
             </span>
-          </h1>
-
-          <!-- ヒーロー画像 -->
-          <div class="homestay-hero-image">
-            <img src="/images/backgrounds/img_bg-hero_homestay-01.webp" alt="ホームステイ" />
-          </div>
+          </h2>
 
           <!-- 情報ボックス -->
           <div class="homestay-hero-boxes">
             <!-- ボックス1：選べる泊数 -->
-            <div class="homestay-hero-box">
-              <h2 class="homestay-hero-box-title">選べる泊数</h2>
-              <div class="homestay-hero-box-content">
-                <div class="homestay-hero-checklist">
-                  <div class="homestay-hero-check-item">
-                    <img src="/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
-                    <span class="homestay-hero-check-text">
-                      <span class="homestay-hero-check-number">1</span>泊<span class="homestay-hero-check-number">2</span>日 or <span class="homestay-hero-check-number">2</span>泊<span class="homestay-hero-check-number">3</span>日
-                    </span>
+            <div class="homestay-hero-box-wrapper">
+              <div class="homestay-hero-box-label">
+                <span class="homestay-hero-box-point">point</span>
+                <span class="homestay-hero-box-number">01</span>
+              </div>
+              <div class="homestay-hero-box">
+                <h3 class="homestay-hero-box-title">選べる泊数</h3>
+                <div class="homestay-hero-box-content">
+                  <div class="homestay-hero-checklist">
+                    <div class="homestay-hero-check-item">
+                      <img src="/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
+                      <span class="homestay-hero-check-text">
+                        <span class="homestay-hero-check-number">1</span>泊<span class="homestay-hero-check-number">2</span>日 or <span class="homestay-hero-check-number">2</span>泊<span class="homestay-hero-check-number">3</span>日
+                      </span>
+                    </div>
+                    <div class="homestay-hero-check-item">
+                      <img src="/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
+                      <span class="homestay-hero-check-text">
+                        一律税込<span class="homestay-hero-check-number">10,000</span>円
+                      </span>
+                    </div>
                   </div>
-                  <div class="homestay-hero-check-item">
-                    <img src="/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
-                    <span class="homestay-hero-check-text">
-                      一律税込<span class="homestay-hero-check-number">10,000</span>円
-                    </span>
-                  </div>
+                  <p class="homestay-hero-note">
+                    ※ホームステイ後ご購入の場合、頭金として充当させていただきます
+                  </p>
                 </div>
-                <p class="homestay-hero-note">
-                  ※ホームステイ後ご購入の場合、頭金として充当させていただきます
-                </p>
               </div>
             </div>
 
             <!-- ボックス2：お泊りセットつき -->
-            <div class="homestay-hero-box">
-              <h2 class="homestay-hero-box-title">お泊りセットつき</h2>
-              <div class="homestay-hero-box-content">
-                <div class="homestay-hero-goods-image">
-                  <img src="/images/content/img_homestay-goods-02.webp" alt="お泊りセット" />
+            <div class="homestay-hero-box-wrapper">
+              <div class="homestay-hero-box-label">
+                <span class="homestay-hero-box-point">point</span>
+                <span class="homestay-hero-box-number">02</span>
+              </div>
+              <div class="homestay-hero-box">
+                <h3 class="homestay-hero-box-title">お泊りセットつき</h3>
+                <div class="homestay-hero-box-content">
+                  <div class="homestay-hero-goods-image">
+                    <img src="/images/content/img_homestay-goods-02.webp" alt="お泊りセット" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -101,26 +93,6 @@ const breadcrumbItems = [
         </div>
       </div>
     </section>
-
-    <!-- デスクトップ用パンくずリスト -->
-    <nav class="breadcrumb-nav breadcrumb-nav--desktop">
-      <div class="breadcrumb-container">
-        <ol class="breadcrumb">
-          {breadcrumbItems.map((item, index) => (
-            <li class="breadcrumb-item">
-              {item.href ? (
-                <a href={item.href} class="breadcrumb-link">{item.label}</a>
-              ) : (
-                <span class="breadcrumb-current">{item.label}</span>
-              )}
-              {index < breadcrumbItems.length - 1 && (
-                <span class="breadcrumb-separator">></span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </nav>
 
     <!-- こんなご不安ありませんか？セクション -->
     <section class="homestay-concerns-section">
@@ -210,14 +182,10 @@ const breadcrumbItems = [
       <div class="homestay-solution-container">
         <h2 class="homestay-solution-title">
           <div class="homestay-solution-title-line">
-            <img src="/images/ui/icon_homestay_solution-text-01.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--left" />
             <span class="homestay-solution-title-text homestay-solution-title-text--sub">そんな悩みを解決するのが</span>
-            <img src="/images/ui/icon_homestay_solution-text-01.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--right" />
           </div>
           <div class="homestay-solution-title-line">
-            <img src="/images/ui/icon_homestay_solution-text-02.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--left" />
             <span class="homestay-solution-title-text homestay-solution-title-text--main">ホームステイ</span>
-            <img src="/images/ui/icon_homestay_solution-text-02.svg" alt="" class="homestay-solution-title-icon homestay-solution-title-icon--right" />
           </div>
         </h2>
         
@@ -813,6 +781,28 @@ const breadcrumbItems = [
 @use '../../styles/tokens/_typography' as *;
 @use '../../styles/tokens/_radius' as *;
 
+// 新しいホームステイ紹介セクション
+.homestay-intro-section {
+  position: relative;
+  background: $color-background-primary;
+  padding: rem(40) 0;
+  
+  @include breakpoint-up(sm) {
+    padding: rem(60) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(80) 0;
+  }
+}
+
+.homestay-intro-content {
+  display: flex;
+  flex-direction: column;
+  gap: rem(30);
+  align-items: center;
+}
+
 .homestay-hero {
   position: relative;
   background: $color-background-primary;
@@ -922,12 +912,12 @@ const breadcrumbItems = [
 .homestay-hero-title {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin: 0;
   padding-top: rem(20);
+  text-align: center;
   
   @include breakpoint-up(md) {
-    position: absolute;
     top: rem(60);
     left: 0;
     z-index: 10;
@@ -950,14 +940,16 @@ const breadcrumbItems = [
   @include typography-ja-s($font-weight-semibold);
   color: $color-text-secondary;
   line-height: 1.4;
+  display: inline-block;
+  margin-right: auto;
   @include breakpoint-up(md) {
-    display: inline-block;
+    @include typography-ja-m($font-weight-semibold);
     padding: rem(10) rem(10) 0 rem(10);
     background-color: $color-background-primary;
     border-radius: 0 $radius-l 0 0;
   }
   @include breakpoint-up(xl) {
-    @include typography-ja-2l($font-weight-semibold);
+    @include typography-ja-l($font-weight-semibold);
   }
 }
 
@@ -974,12 +966,12 @@ const breadcrumbItems = [
   @include breakpoint-up(md) {
     justify-content: flex-start;
     display: inline-flex;
-    padding: rem(15);
+    padding: rem(10);
     background-color: $color-background-primary;
     border-radius: 0 $radius-l $radius-l 0;
   }
   @include breakpoint-up(xl) {
-    @include typography-ja-4l($font-weight-semibold);
+    @include typography-ja-3l($font-weight-semibold);
   }
 }
 
@@ -988,8 +980,8 @@ const breadcrumbItems = [
   height: rem(46);
   
   @include breakpoint-up(xl) {
-    width: rem(88);
-    height: rem(94);
+    width: rem(67);
+    height: rem(72);
   }
 }
 
@@ -1032,57 +1024,93 @@ const breadcrumbItems = [
 .homestay-hero-boxes {
   display: flex;
   flex-direction: column;
-  gap: rem(10);
+  gap: rem(16);
   align-items: center;
+  width: 100%;
   
   @include breakpoint-up(md) {
-    position: absolute;
-    bottom: rem(20);
-    left: 0;
-    z-index: 10;
     flex-direction: row;
+    justify-content: center;
     gap: rem(30);
-    max-width: 74%;
-    align-items: flex-end;
+    max-width: 100%;
+    align-items: stretch;
   }
+}
+
+// ボックスのwrapper
+.homestay-hero-box-wrapper {
+  position: relative;
+  width: 80%;
+  max-width: rem(300);
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(md) {
+    width: auto;
+    flex: 1;
+  }
+  
   @include breakpoint-up(xl) {
-    bottom: rem(25);
+    // 最初のボックスの特別なmax-widthを削除して統一
+    max-width: rem(500);
+  }
+}
+
+// point01ラベル
+.homestay-hero-box-label {
+  top: rem(-10);
+  left: rem(10);
+  z-index: 10;
+  display: flex;
+  padding-bottom: rem(5);
+  align-items: baseline;
+}
+
+.homestay-hero-box-point {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+}
+
+.homestay-hero-box-number {
+  @include typography-ja-l($font-weight-semibold);
+  color: transparent;
+  padding: rem(2) rem(6);
+  border-radius: rem(2);
+  position: relative;
+  -webkit-text-stroke: 1.5px $color-text-primary;
+  text-stroke: 1.5px $color-text-primary;
+  background: transparent;
+  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: rem(2);
+    left: rem(2);
+    right: rem(2);
+    height: calc(50% - rem(1));
+    background: #FCDCB0;
+    z-index: -1;
+    border-radius: 0 0 rem(1) rem(1);
   }
 }
 
 .homestay-hero-box {
-  background: $color-background-tertiary;
-  border-radius: $radius-l;
+  border-radius: $radius-m;
+  border: 2px solid $color-border-new;
   padding: rem(20);
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  flex: 1;
   
   @include breakpoint-up(md) {
     padding: rem(36) rem(24) rem(24);
-    flex: 1;
-    width: rem(260);
-    height: rem(260);
-    border-radius: 100%;
   }
   
   @include breakpoint-up(xl) {
-    padding: rem(50) rem(36) rem(24);
-    flex: 1;
-    width: rem(340);
-    height: rem(340);
-  }
-  &:first-child {
-    @include breakpoint-up(md) {
-      margin-bottom: rem(30);
-    }
-    @include breakpoint-up(lg) {
-    margin-bottom: rem(30);
-    }
-    @include breakpoint-up(xl) {
-      margin-bottom: rem(50);
-    }
+    padding: rem(50) rem(36);
   }
 }
 
@@ -1090,23 +1118,16 @@ const breadcrumbItems = [
   @include typography-ja-m($font-weight-semibold);
   color: $color-text-primary;
   margin: 0 0 rem(16) 0;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-  z-index: 1;
+  text-align: left;
+
+  @include breakpoint-up(md) {
+    margin: 0 0 rem(24) 0;
+  }
+  @include breakpoint-up(xl) {
+    margin: 0 0 rem(40) 0;
+  }
   @include breakpoint-up(xl) {
     @include typography-ja-l($font-weight-semibold);
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: #FCDCB0;
-    z-index: -1;
   }
 }
 
@@ -1121,7 +1142,7 @@ const breadcrumbItems = [
   display: flex;
   flex-direction: column;
   gap: rem(12);
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
 }
 
@@ -1130,20 +1151,16 @@ const breadcrumbItems = [
   align-items: center;
   gap: rem(8);
   width: auto;
-  
-  &:first-child {
-    margin-left: 0;
-  }
-  
-  &:last-child {
-    margin-left: rem(26); // チェックマークの左端を揃える調整
-  }
 }
 
 .homestay-hero-check-mark {
   width: rem(18);
   height: rem(18);
   flex-shrink: 0;
+  @include breakpoint-up(xl) {
+    width: rem(24);
+    height: rem(24);
+  }
 }
 
 .homestay-hero-check-text {
@@ -1171,6 +1188,7 @@ const breadcrumbItems = [
   margin: 0;
   font-size: rem(12);
   line-height: 1.5;
+  text-align: left;
 }
 
 // お泊りセット画像
@@ -1183,29 +1201,29 @@ const breadcrumbItems = [
   }
 }
 
-// モバイルでボックス1が画像にかぶるスタイル
-@media (max-width: 767px) {
-  .homestay-hero-content {
-    position: relative;
-  }
-  
-  .homestay-hero-boxes {
-    margin-top: rem(-70); // 画像に40px程度重ねる
-    @include breakpoint-up(md) {
-      margin-top: 0;
-    }
-  }
-  
-  .homestay-hero-box:first-child {
-    position: relative;
-    z-index: 5;
-  }
-}
+// モバイル用の調整（新しいセクションでは不要なのでコメントアウト）
+// @media (max-width: 767px) {
+//   .homestay-hero-content {
+//     position: relative;
+//   }
+//   
+//   .homestay-hero-boxes {
+//     margin-top: rem(-70); // 画像に40px程度重ねる
+//     @include breakpoint-up(md) {
+//       margin-top: 0;
+//     }
+//   }
+//   
+//   .homestay-hero-box:first-child {
+//     position: relative;
+//     z-index: 5;
+//   }
+// }
 
 // こんなご不安ありませんか？セクション
 .homestay-concerns-section {
   padding: rem(90) 0 0 0;
-  background: $color-background-primary;
+  background: $color-background-tertiary;
   
   @include breakpoint-up(sm) {
     padding: rem(120) 0 0 0;
@@ -1291,7 +1309,7 @@ const breadcrumbItems = [
 }
 
 .homestay-concerns-bubble {
-  background: $color-background-tertiary;
+  background: $color-background-primary;
   border-radius: rem(24);
   padding: rem(20) rem(24);
   position: relative;
@@ -1314,7 +1332,7 @@ const breadcrumbItems = [
   &::before {
     content: '';
     position: absolute;
-    background: $color-background-tertiary;
+    background: $color-background-primary;
     border-radius: 50%;
     border: rem(1) solid $color-border-new;
   }
