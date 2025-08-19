@@ -10,8 +10,8 @@ import lineIcon from '../../assets/icons/icon_line-01.svg';
 import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
 import { getAllStores } from '../../lib/api/stores';
 
-// 店舗データを取得
-const stores = (await getAllStores()).sort((a, b) => a.storeName.localeCompare(b.storeName));
+// 店舗データを取得（APIの生の順番を維持）
+const stores = await getAllStores();
 
 // パンくずリストのデータ
 const breadcrumbItems = [
@@ -241,7 +241,7 @@ const breadcrumbItems = [
                   <img src={phoneIcon.src} alt="" class="contact-button__icon" />
                 </a>
                 <!-- LINEボタン -->
-                <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+                <a href={store.storeLine ? `https://lin.ee/${store.storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="contact-button contact-button--line">
                   <span class="contact-button__line"></span>
                   <div class="contact-button__content">
                     <span class="contact-button__text">{store.storeName}</span>
@@ -275,7 +275,7 @@ const breadcrumbItems = [
                 <div class="mobile-cta-button__text">{stores[0]?.storeName}TEL</div>
               </a>
               
-              <a href={stores[0]?.storeLine || '#'} class="mobile-cta-button">
+              <a href={stores[0]?.storeLine ? `https://lin.ee/${stores[0].storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
                 <div class="mobile-cta-button__icon">
                   <img src={lineIcon.src} alt="LINEアイコン" />
                 </div>
@@ -289,7 +289,7 @@ const breadcrumbItems = [
                 <div class="mobile-cta-button__text">{stores[1]?.storeName}TEL</div>
               </a>
               
-              <a href={stores[1]?.storeLine || '#'} class="mobile-cta-button">
+              <a href={stores[1]?.storeLine ? `https://lin.ee/${stores[1].storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
                 <div class="mobile-cta-button__icon">
                   <img src={lineIcon.src} alt="LINEアイコン" />
                 </div>
@@ -306,7 +306,7 @@ const breadcrumbItems = [
                 <div class="mobile-cta-button__text">{stores[2]?.storeName}TEL</div>
               </a>
               
-              <a href={stores[2]?.storeLine || '#'} class="mobile-cta-button">
+              <a href={stores[2]?.storeLine ? `https://lin.ee/${stores[2].storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
                 <div class="mobile-cta-button__icon">
                   <img src={lineIcon.src} alt="LINEアイコン" />
                 </div>

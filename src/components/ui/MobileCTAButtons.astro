@@ -2,7 +2,16 @@
 import phoneIcon from '../../assets/icons/icon_store-phone-01.svg';
 import lineIcon from '../../assets/icons/icon_line-01.svg';
 import mailIcon from '../../assets/icons/icon_store-mail-01.svg';
+import { getAllStores } from '../../lib/api/stores/queries';
 import './MobileCTAButtons.scss';
+
+// 全店舗情報を取得（APIの生の順番を維持）
+const stores = await getAllStores();
+
+console.log('店舗情報（API順）:', stores.map(store => ({ 
+  name: store.storeName, 
+  line: store.storeLine 
+})));
 ---
 
 <!-- sm未満時のみ表示される画面最下端のCTAボタン群 -->
@@ -15,52 +24,46 @@ import './MobileCTAButtons.scss';
 
   <!-- CTAボタン群（初期状態では非表示） -->
   <div class="mobile-cta-content" id="mobile-cta-content">
-    <!-- 上段：店舗ボタン4つ -->
+    <!-- 上段：最初の2店舗のボタン（電話・LINE） -->
     <div class="mobile-cta-row">
-      <a href="tel:03-1234-5678" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={phoneIcon.src} alt="電話アイコン" />
-        </div>
-        <div class="mobile-cta-button__text">新宿店TEL</div>
-      </a>
-      
-      <a href="https://line.me/R/ti/p/shinjuku-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={lineIcon.src} alt="LINEアイコン" />
-        </div>
-        <div class="mobile-cta-button__text">新宿店LINE</div>
-      </a>
-      
-      <a href="tel:03-8765-4321" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={phoneIcon.src} alt="電話アイコン" />
-        </div>
-        <div class="mobile-cta-button__text">池袋店TEL</div>
-      </a>
-      
-      <a href="https://line.me/R/ti/p/ikebukuro-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={lineIcon.src} alt="LINEアイコン" />
-        </div>
-        <div class="mobile-cta-button__text">池袋店LINE</div>
-      </a>
+      {stores.slice(0, 2).map((store) => (
+        <>
+          <a href={`tel:${store.storePhoneNumber}`} class="mobile-cta-button">
+            <div class="mobile-cta-button__icon">
+              <img src={phoneIcon.src} alt="電話アイコン" />
+            </div>
+            <div class="mobile-cta-button__text">{store.storeName}TEL</div>
+          </a>
+          
+          <a href={store.storeLine ? `https://lin.ee/${store.storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
+            <div class="mobile-cta-button__icon">
+              <img src={lineIcon.src} alt="LINEアイコン" />
+            </div>
+            <div class="mobile-cta-button__text">{store.storeName}LINE</div>
+          </a>
+        </>
+      ))}
     </div>
 
-    <!-- 下段：渋谷店ボタン2つとメールボタン -->
+    <!-- 下段：3番目の店舗のボタンとメールボタン -->
     <div class="mobile-cta-row">
-      <a href="tel:03-2468-1357" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={phoneIcon.src} alt="電話アイコン" />
-        </div>
-        <div class="mobile-cta-button__text">渋谷店TEL</div>
-      </a>
-      
-      <a href="https://line.me/R/ti/p/shibuya-cattleya" target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
-        <div class="mobile-cta-button__icon">
-          <img src={lineIcon.src} alt="LINEアイコン" />
-        </div>
-        <div class="mobile-cta-button__text">渋谷店LINE</div>
-      </a>
+      {stores[2] && (
+        <>
+          <a href={`tel:${stores[2].storePhoneNumber}`} class="mobile-cta-button">
+            <div class="mobile-cta-button__icon">
+              <img src={phoneIcon.src} alt="電話アイコン" />
+            </div>
+            <div class="mobile-cta-button__text">{stores[2].storeName}TEL</div>
+          </a>
+          
+          <a href={stores[2].storeLine ? `https://lin.ee/${stores[2].storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="mobile-cta-button">
+            <div class="mobile-cta-button__icon">
+              <img src={lineIcon.src} alt="LINEアイコン" />
+            </div>
+            <div class="mobile-cta-button__text">{stores[2].storeName}LINE</div>
+          </a>
+        </>
+      )}
       
       <a href="/contact#mail-contact" class="mobile-cta-button mobile-cta-button--half">
         <div class="mobile-cta-button__icon">

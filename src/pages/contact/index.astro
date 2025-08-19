@@ -89,7 +89,7 @@ const breadcrumbItems = [
       <div class="container">
         <h2 class="phone-contact-title">お電話</h2>
         <div class="phone-contact-buttons">
-          {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
+          {stores.map((store) => (
             <a href={`tel:${store.storePhoneNumber}`} class="contact-button contact-button--phone">
               <span class="contact-button__line"></span>
               <div class="contact-button__content">
@@ -108,8 +108,8 @@ const breadcrumbItems = [
       <div class="container">
         <h2 class="line-contact-title">LINE</h2>
         <div class="line-contact-buttons">
-          {stores.sort((a, b) => a.storeName.localeCompare(b.storeName)).map((store) => (
-            <a href={store.storeLine || '#'} class="contact-button contact-button--line">
+          {stores.map((store) => (
+            <a href={store.storeLine ? `https://lin.ee/${store.storeLine}` : '#'} target="_blank" rel="noopener noreferrer" class="contact-button contact-button--line">
               <span class="contact-button__line"></span>
               <div class="contact-button__content">
                 <span class="contact-button__text">{store.storeName}</span>
