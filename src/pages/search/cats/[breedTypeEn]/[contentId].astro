@@ -4,7 +4,7 @@ import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
 import { getBreedsByAnimalType } from '../../../../lib/api/pets';
 import { getStoreById } from '../../../../lib/api/stores';
 import { getVoices } from '../../../../lib/api/voice';
-import { getImageUrl, getGoogleDriveVideoUrl, getGoogleDriveVideoThumbnail } from '../../../../lib/utils/image';
+import { getImageUrl } from '../../../../lib/utils/image';
 import { formatDate } from '../../../../lib/utils/date';
 import MaleIcon from '../../../../assets/icons/icon_male.svg?raw';
 import FemaleIcon from '../../../../assets/icons/icon_female.svg?raw';
@@ -21,11 +21,26 @@ import '../../../../styles/pages/pet-detail.scss';
 export async function getStaticPaths() {
   try {
     const allCats = await getLatestPetsByType('cat');
+    console.log('[getStaticPaths] 全猫データ数:', allCats.length);
+    console.log('[getStaticPaths] 最初の5匹の猫の分類:', allCats.slice(0, 5).map(p => ({ id: p.id, classification: p.classification, breedTypeJa: p.breedTypeJa })));
+    
     const bloodlineCats = allCats.filter(pet => pet.classification === 'bloodline');
+    console.log('[getStaticPaths] 血統書付き猫の数:', bloodlineCats.length);
     
     if (bloodlineCats.length === 0) {
       console.log('[getStaticPaths] 血統書付き猫が存在しません');
-      return [];
+      // 血統書付きがない場合でも全ての猫で詳細ページを作成
+      const allValidCats = allCats.filter(pet => pet.breedTypeEn && pet.id);
+      console.log('[getStaticPaths] 全猫で詳細ページを作成:', allValidCats.length);
+      
+      const paths = allValidCats.map((pet) => ({
+        params: { 
+          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          contentId: pet.id
+        }
+      }));
+      
+      return paths;
     }
     
     const paths = bloodlineCats
@@ -59,6 +74,7 @@ console.log('contentId:', contentId);
 
 // ペット詳細データを取得
 const allCats = await getLatestPetsByType('cat');
+console.log('[ペット詳細] 全猫データ数:', allCats.length);
 const pet = allCats.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
 
 if (!pet) {
@@ -113,13 +129,12 @@ mediaSlots.forEach((slot, index) => {
         alt: `${pet.breedTypeJa}の${slot.label}`
       });
     } else if (slot.type === 'video') {
-      const convertedVideoUrl = getGoogleDriveVideoUrl(slot.url);
-      // 動画のサムネイルも画像と同じ処理を使用（以前の動作していた方法）
+      // microCMSの動画URLをそのまま使用
       const videoThumbnail = getImageUrl(slot.url, 150, 150);
       
       mediaItems.push({
         type: 'video',
-        url: convertedVideoUrl,
+        url: slot.url,
         thumbnail: videoThumbnail,
         alt: `${pet.breedTypeJa}の${slot.label}`
       });
@@ -255,7 +270,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                     </svg>
                   </button>
                   
-                  <div class="carousel__container">
+                  <div class="carousel__container" id="carousel-container">
                     {mediaItems.map((item, index) => (
                       <div 
                         class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
@@ -269,16 +284,20 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                             loading={index === 0 ? 'eager' : 'lazy'}
                           />
                         ) : (
-                          <iframe
-                            src=""
-                            data-video-src={item.url}
-                            class="carousel__video"
-                            allow="autoplay; fullscreen"
-                            allowfullscreen
-                            frameborder="0"
-                            webkitallowfullscreen
-                            mozallowfullscreen
-                          ></iframe>
+                          <div class="carousel__video-container">
+                            <video
+                              class="carousel__video"
+                              data-video-src={item.url}
+                              preload="metadata"
+                              muted
+                              playsInline
+                            ></video>
+                            <div class="carousel__video-play-btn">
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+                                <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                              </svg>
+                            </div>
+                          </div>
                         )}
                       </div>
                     ))}
@@ -306,15 +325,13 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                         />
                       ) : (
                         <div class="carousel__thumbnail-video">
-                          <iframe
-                            src={item.url}
+                          <video
                             class="carousel__thumbnail-video-element"
-                            allow="autoplay; fullscreen"
-                            allowfullscreen
-                            frameborder="0"
-                            webkitallowfullscreen
-                            mozallowfullscreen
-                          ></iframe>
+                            data-video-src={item.url}
+                            preload="metadata"
+                            muted
+                            playsInline
+                          ></video>
                           <div class="carousel__thumbnail-play-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                               <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
@@ -355,20 +372,18 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                   {(pet.mixFatherBreed || pet.mixMotherBreed) && (
                     <div class="pet-info__item">
                       <dt class="pet-info__label">両親情報</dt>
-                      <dd class="pet-info__value">
-                        {pet.mixFatherBreed && `父：${pet.mixFatherBreed}`}
-                        {pet.mixFatherBreed && pet.mixMotherBreed && "　"}
-                        {pet.mixMotherBreed && `母：${pet.mixMotherBreed}`}
+                      <dd class="pet-info__value pet-info__value--parents">
+                        {pet.mixFatherBreed && <span class="parent-info">父：{pet.mixFatherBreed}</span>}
+                        {pet.mixMotherBreed && <span class="parent-info">母：{pet.mixMotherBreed}</span>}
                       </dd>
                     </div>
                   )}
                   {(pet.fatherWeight || pet.motherWeight) && (
                     <div class="pet-info__item">
                       <dt class="pet-info__label">両親体重</dt>
-                      <dd class="pet-info__value">
-                        {pet.fatherWeight && `父：${pet.fatherWeight}kg`}
-                        {pet.fatherWeight && pet.motherWeight && "　"}
-                        {pet.motherWeight && `母：${pet.motherWeight}kg`}
+                      <dd class="pet-info__value pet-info__value--parents">
+                        {pet.fatherWeight && <span class="parent-info">父：{pet.fatherWeight}kg</span>}
+                        {pet.motherWeight && <span class="parent-info">母：{pet.motherWeight}kg</span>}
                       </dd>
                     </div>
                   )}
@@ -391,7 +406,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
               <div class="pet-detail__actions">
                 <div class="action-buttons">
                   <a 
-                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\\nNo.${pet.id.replace(/^0+/, '') || pet.id}\\nHP`)}` : '#'}
+                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\nNo.${pet.id.replace(/^0+/, '') || pet.id}\nHP`)}` : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="action-button action-button--link"
@@ -406,7 +421,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
 
                   <a 
                     href={`/contact?pet=${pet.id}#inquiry-number-label`}
-                    class="action-button action-button--link"
+                    class="action-button action-button--mail"
                   >
                     <div class="action-button__icon">
                       <img src="/icons/icon_store-mail-01.svg" alt="メールアイコン" width="32" height="32" />
@@ -416,7 +431,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                     </div>
                   </a>
 
-                  <button class="action-button">
+                  <button class="action-button action-button--phone">
                     <div class="action-button__icon">
                       <img src="/icons/icon_store-phone-01.svg" alt="電話アイコン" width="32" height="32" />
                     </div>
@@ -480,7 +495,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
           <div class="pets-grid">
             {allRecommendedPets.map((recommendedPet, index) => (
               <div class={`pet-card ${index >= 2 ? 'pet-card--lg-only' : ''}`} data-animal-type={recommendedPet.animalType}>
-                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${recommendedPet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((recommendedPet.breedTypeEn || '').toLowerCase())}/${recommendedPet.id}`} class="pet-card__link">
+                <a href={`/search/${pet.animalType === 'cat' ? 'cats' : 'dogs'}/${recommendedPet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((recommendedPet.breedTypeEn || '').toLowerCase())}/${recommendedPet.id}`} class="pet-card__link">
                   <div class="pet-card__inner">
                     <div class="pet-card__image-container">
                       <img
@@ -591,75 +606,401 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
 
     <!-- お問い合わせCTAセクション -->
     <ContactCTASection />
+
+    <!-- モーダル -->
+    <div id="media-modal" class="media-modal">
+      <div class="media-modal__overlay"></div>
+      <div class="media-modal__content">
+        <button class="media-modal__close" id="modal-close">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+        
+        <!-- ナビゲーションボタン -->
+        <button class="media-modal__nav media-modal__nav--prev" id="modal-prev">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <button class="media-modal__nav media-modal__nav--next" id="modal-next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        
+        <div class="media-modal__media" id="modal-media">
+          <!-- メディア内容がJavaScriptで動的に挿入される -->
+        </div>
+      </div>
+    </div>
   </main>
 </Layout>
 
-<script define:vars={{ mediaItemsCount: mediaItems.length }}>
-  let currentSlide = 0;
-  
-  const slides = document.querySelectorAll('.carousel__slide');
-  const thumbnails = document.querySelectorAll('.carousel__thumbnail');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+<script define:vars={{ mediaItemsCount: mediaItems.length, mediaItems }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Pet detail page initialized with HTML5 video support');
+    
+    let currentSlide = 0;
+    let currentModalSlide = 0; // モーダル用の現在のスライドインデックス
+    
+    // モーダル関連
+    const modal = document.getElementById('media-modal');
+    const modalMedia = document.getElementById('modal-media');
+    const modalClose = document.getElementById('modal-close');
+    const modalOverlay = modal ? modal.querySelector('.media-modal__overlay') : null;
+    const modalPrev = document.getElementById('modal-prev');
+    const modalNext = document.getElementById('modal-next');
+    
+    // カルーセル関連
+    const slides = document.querySelectorAll('.carousel__slide');
+    const thumbnails = document.querySelectorAll('.carousel__thumbnail');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    console.log(`🎯 Found ${slides.length} slides, ${thumbnails.length} thumbnails`);
 
-  function showSlide(index) {
-    // スライドを切り替え
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('carousel__slide--active', i === index);
+    function openModal(mediaItem, slideIndex = currentSlide) {
+      console.log('🎬 Opening modal with HTML5 video:', mediaItem);
       
-      // 動画の遅延読み込み制御
-      const iframe = slide.querySelector('.carousel__video');
-      if (iframe) {
-        if (i === index) {
-          // アクティブなスライドの動画を読み込み
-          if (iframe.dataset.videoSrc && iframe.src !== iframe.dataset.videoSrc) {
-            iframe.src = iframe.dataset.videoSrc;
-          }
+      // 現在のモーダルスライドを設定
+      currentModalSlide = slideIndex;
+      updateModalNavButtons();
+      
+      // メディア内容をクリア
+      modalMedia.innerHTML = '';
+      
+      if (mediaItem.type === 'image') {
+        const img = document.createElement('img');
+        img.src = mediaItem.url;
+        img.alt = mediaItem.alt;
+        img.className = 'media-modal__image';
+        modalMedia.appendChild(img);
+        console.log('🖼️ Image added to modal');
+      } else if (mediaItem.type === 'video') {
+        // HTML5 video要素を作成
+        const video = document.createElement('video');
+        
+        let videoUrl = mediaItem.url;
+        
+        video.src = videoUrl;
+        video.controls = true;
+        video.autoplay = true;
+        video.muted = false;
+        video.preload = 'metadata';
+        video.playsInline = true;
+        
+        // 動画のアスペクト比を検出してCSSクラスを適用
+        const urlLower = mediaItem.url.toLowerCase();
+        let videoClass = 'media-modal__video';
+        
+        if (urlLower.includes('vertical') || 
+            urlLower.includes('portrait') || 
+            urlLower.includes('9-16') ||
+            urlLower.includes('916') ||
+            urlLower.includes('tiktok') ||
+            urlLower.includes('story')) {
+          videoClass += ' vertical-video';
+          console.log('🎬 Applied vertical-video class');
+        } else if (urlLower.includes('square') || 
+                   urlLower.includes('1-1') ||
+                   urlLower.includes('11') ||
+                   urlLower.includes('instagram')) {
+          videoClass += ' square-video';
+          console.log('🎬 Applied square-video class');
         } else {
-          // 非アクティブなスライドの動画を停止
-          if (iframe.src && iframe.src !== '') {
-            iframe.src = '';
+          console.log('🎬 Applied default horizontal video class');
+        }
+        
+        video.className = videoClass;
+        
+        // 動画メタデータ読み込み後のイベントハンドラー
+        video.addEventListener('loadedmetadata', () => {
+          console.log('🎬 Video metadata loaded:', {
+            videoWidth: video.videoWidth,
+            videoHeight: video.videoHeight,
+            duration: video.duration,
+            aspectRatio: video.videoWidth / video.videoHeight
+          });
+          
+          // 実際のアスペクト比に基づいてクラスを再調整
+          const actualAspectRatio = video.videoWidth / video.videoHeight;
+          video.classList.remove('vertical-video', 'square-video');
+          
+          if (actualAspectRatio < 1) {
+            video.classList.add('vertical-video');
+            console.log('🎬 Updated to vertical-video based on actual dimensions');
+          } else if (Math.abs(actualAspectRatio - 1) < 0.1) {
+            video.classList.add('square-video');
+            console.log('🎬 Updated to square-video based on actual dimensions');
+          } else {
+            console.log('🎬 Using default horizontal layout based on actual dimensions');
+          }
+        });
+        
+        // エラーハンドリング
+        video.addEventListener('error', (e) => {
+          console.error('🎬 Video playback error:', e);
+        });
+        
+        modalMedia.appendChild(video);
+        console.log('🎬 HTML5 video added to modal');
+      }
+      
+      modal.classList.add('media-modal--active');
+      document.body.style.overflow = 'hidden';
+      console.log('✅ Modal opened with HTML5 video support');
+    }
+
+    function closeModal() {
+      modal.classList.remove('media-modal--active');
+      document.body.style.overflow = '';
+      modalMedia.innerHTML = '';
+      console.log('❌ Modal closed');
+    }
+
+    function updateModalNavButtons() {
+      if (modalPrev) {
+        modalPrev.disabled = currentModalSlide === 0;
+      }
+      if (modalNext) {
+        modalNext.disabled = currentModalSlide === mediaItemsCount - 1;
+      }
+    }
+
+    function showModalSlide(index) {
+      if (index < 0 || index >= mediaItemsCount) return;
+      
+      const mediaItem = mediaItems[index];
+      if (mediaItem) {
+        openModal(mediaItem, index);
+        
+        // メインカルーセルも同期して更新
+        showSlide(index);
+      }
+    }
+
+    function nextModalSlide() {
+      if (currentModalSlide < mediaItemsCount - 1) {
+        showModalSlide(currentModalSlide + 1);
+      }
+    }
+
+    function prevModalSlide() {
+      if (currentModalSlide > 0) {
+        showModalSlide(currentModalSlide - 1);
+      }
+    }
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('carousel__slide--active', i === index);
+        
+        // HTML5 video要素の制御
+        const video = slide.querySelector('.carousel__video');
+        const playBtn = slide.querySelector('.carousel__video-play-btn');
+        
+        if (video && video.dataset.videoSrc) {
+          if (i === index) {
+            // アクティブなスライドでは動画URLを設定、再生ボタンを表示
+            const videoUrl = video.dataset.videoSrc;
+            console.log('🎬 Loading main carousel video with URL:', videoUrl);
+            video.src = videoUrl;
+            
+            // メタデータ読み込み後に最初のフレームを表示
+            video.addEventListener('loadedmetadata', () => {
+              console.log('🎬 Main carousel video metadata loaded');
+              video.currentTime = 0.5; // 0.5秒地点のフレームを表示
+            });
+            
+            video.addEventListener('seeked', () => {
+              console.log('🎬 Main carousel video seeked to first frame');
+              video.pause(); // 最初のフレームで一時停止
+            });
+            
+            if (playBtn) playBtn.style.display = 'flex';
+          } else {
+            // 非アクティブなスライドの動画をリセット
+            video.src = '';
+            video.pause();
+            if (playBtn) playBtn.style.display = 'flex';
           }
         }
+      });
+
+      // サムネイルを切り替え
+      thumbnails.forEach((thumb, i) => {
+        thumb.classList.toggle('carousel__thumbnail--active', i === index);
+      });
+
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      const next = (currentSlide + 1) % mediaItemsCount;
+      showSlide(next);
+    }
+
+    function prevSlide() {
+      const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
+      showSlide(prev);
+    }
+
+    // イベントリスナー
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+    // サムネイルクリック
+    thumbnails.forEach((thumb, index) => {
+      thumb.addEventListener('click', () => showSlide(index));
+    });
+
+    // タッチスワイプ機能（メインカルーセル）
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50;
+
+    function handleMainCarouselSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance > 0) {
+          // 右スワイプ（前のスライド）
+          prevSlide();
+        } else {
+          // 左スワイプ（次のスライド）
+          nextSlide();
+        }
+      }
+    }
+
+    const carouselContainer = document.getElementById('carousel-container');
+    if (carouselContainer) {
+      carouselContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      });
+
+      carouselContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].clientX;
+        handleMainCarouselSwipe();
+      });
+    }
+
+
+    // メインカルーセルクリック時にモーダル表示
+    slides.forEach((slide, index) => {
+      slide.addEventListener('click', (e) => {
+        // ナビゲーションボタンのクリックは無視
+        if (e.target.closest('.carousel__nav')) {
+          console.log('Navigation button clicked, ignoring');
+          return;
+        }
+        
+        console.log('🎯 Slide clicked, current slide index:', currentSlide);
+        // 現在表示されているスライドに対応するメディアアイテムを取得
+        const currentMedia = mediaItems[currentSlide];
+        if (currentMedia) {
+          console.log('🎯 Opening modal for media:', currentMedia.type, currentMedia.url);
+          openModal(currentMedia);
+        }
+      });
+    });
+
+    // モーダル閉じるイベント
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+    
+    // モーダルナビゲーションイベント
+    if (modalPrev) modalPrev.addEventListener('click', prevModalSlide);
+    if (modalNext) modalNext.addEventListener('click', nextModalSlide);
+
+    // タッチスワイプ機能（モーダル）
+    let modalTouchStartX = 0;
+    let modalTouchEndX = 0;
+
+    function handleModalSwipe() {
+      const swipeDistance = modalTouchEndX - modalTouchStartX;
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance > 0) {
+          // 右スワイプ（前のスライド）
+          prevModalSlide();
+        } else {
+          // 左スワイプ（次のスライド）
+          nextModalSlide();
+        }
+      }
+    }
+
+    if (modalMedia) {
+      modalMedia.addEventListener('touchstart', (e) => {
+        modalTouchStartX = e.touches[0].clientX;
+      });
+
+      modalMedia.addEventListener('touchend', (e) => {
+        modalTouchEndX = e.changedTouches[0].clientX;
+        handleModalSwipe();
+      });
+    }
+    
+    // ESCキーでモーダルを閉じる、左右矢印キーでモーダル内ナビゲーション
+    document.addEventListener('keydown', (e) => {
+      if (modal.classList.contains('media-modal--active')) {
+        if (e.key === 'Escape') {
+          closeModal();
+        } else if (e.key === 'ArrowLeft') {
+          prevModalSlide();
+        } else if (e.key === 'ArrowRight') {
+          nextModalSlide();
+        }
+      } else {
+        // モーダルが開いていない場合のカルーセルナビゲーション
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
       }
     });
 
-    // サムネイルを切り替え
-    thumbnails.forEach((thumb, i) => {
-      thumb.classList.toggle('carousel__thumbnail--active', i === index);
-    });
-
-    currentSlide = index;
-  }
-
-  function nextSlide() {
-    const next = (currentSlide + 1) % mediaItemsCount;
-    showSlide(next);
-  }
-
-  function prevSlide() {
-    const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
-    showSlide(prev);
-  }
-
-  // イベントリスナー
-  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-
-  // サムネイルクリック
-  thumbnails.forEach((thumb, index) => {
-    thumb.addEventListener('click', () => showSlide(index));
+    // サムネイル動画の最初のフレームを表示
+    function loadVideoThumbnails() {
+      const thumbnailVideos = document.querySelectorAll('.carousel__thumbnail-video-element[data-video-src]');
+      console.log('🎬 Found thumbnail videos:', thumbnailVideos.length);
+      
+      thumbnailVideos.forEach((video, index) => {
+        const videoUrl = video.dataset.videoSrc;
+        if (videoUrl) {
+          console.log(`🎬 Loading thumbnail for video ${index}:`, videoUrl);
+          
+          // 動画のsrcを設定
+          video.src = videoUrl;
+          video.currentTime = 0.5; // 0.5秒地点のフレームを取得
+          
+          // メタデータが読み込まれたら最初のフレームに移動
+          video.addEventListener('loadedmetadata', () => {
+            console.log(`🎬 Video ${index} metadata loaded`);
+            video.currentTime = 0.5; // 0.5秒地点
+          });
+          
+          // フレームが読み込まれたら一時停止
+          video.addEventListener('seeked', () => {
+            console.log(`🎬 Video ${index} seeked to first frame`);
+            video.pause();
+          });
+          
+          // エラーハンドリング
+          video.addEventListener('error', (e) => {
+            console.error(`🎬 Error loading thumbnail video ${index}:`, e);
+          });
+        }
+      });
+    }
+    
+    // 初期表示
+    showSlide(0);
+    
+    // サムネイル動画を初期化
+    setTimeout(loadVideoThumbnails, 100);
+    
+    console.log('✅ All event listeners set up with HTML5 video support');
   });
-
-  // キーボードナビゲーション
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') prevSlide();
-    if (e.key === 'ArrowRight') nextSlide();
-  });
-
-  // 初期表示
-  showSlide(0);
-
 
   // シェア機能
   const shareButtons = document.querySelectorAll('.share-button');
@@ -707,3 +1048,4 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
     });
   });
 </script>
+

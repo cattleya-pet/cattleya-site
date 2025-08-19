@@ -99,6 +99,8 @@
   @include breakpoint-up(lg) {
     flex-direction: row;
     gap: rem(60);
+    max-width: rem(1420); // carousel(680) + gap(60) + sidebar(680) = 1420
+    margin: 0 auto; // max-width到達時に中央配置
   }
 }
 
@@ -107,21 +109,63 @@
   
   @include breakpoint-up(lg) {
     width: 50%;
+    max-width: rem(680);
   }
 }
 
 .carousel__main {
   position: relative;
-  margin-bottom: rem(20);
+  margin-bottom: rem(12);
+  @include breakpoint-up(lg) {
+    margin-bottom: rem(20);
+  }
 }
 
 .carousel__container {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: $radius-m;
+  aspect-ratio: 4 / 3; // デフォルトのアスペクト比（画像用）
   overflow: hidden;
   background-color: $color-background;
+  cursor: pointer; // クリック可能であることを示す
+  transition: aspect-ratio 0.3s ease; // アスペクト比変更時のトランジション
+  
+  // sm未満で画面幅いっぱい + radius 0
+  width: calc(100% + 10vw);
+  margin-left: -5vw;
+  margin-right: -5vw;
+  border-radius: 0;
+  
+  @include breakpoint-up(sm) {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: $radius-m;
+  }
+  
+  &:hover {
+    opacity: 0.9;
+  }
+  
+  // 動的アスペクト比クラス
+  &.aspect-16-9 {
+    aspect-ratio: 16 / 9;
+  }
+  
+  &.aspect-9-16 {
+    aspect-ratio: 9 / 16;
+  }
+  
+  &.aspect-1-1 {
+    aspect-ratio: 1 / 1;
+  }
+  
+  &.aspect-3-4 {
+    aspect-ratio: 3 / 4;
+  }
+  
+  &.aspect-2-3 {
+    aspect-ratio: 2 / 3;
+  }
 }
 
 .carousel__slide {
@@ -145,10 +189,20 @@
 }
 
 .carousel__video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: $radius-m;
+  object-fit: cover; // カルーセルフレームでトリミング表示
+  
+  // sm未満で radius 0
+  border-radius: 0;
+  
+  @include breakpoint-up(sm) {
+    border-radius: $radius-m;
+  }
 }
 
 .carousel__video-container {
@@ -157,7 +211,22 @@
   height: 100%;
   cursor: pointer;
   overflow: hidden;
-  border-radius: $radius-m;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  
+  // sm未満で radius 0
+  border-radius: 0;
+  
+  @include breakpoint-up(sm) {
+    border-radius: $radius-m;
+  }
+  
+  &:hover .carousel__video-play-btn {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 .carousel__video-thumbnail {
@@ -181,12 +250,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 10;
+  pointer-events: none; // 装飾のみ、クリック不可
   
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-    transform: translate(-50%, -50%) scale(1.1);
+  &--hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
   
   @include breakpoint-up(lg) {
@@ -196,10 +267,12 @@
   
   svg {
     margin-left: rem(4);
+    width: rem(32);
+    height: rem(32);
     
     @include breakpoint-up(lg) {
-      width: rem(60);
-      height: rem(60);
+      width: rem(48);
+      height: rem(48);
       margin-left: rem(6);
     }
   }
@@ -277,7 +350,7 @@
 .carousel__thumbnail {
   width: calc((100% - rem(6) * 3) / 4);
   height: auto;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   border: 2px solid transparent;
   border-radius: $radius-s;
   overflow: hidden;
@@ -285,8 +358,9 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   position: relative;
-  @include breakpoint-up(lg) {
-    border-radius: $radius-m;
+  
+  @include breakpoint-up(md) {
+    border-radius: $radius-m; // メインカルーセルと合わせる
   }
   @include breakpoint-up(xl) {
     width: calc((100% - rem(16) * 3) / 4);
@@ -303,6 +377,10 @@
     z-index: 1;
     pointer-events: none;
     border-radius: $radius-s;
+    
+    @include breakpoint-up(md) {
+      border-radius: $radius-m; // md以上でサムネイル本体と同じ
+    }
   }
   
   &:hover {
@@ -326,6 +404,9 @@
   justify-content: center;
   background-color: $color-background;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .carousel__thumbnail-video-element {
@@ -334,6 +415,11 @@
   object-fit: cover;
   display: block;
   border: none;
+  border-radius: $radius-s; // 画像サムネイルと同じradius
+  
+  @include breakpoint-up(md) {
+    border-radius: $radius-m; // md以上で画像サムネイルと同じ
+  }
   
   // iframe要素の場合の追加スタイル
   &[src] {
@@ -431,6 +517,22 @@ iframe.carousel__thumbnail-video-element {
   @include typography-ja-s;
   color: $color-text;
   margin: 0;
+  
+  &--parents {
+    display: flex;
+    flex-direction: column;
+    gap: rem(4);
+    
+    // 1400px以上では横並び
+    @media (min-width: 1400px) {
+      flex-direction: row;
+      gap: rem(16);
+    }
+  }
+}
+
+.parent-info {
+  display: inline-block;
 }
 
 .store-tag {
@@ -558,6 +660,12 @@ iframe.carousel__thumbnail-video-element {
   @include breakpoint-up(lg) {
     font-size: rem(12);
   }
+}
+
+// メールボタンと電話ボタンを同じ色に統一
+.pet-detail__actions .action-button--mail,
+.pet-detail__actions .action-button--phone {
+  border: 1px solid $color-text-primary;
 }
 
 .pet-detail__share {
@@ -1025,5 +1133,240 @@ iframe.carousel__thumbnail-video-element {
   
   @include breakpoint-up(sm) {
     @include typography-ja-s($font-weight-regular);
+  }
+}
+
+// メディアモーダル
+.media-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: none;
+  
+  &--active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.media-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+.media-modal__content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  z-index: 1;
+  border-radius: $radius-m;
+}
+
+.media-modal__close {
+  position: absolute;
+  // すべてのサイズで動画内側の右上に配置
+  top: rem(8);
+  right: rem(8);
+  width: rem(32);
+  height: rem(32);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: $color-text-primary;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10; // 動画の上に表示
+  
+  @include breakpoint-up(sm) {
+    top: rem(12);
+    right: rem(12);
+    width: rem(36);
+    height: rem(36);
+  }
+  
+  @include breakpoint-up(lg) {
+    top: rem(16);
+    right: rem(16);
+    width: rem(40);
+    height: rem(40);
+  }
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+  }
+  
+  svg {
+    width: rem(16);
+    height: rem(16);
+    
+    @include breakpoint-up(sm) {
+      width: rem(18);
+      height: rem(18);
+    }
+    
+    @include breakpoint-up(lg) {
+      width: rem(20);
+      height: rem(20);
+    }
+  }
+}
+
+.media-modal__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: rem(36);
+  height: rem(36);
+  border-radius: 50%;
+  background-color: $color-background;
+  border: 1px solid $color-text-tertiary;
+  color: $color-text-tertiary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 11;
+  transition: $transition-base;
+  padding: 0;
+  
+  @include breakpoint-up(sm) {
+    width: rem(40);
+    height: rem(40);
+  }
+  
+  @include breakpoint-up(lg) {
+    width: rem(44);
+    height: rem(44);
+  }
+  
+  &:hover {
+    background-color: #f8f9fa;
+    color: $color-text-primary;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      background-color: $color-background;
+      color: $color-text-tertiary;
+    }
+  }
+  
+  &--prev {
+    left: rem(-10);
+    
+    @include breakpoint-up(sm) {
+      left: rem(-20);
+    }
+  }
+  
+  &--next {
+    right: rem(-10);
+    
+    @include breakpoint-up(sm) {
+      right: rem(-20);
+    }
+  }
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.media-modal__media {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-modal__image {
+  // 縦4:横3の固定比率で画面内最大サイズ表示（動画と同じ）
+  aspect-ratio: 3 / 4; // 横3:縦4
+  object-fit: cover; // 画像をフレーム内でトリミング表示
+  border-radius: $radius-m;
+  
+  // 画面サイズに応じた最適サイズ（動画と同じ）
+  width: min(90vw, 67.5vh);
+  height: min(90vh, 120vw);
+  max-width: 90vw;
+  max-height: 90vh;
+  
+  @include breakpoint-up(sm) {
+    width: min(85vw, 67.5vh);
+    height: min(85vh, 113.3vw);
+    max-width: 85vw;
+    max-height: 85vh;
+  }
+  
+  @include breakpoint-up(md) {
+    width: min(70vw, 67.5vh);
+    height: min(75vh, 93.3vw);
+    max-width: 70vw;
+    max-height: 75vh;
+  }
+  
+  @include breakpoint-up(lg) {
+    width: min(80vw, 67.5vh);
+    height: min(80vh, 106.7vw);
+    max-width: 80vw;
+    max-height: 80vh;
+  }
+}
+
+// HTML5 video要素用のスタイル（iframe廃止）
+.media-modal__video {
+  border: none;
+  border-radius: $radius-m;
+  display: block;
+  object-fit: cover; // 黒い余白を完全に除去
+  
+  // 縦4:横3の固定比率で画面内最大サイズ表示
+  aspect-ratio: 3 / 4; // 横3:縦4
+  
+  // 画面の高さと幅の制限に基づいて最適なサイズを計算
+  // 高さ基準: 90vhの高さで3:4比率 → 幅は 90vh * 3/4 = 67.5vh
+  // 幅基準: 90vwの幅で3:4比率 → 高さは 90vw * 4/3 = 120vw
+  width: min(90vw, 67.5vh); // 画面幅の90%または高さ基準での最適幅の小さい方
+  height: min(90vh, 120vw); // 画面高さの90%または幅基準での最適高さの小さい方
+  max-width: 90vw;
+  max-height: 90vh;
+  
+  @include breakpoint-up(sm) {
+    width: min(85vw, 67.5vh);
+    height: min(85vh, 113.3vw);
+    max-width: 85vw;
+    max-height: 85vh;
+  }
+  
+  @include breakpoint-up(md) {
+    width: min(70vw, 67.5vh);
+    height: min(75vh, 93.3vw);
+    max-width: 70vw;
+    max-height: 75vh;
+  }
+  
+  @include breakpoint-up(lg) {
+    width: min(80vw, 67.5vh);
+    height: min(80vh, 106.7vw);
+    max-width: 80vw;
+    max-height: 80vh;
   }
 }
