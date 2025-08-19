@@ -406,7 +406,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
               <div class="pet-detail__actions">
                 <div class="action-buttons">
                   <a 
-                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`（こちらにお客様のフルネームをご入力ください）\nNo.${pet.id.replace(/^0+/, '') || pet.id}\nHP`)}` : '#'}
+                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`①（こちらにお客様のフルネームをご入力ください）\n②No.${pet.id.replace(/^0+/, '') || pet.id}\n③HP`)}` : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="action-button action-button--link"

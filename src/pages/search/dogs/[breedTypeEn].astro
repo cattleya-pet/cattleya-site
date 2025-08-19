@@ -130,6 +130,9 @@ const breadcrumbItems = [
       <div class="container">
         {initialDogs.length > 0 ? (
           <>
+            <div class="pets-count">
+              <span class="pets-count__number">{breedDogs.length}</span><span class="pets-count__unit">件</span>
+            </div>
             <div class="pets-grid" data-all-pets={JSON.stringify(breedDogs)}>
               {initialDogs.map((pet) => <PetCard pet={pet} />)}
             </div>

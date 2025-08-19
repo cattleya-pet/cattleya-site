@@ -98,6 +98,15 @@ const tabs = [
       
       petsGrid.replaceChildren(fragment);
     }
+
+    // 件数表示を更新
+    const petsCountElement = document.getElementById('pets-count');
+    if (petsCountElement) {
+      const numberElement = petsCountElement.querySelector('.pets-count__number');
+      if (numberElement) {
+        numberElement.textContent = currentPets.length.toString();
+      }
+    }
   }
 
   // 初期表示時に現在のアクティブタブに応じたペットを表示

@@ -33,6 +33,9 @@ const breadcrumbItems = [
     <section class="pets-section">
       <div class="container">
         <PetTabs activeTab="all" />
+        <div class="pets-count" id="pets-count">
+          <span class="pets-count__number">{allPets.length}</span><span class="pets-count__unit">件</span>
+        </div>
         <div
           class="pets-grid"
           data-all-pets={JSON.stringify(allPets)}

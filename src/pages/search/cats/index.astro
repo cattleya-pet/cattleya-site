@@ -76,6 +76,9 @@ const breadcrumbItems = [
     <BreedTags breeds={finalCatBreeds} animalType="cat" />
     <section class="pets-section pets-section--with-breed-tags">
       <div class="container">
+        <div class="pets-count">
+          <span class="pets-count__number">{allCats.length}</span><span class="pets-count__unit">件</span>
+        </div>
         <div class="pets-grid" data-all-pets={JSON.stringify(allCats)}>
           {initialCats.map((pet) => <PetCard pet={pet} />)}
         </div>
