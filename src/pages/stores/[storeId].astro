@@ -234,37 +234,24 @@ const breadcrumbItems = [
                           <img 
                             src={item.url}
                             alt={item.alt}
-                            class="carousel__image"
+                            class="carousel__image carousel__image--clickable"
                             loading={index === 0 ? 'eager' : 'lazy'}
                             onload="this.style.opacity='1'"
-                            style="opacity: 0; transition: opacity 0.3s ease;"
+                            style="opacity: 0; transition: opacity 0.3s ease; cursor: pointer;"
                           />
                         ) : (
                           <div class="carousel__video-container">
                             <video
-                              src={item.url}
                               class="carousel__video"
+                              data-video-src={item.url}
                               preload="metadata"
                               muted
-                              playsinline
-                              data-video-player="true"
-                              poster={item.thumbnail}
-                            >
-                              <source src={item.url} type="video/mp4">
-                              <p>お使いのブラウザは動画再生に対応していません。</p>
-                            </video>
-                            <div class="carousel__video-overlay" data-video-overlay="true">
-                              <button class="carousel__video-play-btn" data-video-play="true">
-                                <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
-                                  <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
-                                </svg>
-                              </button>
-                            </div>
-                            <div class="carousel__video-fallback" style="display: none;">
-                              <p>動画の読み込みに失敗しました</p>
-                              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                                動画ファイルを直接開く
-                              </a>
+                              playsInline
+                            ></video>
+                            <div class="carousel__video-play-btn">
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+                                <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                              </svg>
                             </div>
                           </div>
                         )}
@@ -295,10 +282,10 @@ const breadcrumbItems = [
                       ) : (
                         <div class="carousel__thumbnail-video">
                           <video 
-                            src={item.thumbnail}
                             class="carousel__thumbnail-video-element"
                             muted
                             preload="metadata"
+                            data-video-src={item.thumbnail}
                             data-video-thumbnail="true"
                           ></video>
                           <div class="carousel__thumbnail-play-icon">
@@ -494,244 +481,579 @@ const breadcrumbItems = [
     <!-- お問い合わせCTAセクション -->
     <ContactCTASection />
   </main>
+
+  <!-- モーダル -->
+  <div id="media-modal" class="media-modal">
+    <div class="media-modal__overlay"></div>
+    <div class="media-modal__content">
+      <button class="media-modal__close" id="modal-close">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <button class="media-modal__nav media-modal__nav--prev" id="modal-prev">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button class="media-modal__nav media-modal__nav--next" id="modal-next">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <div class="media-modal__media" id="modal-media">
+        <!-- メディアコンテンツがここに挿入されます -->
+      </div>
+    </div>
+  </div>
+
 </Layout>
 
-<script define:vars={{ mediaItemsCount: mediaItems.length }}>
-  let currentSlide = 0;
-  
-  const slides = document.querySelectorAll('.carousel__slide');
-  const thumbnails = document.querySelectorAll('.carousel__thumbnail');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+<script define:vars={{ mediaItemsCount: mediaItems.length, mediaItems: mediaItems }}>
+  // ページが読み込まれるまで待つ
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Store page JavaScript initialized');
+    
+    // メディアアイテムデータを準備（Astroから渡される）
+    const mediaItemsData = mediaItems;
+    const mediaItemsCount = mediaItems.length;
+    
+    console.log('Media items received:', mediaItemsData);
+    console.log('Media items count:', mediaItemsCount);
+    
+    let currentSlide = 0;
+    let currentModalSlide = 0;
+    
+    const slides = document.querySelectorAll('.carousel__slide');
+    const thumbnails = document.querySelectorAll('.carousel__thumbnail');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // モーダル要素
+    const modal = document.getElementById('media-modal');
+    const modalMedia = document.getElementById('modal-media');
+    const modalClose = document.getElementById('modal-close');
+    const modalOverlay = modal?.querySelector('.media-modal__overlay');
+    const modalPrev = document.getElementById('modal-prev');
+    const modalNext = document.getElementById('modal-next');
 
-  // 動画初期化とエラーハンドリング
-  function initializeVideos() {
-    // メインカルーセルの動画
-    document.querySelectorAll('[data-video-player="true"]').forEach(video => {
-      const container = video.closest('.carousel__video-container');
-      const overlay = container?.querySelector('[data-video-overlay="true"]');
-      const playButton = container?.querySelector('[data-video-play="true"]');
+    // カルーセル機能
+    function showSlide(index) {
+      console.log('Showing slide:', index);
       
-      if (!container || !overlay || !playButton) return;
-      
-      // 動画エラーハンドリング
-      video.addEventListener('error', (e) => {
-        console.error('動画の読み込みに失敗しました:', video.src);
-        console.error('エラー詳細:', e);
-        console.error('Video error code:', video.error?.code);
-        console.error('Video error message:', video.error?.message);
+      // 現在のスライドの動画を停止
+      const currentActiveSlide = document.querySelector('.carousel__slide--active');
+      if (currentActiveSlide) {
+        const currentVideo = currentActiveSlide.querySelector('[data-video-player="true"]');
+        const currentOverlay = currentActiveSlide.querySelector('[data-video-overlay="true"]');
         
-        // テスト動画URLでのフォールバック試行
-        const slide = video.closest('.carousel__slide');
-        const slideIndex = slide?.dataset.index;
-        if (slideIndex && !video.hasAttribute('data-fallback-tried')) {
-          console.log('テスト動画でフォールバック試行');
-          video.setAttribute('data-fallback-tried', 'true');
-          video.src = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-          video.load();
+        if (currentVideo && currentVideo.tagName === 'VIDEO') {
+          currentVideo.pause();
+          currentVideo.currentTime = 0;
+          
+          if (currentOverlay) {
+            currentOverlay.style.display = 'flex';
+          }
+        }
+      }
+      
+      // スライドを切り替え
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('carousel__slide--active', i === index);
+      });
+
+      // サムネイルを切り替え
+      thumbnails.forEach((thumb, i) => {
+        thumb.classList.toggle('carousel__thumbnail--active', i === index);
+      });
+
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      const next = (currentSlide + 1) % mediaItemsCount;
+      showSlide(next);
+    }
+
+    function prevSlide() {
+      const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
+      showSlide(prev);
+    }
+
+    // カルーセルイベントリスナー
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Prev button clicked');
+        prevSlide();
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Next button clicked');
+        nextSlide();
+      });
+    }
+
+    // サムネイルクリック
+    thumbnails.forEach((thumb, index) => {
+      thumb.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Thumbnail clicked:', index);
+        showSlide(index);
+      });
+    });
+
+    // モーダル機能
+    function openModal(mediaItem, slideIndex = currentSlide) {
+      console.log('Opening modal with media:', mediaItem);
+      console.log('🎯 Modal slide index:', slideIndex);
+      if (!modal || !modalMedia) return;
+      
+      currentModalSlide = slideIndex;
+      console.log('🎯 Updated currentModalSlide to:', currentModalSlide);
+      updateModalNavButtons();
+      
+      modalMedia.innerHTML = '';
+      
+      if (mediaItem.type === 'image') {
+        const img = document.createElement('img');
+        img.src = mediaItem.url;
+        img.alt = mediaItem.alt;
+        img.className = 'media-modal__image store-modal-image'; // 店舗用の追加クラス
+        // 店舗詳細ページ専用：横4:縦3のアスペクト比を直接適用
+        img.style.aspectRatio = '4 / 3';
+        img.style.height = 'auto';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '8px';
+        
+        // レスポンシブ対応の強制スタイル適用
+        function applyResponsiveStyles() {
+          const screenWidth = window.innerWidth;
+          if (screenWidth >= 1280) { // xl
+            img.style.width = 'min(90vw, 85vh)';
+            img.style.height = 'auto';
+            img.style.maxWidth = '90vw';
+            img.style.maxHeight = '90vh';
+          } else if (screenWidth >= 1024) { // lg
+            img.style.width = 'min(85vw, 80vh)';
+            img.style.height = 'auto';
+            img.style.maxWidth = '85vw';
+            img.style.maxHeight = '85vh';
+          } else if (screenWidth >= 768) { // md
+            img.style.width = 'min(85vw, 75vh)';
+            img.style.height = 'auto';
+            img.style.maxWidth = '85vw';
+            img.style.maxHeight = '85vh';
+          } else if (screenWidth >= 640) { // sm
+            img.style.width = 'min(85vw, 63.75vh)';
+            img.style.height = 'auto';
+            img.style.maxWidth = '85vw';
+            img.style.maxHeight = '85vh';
+          } else {
+            img.style.width = 'min(90vw, 67.5vh)';
+            img.style.height = 'auto';
+            img.style.maxWidth = '90vw';
+            img.style.maxHeight = '90vh';
+          }
+        }
+        
+        applyResponsiveStyles();
+        window.addEventListener('resize', applyResponsiveStyles);
+        // 画像要素にタッチイベントを直接設定
+        img.addEventListener('touchstart', (e) => {
+          console.log('🎯 Image touchstart detected');
+          modalTouchStartX = e.touches[0].clientX;
+          console.log('🎯 Touch start X:', modalTouchStartX);
+          e.preventDefault(); // デフォルト動作を防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+
+        img.addEventListener('touchend', (e) => {
+          console.log('🎯 Image touchend detected');
+          modalTouchEndX = e.changedTouches[0].clientX;
+          console.log('🎯 Touch end X:', modalTouchEndX);
+          console.log('🎯 Swipe distance:', modalTouchEndX - modalTouchStartX);
+          handleModalSwipe();
+          e.preventDefault(); // デフォルト動作を防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+
+        img.addEventListener('touchmove', (e) => {
+          console.log('🎯 Image touchmove detected');
+          e.preventDefault(); // スクロールを防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+        
+        console.log('🖼️ Store modal image created with class:', img.className);
+        modalMedia.appendChild(img);
+      } else if (mediaItem.type === 'video') {
+        const video = document.createElement('video');
+        video.src = mediaItem.url;
+        video.className = 'media-modal__video store-modal-video'; // 店舗用の追加クラス
+        video.controls = true;
+        video.preload = 'metadata';
+        video.playsInline = true;
+        video.muted = false; // モーダルでは音声ありで再生
+        // 店舗詳細ページ専用：横4:縦3のアスペクト比を直接適用
+        video.style.aspectRatio = '4 / 3';
+        video.style.height = 'auto';
+        video.style.objectFit = 'cover';
+        video.style.borderRadius = '8px';
+        
+        // レスポンシブ対応の強制スタイル適用
+        function applyVideoResponsiveStyles() {
+          const screenWidth = window.innerWidth;
+          if (screenWidth >= 1280) { // xl
+            video.style.width = 'min(90vw, 85vh)';
+            video.style.height = 'auto';
+            video.style.maxWidth = '90vw';
+            video.style.maxHeight = '90vh';
+          } else if (screenWidth >= 1024) { // lg
+            video.style.width = 'min(85vw, 80vh)';
+            video.style.height = 'auto';
+            video.style.maxWidth = '85vw';
+            video.style.maxHeight = '85vh';
+          } else if (screenWidth >= 768) { // md
+            video.style.width = 'min(85vw, 75vh)';
+            video.style.height = 'auto';
+            video.style.maxWidth = '85vw';
+            video.style.maxHeight = '85vh';
+          } else if (screenWidth >= 640) { // sm
+            video.style.width = 'min(85vw, 63.75vh)';
+            video.style.height = 'auto';
+            video.style.maxWidth = '85vw';
+            video.style.maxHeight = '85vh';
+          } else {
+            video.style.width = 'min(90vw, 67.5vh)';
+            video.style.height = 'auto';
+            video.style.maxWidth = '90vw';
+            video.style.maxHeight = '90vh';
+          }
+        }
+        
+        applyVideoResponsiveStyles();
+        window.addEventListener('resize', applyVideoResponsiveStyles);
+        
+        // モーダルで動画を自動再生開始
+        video.play().then(() => {
+          console.log('🎬 Modal video autoplay started');
+        }).catch((error) => {
+          console.log('🎬 Modal video autoplay failed:', error);
+        });
+        
+        // 動画要素にタッチイベントを直接設定
+        video.addEventListener('touchstart', (e) => {
+          console.log('🎯 Video touchstart detected');
+          modalTouchStartX = e.touches[0].clientX;
+          console.log('🎯 Touch start X:', modalTouchStartX);
+          e.preventDefault(); // デフォルト動作を防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+
+        video.addEventListener('touchend', (e) => {
+          console.log('🎯 Video touchend detected');
+          modalTouchEndX = e.changedTouches[0].clientX;
+          console.log('🎯 Touch end X:', modalTouchEndX);
+          console.log('🎯 Swipe distance:', modalTouchEndX - modalTouchStartX);
+          handleModalSwipe();
+          e.preventDefault(); // デフォルト動作を防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+
+        video.addEventListener('touchmove', (e) => {
+          console.log('🎯 Video touchmove detected');
+          e.preventDefault(); // スクロールを防ぐ
+          e.stopPropagation(); // イベント伝播を停止
+        });
+        
+        console.log('🎬 Store modal video created with class:', video.className);
+        modalMedia.appendChild(video);
+      }
+      
+      modal.classList.add('media-modal--active');
+      document.body.style.overflow = 'hidden';
+      console.log('Modal opened');
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      
+      // モーダル内の動画を停止
+      const modalVideo = modalMedia?.querySelector('video');
+      if (modalVideo) {
+        modalVideo.pause();
+        modalVideo.currentTime = 0;
+        console.log('🎬 Modal video stopped');
+      }
+      
+      modal.classList.remove('media-modal--active');
+      document.body.style.overflow = '';
+      if (modalMedia) modalMedia.innerHTML = '';
+      console.log('Modal closed');
+    }
+
+    function updateModalNavButtons() {
+      if (modalPrev) {
+        modalPrev.disabled = currentModalSlide === 0;
+        modalPrev.style.opacity = currentModalSlide === 0 ? '0.5' : '1';
+      }
+      if (modalNext) {
+        modalNext.disabled = currentModalSlide === mediaItemsCount - 1;
+        modalNext.style.opacity = currentModalSlide === mediaItemsCount - 1 ? '0.5' : '1';
+      }
+    }
+
+    function showModalSlide(index) {
+      if (index >= 0 && index < mediaItemsData.length) {
+        const mediaItem = mediaItemsData[index];
+        openModal(mediaItem, index);
+      }
+    }
+
+    function nextModalSlide() {
+      console.log('🎯 nextModalSlide called, current:', currentModalSlide, 'max:', mediaItemsCount - 1);
+      if (currentModalSlide < mediaItemsCount - 1) {
+        showModalSlide(currentModalSlide + 1);
+      } else {
+        console.log('🎯 Already at last slide');
+      }
+    }
+
+    function prevModalSlide() {
+      console.log('🎯 prevModalSlide called, current:', currentModalSlide);
+      if (currentModalSlide > 0) {
+        showModalSlide(currentModalSlide - 1);
+      } else {
+        console.log('🎯 Already at first slide');
+      }
+    }
+
+    // メインカルーセルクリック時にモーダル表示
+    slides.forEach((slide, index) => {
+      slide.addEventListener('click', (e) => {
+        // ナビゲーションボタンのクリックは無視
+        if (e.target.closest('.carousel__nav')) {
+          console.log('Navigation button clicked, ignoring');
           return;
         }
         
-        const fallback = container.querySelector('.carousel__video-fallback');
-        if (fallback) {
-          video.style.display = 'none';
-          overlay.style.display = 'none';
-          fallback.style.display = 'block';
+        console.log('🎯 Slide clicked, current slide index:', currentSlide);
+        // 現在表示されているスライドに対応するメディアアイテムを取得
+        const currentMedia = mediaItemsData[currentSlide];
+        if (currentMedia) {
+          console.log('🎯 Opening modal for media:', currentMedia.type, currentMedia.url);
+          openModal(currentMedia, currentSlide);
         }
       });
+    });
+
+    // モーダルイベントリスナー
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+    if (modalPrev) modalPrev.addEventListener('click', prevModalSlide);
+    if (modalNext) modalNext.addEventListener('click', nextModalSlide);
+
+    // キーボードイベント
+    document.addEventListener('keydown', (e) => {
+      if (modal && modal.classList.contains('media-modal--active')) {
+        if (e.key === 'Escape') {
+          closeModal();
+        } else if (e.key === 'ArrowLeft') {
+          prevModalSlide();
+        } else if (e.key === 'ArrowRight') {
+          nextModalSlide();
+        }
+      } else {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+      }
+    });
+
+    // モーダル内でのタッチスワイプサポート（ペット詳細ページと同じ実装）
+    let modalTouchStartX = 0;
+    let modalTouchEndX = 0;
+    const minSwipeDistance = 50;
+
+    function handleModalSwipe() {
+      const swipeDistance = modalTouchEndX - modalTouchStartX;
+      console.log('🎯 Swipe distance calculated:', swipeDistance);
+      console.log('🎯 Min swipe distance:', minSwipeDistance);
+      console.log('🎯 Swipe detected:', Math.abs(swipeDistance) > minSwipeDistance);
       
-      // 動画読み込み完了時の処理
-      video.addEventListener('loadedmetadata', () => {
-        console.log('動画メタデータの読み込み完了:', video.src);
-        overlay.style.display = 'flex'; // オーバーレイを表示
-      });
-      
-      video.addEventListener('canplay', () => {
-        console.log('動画再生可能:', video.src);
-      });
-      
-      // 再生ボタンクリック時の処理
-      playButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance > 0) {
+          console.log('🎯 Right swipe - going to previous slide');
+          prevModalSlide();
+        } else {
+          console.log('🎯 Left swipe - going to next slide');
+          nextModalSlide();
+        }
+      } else {
+        console.log('🎯 Swipe distance too small, ignoring');
+      }
+    }
+
+    // 重複するイベントリスナーを削除し、画像・動画要素に直接設定したもののみ使用
+
+    // 動画初期化
+    function initializeVideos() {
+      document.querySelectorAll('[data-video-player="true"]').forEach(video => {
+        const container = video.closest('.carousel__video-container');
+        const overlay = container?.querySelector('[data-video-overlay="true"]');
+        const playButton = container?.querySelector('[data-video-play="true"]');
         
-        if (video.paused) {
-          video.play().then(() => {
-            overlay.style.display = 'none'; // 再生開始時にオーバーレイを非表示
-          }).catch(error => {
-            console.error('動画再生エラー:', error);
+        if (!container || !overlay || !playButton) return;
+        
+        video.addEventListener('loadedmetadata', () => {
+          overlay.style.display = 'flex';
+        });
+        
+        playButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (video.paused) {
+            video.play().then(() => {
+              overlay.style.display = 'none';
+            }).catch(error => {
+              console.error('動画再生エラー:', error);
+            });
+          }
+        });
+        
+        video.addEventListener('ended', () => {
+          overlay.style.display = 'flex';
+          video.currentTime = 0;
+        });
+        
+        video.addEventListener('pause', () => {
+          if (!video.ended) {
+            overlay.style.display = 'flex';
+          }
+        });
+      });
+    }
+
+    // タッチスワイプサポート
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    const carouselContainer = document.querySelector('.carousel__container');
+    if (carouselContainer) {
+      carouselContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      
+      carouselContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const swipeThreshold = 50;
+        const swipeDistance = touchStartX - touchEndX;
+        
+        if (Math.abs(swipeDistance) > swipeThreshold) {
+          if (swipeDistance > 0) {
+            nextSlide();
+          } else {
+            prevSlide();
+          }
+        }
+      });
+    }
+
+    // Googleマップ調整
+    function adjustMapSize() {
+      const mapContainer = document.querySelector('.map-container');
+      if (mapContainer) {
+        const iframe = mapContainer.querySelector('iframe');
+        if (iframe) {
+          iframe.style.width = '100%';
+          iframe.style.height = '360px';
+          iframe.setAttribute('width', '100%');
+          iframe.setAttribute('height', '360');
+        }
+      }
+    }
+    
+    setTimeout(adjustMapSize, 100);
+    setTimeout(adjustMapSize, 500);
+    setTimeout(adjustMapSize, 1000);
+
+    // メインカルーセル動画の初期化（ペット詳細ページと同じ実装）
+    function loadMainCarouselVideos() {
+      const mainVideos = document.querySelectorAll('.carousel__video[data-video-src]');
+      console.log('🎬 Found main carousel videos:', mainVideos.length);
+      
+      mainVideos.forEach((video, index) => {
+        const videoUrl = video.dataset.videoSrc;
+        if (videoUrl) {
+          console.log(`🎬 Loading main carousel video ${index}:`, videoUrl);
+          video.src = videoUrl;
+          
+          // ロード完了でサムネイルフレームを設定
+          video.addEventListener('loadedmetadata', () => {
+            console.log(`🎬 Main carousel video ${index} metadata loaded`);
+            video.currentTime = 0.1; // 最初の方のフレーム
+          });
+          
+          video.addEventListener('error', (e) => {
+            console.error(`🎬 Error loading main carousel video ${index}:`, e);
           });
         }
       });
+    }
+
+    // サムネイル動画の最初のフレームを表示（ペット詳細ページと同じ実装）
+    function loadVideoThumbnails() {
+      const thumbnailVideos = document.querySelectorAll('.carousel__thumbnail-video-element[data-video-src]');
+      console.log('🎬 Found thumbnail videos:', thumbnailVideos.length);
       
-      // 動画再生終了時の処理
-      video.addEventListener('ended', () => {
-        overlay.style.display = 'flex'; // 再生終了時にオーバーレイを再表示
-        video.currentTime = 0; // 先頭に戻す
-      });
-      
-      // 動画一時停止時の処理
-      video.addEventListener('pause', () => {
-        if (!video.ended) {
-          overlay.style.display = 'flex'; // 一時停止時にオーバーレイを表示
+      thumbnailVideos.forEach((video, index) => {
+        const videoUrl = video.dataset.videoSrc;
+        if (videoUrl) {
+          console.log(`🎬 Loading thumbnail for video ${index}:`, videoUrl);
+          
+          // 動画のsrcを設定
+          video.src = videoUrl;
+          
+          // メタデータが読み込まれたら適切なフレームに移動
+          video.addEventListener('loadedmetadata', () => {
+            console.log(`🎬 Video ${index} metadata loaded, duration: ${video.duration}s`);
+            // 動画の長さに応じて適切な位置を選択（最初の10%か1秒のいずれか短い方）
+            const seekTime = Math.min(video.duration * 0.1, 1.0);
+            video.currentTime = seekTime;
+            console.log(`🎬 Seeking to ${seekTime}s`);
+          });
+          
+          // フレームが読み込まれたら一時停止
+          video.addEventListener('seeked', () => {
+            console.log(`🎬 Video ${index} seeked to first frame`);
+            video.pause();
+            // 背景色をクリアして動画を見えるようにする
+            video.style.backgroundColor = 'transparent';
+          });
+          
+          // エラーハンドリング
+          video.addEventListener('error', (e) => {
+            console.error(`🎬 Error loading thumbnail video ${index}:`, e);
+          });
         }
       });
-      
-      // 動画クリック時の再生/一時停止切り替え
-      video.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (video.paused) {
-          playButton.click();
-        } else {
-          video.pause();
-        }
-      });
-    });
-    
-    // サムネイル動画の初期化
-    document.querySelectorAll('[data-video-thumbnail="true"]').forEach(thumbnailVideo => {
-      thumbnailVideo.addEventListener('loadeddata', () => {
-        // 最初のフレームで停止
-        thumbnailVideo.currentTime = 0.1;
-        console.log('サムネイル動画初期化完了:', thumbnailVideo.src);
-      });
-      
-      thumbnailVideo.addEventListener('error', () => {
-        console.error('サムネイル動画の読み込みに失敗:', thumbnailVideo.src);
-        // エラー時はプレースホルダー画像を表示
-        const container = thumbnailVideo.closest('.carousel__thumbnail-video');
-        if (container) {
-          thumbnailVideo.style.display = 'none';
-          container.style.backgroundColor = '#f0f0f0';
-        }
-      });
-      
-      // サムネイル動画の再生を防ぐ
-      thumbnailVideo.addEventListener('play', (e) => {
-        e.preventDefault();
-        thumbnailVideo.pause();
-      });
-    });
-  }
-  
-  // ページ読み込み完了後に初期化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeVideos);
-  } else {
+    }
+
+    // 初期化
     initializeVideos();
-  }
-
-  function showSlide(index) {
-    // 現在のスライドの動画を停止
-    const currentActiveSlide = document.querySelector('.carousel__slide--active');
-    if (currentActiveSlide) {
-      const currentVideo = currentActiveSlide.querySelector('[data-video-player="true"]');
-      const currentOverlay = currentActiveSlide.querySelector('[data-video-overlay="true"]');
-      
-      if (currentVideo && currentVideo.tagName === 'VIDEO') {
-        currentVideo.pause();
-        currentVideo.currentTime = 0;
-        
-        // オーバーレイを再表示
-        if (currentOverlay) {
-          currentOverlay.style.display = 'flex';
-        }
-      }
-    }
     
-    // スライドを切り替え
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('carousel__slide--active', i === index);
-    });
-
-    // サムネイルを切り替え
-    thumbnails.forEach((thumb, i) => {
-      thumb.classList.toggle('carousel__thumbnail--active', i === index);
-    });
-
-    currentSlide = index;
-  }
-
-  function nextSlide() {
-    const next = (currentSlide + 1) % mediaItemsCount;
-    showSlide(next);
-  }
-
-  function prevSlide() {
-    const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
-    showSlide(prev);
-  }
-
-  // イベントリスナー
-  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-
-  // サムネイルクリック
-  thumbnails.forEach((thumb, index) => {
-    thumb.addEventListener('click', () => showSlide(index));
+    // メインカルーセル動画を初期化
+    setTimeout(loadMainCarouselVideos, 50);
+    
+    // サムネイル動画を初期化（少し遅延させて実行）
+    setTimeout(loadVideoThumbnails, 100);
   });
-
-  // キーボードナビゲーション
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') prevSlide();
-    if (e.key === 'ArrowRight') nextSlide();
-  });
-  
-  // Googleマップのiframeサイズを強制調整
-  function adjustMapSize() {
-    const mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      const iframe = mapContainer.querySelector('iframe');
-      if (iframe) {
-        iframe.style.width = '100%';
-        iframe.style.height = '360px';
-        iframe.style.maxWidth = '100%';
-        iframe.style.maxHeight = '360px';
-        iframe.style.minWidth = '100%';
-        iframe.style.minHeight = '360px';
-        iframe.style.border = 'none';
-        iframe.style.display = 'block';
-        
-        // width/height属性も設定
-        iframe.setAttribute('width', '100%');
-        iframe.setAttribute('height', '360');
-      }
-    }
-  }
-  
-  // ページ読み込み完了後とタイマーで実行
-  setTimeout(adjustMapSize, 100);
-  setTimeout(adjustMapSize, 500);
-  setTimeout(adjustMapSize, 1000);
-  
-  // モバイル用タッチスワイプサポート
-  let touchStartX = 0;
-  let touchEndX = 0;
-  
-  const carouselContainer = document.querySelector('.carousel__container');
-  if (carouselContainer) {
-    carouselContainer.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    carouselContainer.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    });
-    
-    function handleSwipe() {
-      const swipeThreshold = 50;
-      const swipeDistance = touchStartX - touchEndX;
-      
-      if (Math.abs(swipeDistance) > swipeThreshold) {
-        if (swipeDistance > 0) {
-          nextSlide(); // 左スワイプで次のスライド
-        } else {
-          prevSlide(); // 右スワイプで前のスライド
-        }
-      }
-    }
-  }
 </script>
 
 <style lang="scss">
@@ -922,39 +1244,44 @@ const breadcrumbItems = [
   }
   
   .carousel__video-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: rem(80);
+    height: rem(80);
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 50%;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+    pointer-events: none; // 装飾のみ、クリック不可
     
-    @include breakpoint-up(sm) {
-      width: 80px;
-      height: 80px;
+    @include breakpoint-up(lg) {
+      width: rem(100);
+      height: rem(100);
+    }
+    
+    svg {
+      margin-left: rem(4);
+      width: rem(32);
+      height: rem(32);
+      
+      @include breakpoint-up(lg) {
+        width: rem(48);
+        height: rem(48);
+        margin-left: rem(6);
+      }
     }
   }
   
-  .carousel__video-play-btn:hover {
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  }
-  
-  .carousel__video-play-btn svg {
-    margin-left: 4px;
-    width: 24px;
-    height: 24px;
-    
-    @include breakpoint-up(sm) {
-      width: 48px;
-      height: 48px;
-    }
+  .carousel__video-container:hover .carousel__video-play-btn {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
   }
   
   .carousel__thumbnail-video-element {
@@ -962,6 +1289,12 @@ const breadcrumbItems = [
     height: 100%;
     object-fit: cover;
     pointer-events: none; /* サムネイル動画はクリック不可 */
+    background-color: #f0f0f0; /* ローディング中の背景色 */
+    border-radius: rem(4);
+    
+    @include breakpoint-up(md) {
+      border-radius: rem(8);
+    }
   }
   
   .carousel__video-fallback {
@@ -1039,6 +1372,263 @@ const breadcrumbItems = [
     100% {
       background-position: -200% 0;
     }
+  }
+
+  /* モーダルスタイル（ペット詳細ページと同じ） */
+  .media-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+    
+    &--active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .media-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+  }
+
+  .media-modal__content {
+    position: relative;
+    max-width: 95vw;
+    max-height: 95vh;
+    z-index: 1;
+    border-radius: rem(8);
+  }
+
+  .media-modal__close {
+    position: absolute;
+    // すべてのサイズで動画内側の右上に配置
+    top: rem(8);
+    right: rem(8);
+    width: rem(32);
+    height: rem(32);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10; // 動画の上に表示
+    
+    @include breakpoint-up(sm) {
+      top: rem(12);
+      right: rem(12);
+      width: rem(36);
+      height: rem(36);
+    }
+    
+    @include breakpoint-up(lg) {
+      top: rem(16);
+      right: rem(16);
+      width: rem(40);
+      height: rem(40);
+    }
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 1);
+      transform: scale(1.1);
+    }
+    
+    svg {
+      width: rem(16);
+      height: rem(16);
+      
+      @include breakpoint-up(sm) {
+        width: rem(18);
+        height: rem(18);
+      }
+      
+      @include breakpoint-up(lg) {
+        width: rem(20);
+        height: rem(20);
+      }
+    }
+  }
+
+  .media-modal__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: rem(36);
+    height: rem(36);
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 11;
+    transition: all 0.3s ease;
+    padding: 0;
+    
+    @include breakpoint-up(sm) {
+      width: rem(40);
+      height: rem(40);
+    }
+    
+    @include breakpoint-up(lg) {
+      width: rem(44);
+      height: rem(44);
+    }
+    
+    &:hover {
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        background-color: #fff;
+        color: #666;
+      }
+    }
+    
+    &--prev {
+      left: rem(-10);
+      
+      @include breakpoint-up(sm) {
+        left: rem(-20);
+      }
+    }
+    
+    &--next {
+      right: rem(-10);
+      
+      @include breakpoint-up(sm) {
+        right: rem(-20);
+      }
+    }
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .media-modal__media {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-modal__image {
+    // 横4:縦3の固定比率で画面内最大サイズ表示
+    aspect-ratio: 4 / 3 !important; // 横4:縦3を強制適用
+    object-fit: cover; // 画像をフレーム内でトリミング表示
+    border-radius: rem(8);
+    height: auto !important; // heightを自動計算に強制
+    
+    // aspect-ratioを有効にするためwidthのみ指定
+    width: min(90vw, 67.5vh);
+    max-width: 90vw;
+    max-height: 90vh;
+    
+    @include breakpoint-up(sm) {
+      width: min(85vw, 63.75vh);
+      max-width: 85vw;
+      max-height: 85vh;
+    }
+    
+    @include breakpoint-up(md) {
+      width: min(70vw, 56.25vh);
+      max-width: 70vw;
+      max-height: 75vh;
+    }
+    
+    @include breakpoint-up(lg) {
+      width: min(80vw, 60vh);
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+  }
+
+  .media-modal__video {
+    border: none;
+    border-radius: rem(8);
+    display: block;
+    object-fit: cover; // 黒い余白を完全に除去
+    
+    // 横4:縦3の固定比率で画面内最大サイズ表示
+    aspect-ratio: 4 / 3 !important; // 横4:縦3を強制適用
+    height: auto !important; // heightを自動計算に強制
+    
+    // aspect-ratioを有効にするためwidthのみ指定
+    width: min(90vw, 67.5vh);
+    max-width: 90vw;
+    max-height: 90vh;
+    
+    @include breakpoint-up(sm) {
+      width: min(85vw, 63.75vh);
+      max-width: 85vw;
+      max-height: 85vh;
+    }
+    
+    @include breakpoint-up(md) {
+      width: min(70vw, 56.25vh);
+      max-width: 70vw;
+      max-height: 75vh;
+    }
+    
+    @include breakpoint-up(lg) {
+      width: min(80vw, 60vh);
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+  }
+
+  /* 店舗詳細ページ専用のモーダルクラス */
+  .store-modal-image,
+  .store-modal-video {
+    aspect-ratio: 4 / 3 !important;
+    height: auto !important;
+    object-fit: cover !important;
+    border-radius: rem(8) !important;
+    width: min(90vw, 67.5vh) !important;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+  }
+
+  /* ホバーエフェクト */
+  .carousel__image--clickable:hover,
+  .carousel__video-container--clickable:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+  }
+
+  .carousel__image--clickable:hover::after,
+  .carousel__video-container--clickable:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
   }
 </style>
 </Layout>
