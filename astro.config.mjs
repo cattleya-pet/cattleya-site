@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
+import react from '@astrojs/react';
 
 export default defineConfig({
+  integrations: [react()],
   // 静的生成（デフォルト）+ 個別ページでSSR指定
   // Astro 5.0以降、hybridはstaticに統合されました
   output: 'static',
@@ -31,13 +33,6 @@ export default defineConfig({
           drop_console: true,
           drop_debugger: true,
           pure_funcs: ['console.log', 'console.warn', 'console.error']
-        }
-      },
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['microcms-js-sdk']
-          }
         }
       }
     },
