@@ -124,3 +124,49 @@
     line-height: 1.4; // 大画面では少し詰める
   }
 }
+
+.video-sound-toggle {
+  position: absolute;
+  bottom: rem(20);
+  right: rem(20);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: rem(8);
+  padding: rem(12);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+  }
+  
+  &:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+  
+  svg {
+    width: rem(24);
+    height: rem(24);
+    color: #fff;
+  }
+  
+  @include breakpoint-up(md) {
+    bottom: rem(24);
+    right: rem(24);
+    padding: rem(16);
+    
+    svg {
+      width: rem(28);
+      height: rem(28);
+    }
+  }
+}
