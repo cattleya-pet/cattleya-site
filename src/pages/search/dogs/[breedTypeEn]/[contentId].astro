@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
+import LineInquiryModal from '../../../../components/LineInquiryModal.astro';
 import { getLatestPetsByType } from '../../../../lib/api/pets/queries';
 import { getBreedsByAnimalType } from '../../../../lib/api/pets';
 import { getStoreById } from '../../../../lib/api/stores';
@@ -405,11 +406,10 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
               <!-- アクションボタン -->
               <div class="pet-detail__actions">
                 <div class="action-buttons">
-                  <a 
-                    href={storeInfo?.storeLine ? `https://lin.ee/${storeInfo.storeLine}?text=${encodeURIComponent(`①（こちらにお客様のフルネームをご入力ください）\n②No.${pet.id.replace(/^0+/, '') || pet.id}\n③HP`)}` : '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button 
+                    type="button"
                     class="action-button action-button--link"
+                    onclick="openLineInquiryModal()"
                   >
                     <div class="action-button__icon">
                       <img src="/icons/icon_line-01.svg" alt="LINEアイコン" width="32" height="32" />
@@ -417,7 +417,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                     <div class="action-button__text">
                       この子をLINEで<br>問い合わせる
                     </div>
-                  </a>
+                  </button>
 
                   <a 
                     href={`/contact?pet=${pet.id}#inquiry-number-label`}
@@ -636,6 +636,9 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
       </div>
     </div>
   </main>
+
+  <!-- LINEお問い合わせモーダル -->
+  <LineInquiryModal petId={pet.id} storeLine={storeInfo?.storeLine} />
 </Layout>
 
 <script define:vars={{ mediaItemsCount: mediaItems.length, mediaItems }}>

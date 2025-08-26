@@ -47,7 +47,8 @@
   }
   
   @include breakpoint-up(md) {
-    max-width: rem(150);
+    width: rem(180);
+    min-width: rem(180);
   }
 }
 
@@ -58,7 +59,7 @@
   background-color: rgba($color-background-secondary, 0.4);
   vertical-align: top;
   line-height: 1.8;
-  width: calc(100% - rem(150));
+  width: calc(100% - rem(180));
   
   @include breakpoint-up(sm) {
     padding: rem(20) rem(20) rem(20) rem(10);

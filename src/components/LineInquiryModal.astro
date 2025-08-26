@@ -1,0 +1,126 @@
+---
+interface Props {
+  petId: string;
+  storeLine?: string;
+}
+
+const { petId, storeLine } = Astro.props;
+
+// ペットIDから先頭の0を除去
+const displayPetId = petId.replace(/^0+/, '') || petId;
+
+// コピー用のテキスト内容
+const inquiryText = `①（こちらにお客様のフルネームをご入力ください）
+②No.${displayPetId}
+③HP`;
+
+// LINE URLの生成
+const lineUrl = storeLine ? `https://lin.ee/${storeLine}` : '#';
+---
+
+<!-- モーダルオーバーレイ -->
+<div id="line-inquiry-modal" class="line-modal-overlay">
+  <div class="line-modal">
+    <div class="line-modal__header">
+      <h3 class="line-modal__title">LINEでお問い合わせ</h3>
+      <button class="line-modal__close" aria-label="閉じる">&times;</button>
+    </div>
+    
+    <div class="line-modal__body">
+      <p class="line-modal__instruction">
+        下記の内容をコピーし、店舗LINEの<br>
+        メッセージ欄に貼り付けしてください。
+      </p>
+      
+      <div class="line-modal__copy-section">
+        <button id="copy-button" class="line-modal__copy-btn">
+          <img src="/icons/icon_copy-01.svg" alt="コピー" width="16" height="16" />
+          Copy
+        </button>
+        <div class="line-modal__text-box">
+          <pre id="inquiry-text">{inquiryText}</pre>
+        </div>
+      </div>
+      
+      <div class="line-modal__copy-status" id="copy-status"></div>
+    </div>
+    
+    <div class="line-modal__footer">
+      <a 
+        href={lineUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="line-modal__line-btn"
+      >
+        店舗LINEへ
+      </a>
+      <button class="line-modal__cancel-btn">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('line-inquiry-modal');
+    const closeBtn = document.querySelector('.line-modal__close');
+    const cancelBtn = document.querySelector('.line-modal__cancel-btn');
+    const copyBtn = document.getElementById('copy-button');
+    const inquiryText = document.getElementById('inquiry-text');
+    const copyStatus = document.getElementById('copy-status');
+    
+    // モーダルを開く関数
+    window.openLineInquiryModal = function() {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+    
+    // モーダルを閉じる関数
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      copyStatus.textContent = '';
+    }
+    
+    // 閉じるボタンのイベント
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    
+    // オーバーレイクリックで閉じる
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+    
+    // ESCキーで閉じる
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+    
+    // コピー機能
+    copyBtn.addEventListener('click', async function() {
+      try {
+        await navigator.clipboard.writeText(inquiryText.textContent);
+        copyStatus.textContent = 'コピーしました！';
+        copyStatus.className = 'line-modal__copy-status success';
+        
+        // メッセージは消さない
+      } catch (err) {
+        // フォールバック：テキストエリアを使用
+        const textArea = document.createElement('textarea');
+        textArea.value = inquiryText.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        copyStatus.textContent = 'コピーしました！';
+        copyStatus.className = 'line-modal__copy-status success';
+        
+        // メッセージは消さない
+      }
+    });
+  });
+</script>
