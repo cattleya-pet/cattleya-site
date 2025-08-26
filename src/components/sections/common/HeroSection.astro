@@ -19,7 +19,7 @@ const { title, image, breadcrumbItems, isPetImage = false } = Astro.props;
   <div class="hero-container">
     <div class="hero__content">
       <div class="hero__text">
-        <h1 class="hero__title">{title}</h1>
+        <h1 class="hero__title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">{title}</h1>
       </div>
       <div class="hero__image">
         <img src={image} alt={title} class={`hero__img ${isPetImage ? 'pet-image' : ''}`} />

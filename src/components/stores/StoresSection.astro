@@ -11,20 +11,26 @@ const { stores } = Astro.props;
 <section class="stores-section">
   <div class="container stores-container">
     <!-- セクション見出し -->
-    <SectionHeading 
-      subtitle="Stores information"
-      title="店舗情報"
-      alignment="center"
-      subtitleClass="text-disabled"
-      titleClass="text-primary"
-    />
+    <div data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
+      <SectionHeading 
+        subtitle="Stores information"
+        title="店舗情報"
+        alignment="center"
+        subtitleClass="text-disabled"
+        titleClass="text-primary"
+      />
+    </div>
     
     <div class="stores-viewport">
       
       <!-- 店舗カード表示エリア -->
       <div class="stores-grid">
         {stores.map((store, i) => (
-          <div class="stores-card" data-index={i}>
+          <div class="stores-card" 
+            data-index={i}
+            data-aos="fade-up" 
+            data-aos-duration="1200" data-aos-easing="ease-out-cubic" 
+            data-aos-delay={200 + (i * 200)}>
             <StoreCard {...store} />
           </div>
         ))}
@@ -32,7 +38,7 @@ const { stores } = Astro.props;
     </div>
     
     <!-- lg未満用ボタン -->
-    <div class="stores-button-wrapper">
+    <div class="stores-button-wrapper" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600" data-aos-easing="ease-out-cubic">
       <ButtonWrapper>
         <BaseButton href="/stores" text="もっとみる" />
       </ButtonWrapper>

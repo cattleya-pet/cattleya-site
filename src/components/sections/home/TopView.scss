@@ -133,7 +133,7 @@
   background: rgba(0, 0, 0, 0.6);
   border: none;
   border-radius: rem(8);
-  padding: rem(12);
+  padding: rem(8);
   color: #fff;
   cursor: pointer;
   display: flex;
@@ -162,7 +162,7 @@
   @include breakpoint-up(md) {
     bottom: rem(24);
     right: rem(24);
-    padding: rem(16);
+    padding: rem(12);
     
     svg {
       width: rem(28);

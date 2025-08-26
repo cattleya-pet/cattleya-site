@@ -9,7 +9,7 @@ const { voices } = Astro.props;
 <section class="voice-slider-section">
   <div class="container voice-slider-container">
     <!-- lg未満用ヘッダー -->
-    <div class="section-heading--mobile">
+    <div class="section-heading--mobile" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
       <SectionHeading 
         subtitle="Voice"
         title="お客様の声"
@@ -22,7 +22,7 @@ const { voices } = Astro.props;
     <div class="voice-slider-viewport">
     <div class="voice-slider-left">
       <!-- lg以降用ヘッダー -->
-      <div class="section-heading--desktop">
+      <div class="section-heading--desktop" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
         <SectionHeading 
           subtitle="Voice"
           title="お客様の声"
@@ -33,7 +33,7 @@ const { voices } = Astro.props;
       </div>
       
       <!-- lg未満用スライダー -->
-      <div class="voice-slider-track--mobile">
+      <div class="voice-slider-track--mobile" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
         {voices.map((voice, i) => (
           <div class="voice-slider-card" data-index={i}>
             <VoiceCard {...voice} />
@@ -73,7 +73,7 @@ const { voices } = Astro.props;
     </div>
     
     <!-- lg以降用スライダー -->
-    <div class="voice-slider-track--desktop">
+    <div class="voice-slider-track--desktop" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
       {voices.map((voice, i) => (
         <div class="voice-slider-card" data-index={i}>
           <VoiceCard {...voice} />

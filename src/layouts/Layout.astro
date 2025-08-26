@@ -21,11 +21,59 @@ const fullTitle = `${title} | ${siteConfig.name}`;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    
+    <!-- AOS CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   </head>
   <body>
     <Header />
     <slot />
     <Footer />
     <MobileCTAButtons />
+    
+    <!-- AOS JavaScript -->
+    <script>
+      import AOS from 'aos';
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        // モバイル判定
+        const isMobile = window.innerWidth < 768;
+        
+        // モバイル対応：要素の属性を動的に調整
+        if (isMobile) {
+          // モバイル用の軽量設定を適用
+          const aosElements = document.querySelectorAll('[data-aos]');
+          aosElements.forEach(element => {
+            // デスクトップ用の長いdurationを短縮
+            const currentDuration = element.getAttribute('data-aos-duration');
+            if (currentDuration && parseInt(currentDuration) > 600) {
+              element.setAttribute('data-aos-duration', '700');
+            }
+            
+            // delayを短縮（モバイルでは快適性重視）
+            const currentDelay = element.getAttribute('data-aos-delay');
+            if (currentDelay && parseInt(currentDelay) > 100) {
+              const newDelay = Math.max(100, Math.floor(parseInt(currentDelay) / 2));
+              element.setAttribute('data-aos-delay', newDelay.toString());
+            }
+            
+            // easingをシンプルに
+            const currentEasing = element.getAttribute('data-aos-easing');
+            if (currentEasing === 'ease-out-cubic') {
+              element.setAttribute('data-aos-easing', 'ease-out');
+            }
+          });
+        }
+        
+        AOS.init({
+          duration: isMobile ? 700 : 800,
+          easing: isMobile ? 'ease-out' : 'ease-out-cubic',
+          once: true,
+          offset: isMobile ? 60 : 120,
+          delay: 0,
+          disable: false // 両デバイスで有効化
+        });
+      });
+    </script>
   </body>
 </html>

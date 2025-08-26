@@ -57,7 +57,7 @@ const recruitmentRequirementsData = [
     <!-- 採用メインセクション -->
     <section class="recruit-section">
       <div class="recruit-container">
-        <div class="recruit-main">
+        <div class="recruit-main" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="400">
           <!-- セクションラベル -->
           <div class="recruit-label">
             <Image src={logoImage} alt="Cattleya" class="recruit-logo" width={240} height={60} />
@@ -86,7 +86,7 @@ const recruitmentRequirementsData = [
         
         <!-- 特長カードセクション -->
         <div class="recruit-features">
-          <div class="recruit-feature-card">
+          <div class="recruit-feature-card" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-feature-content">
               <h3 class="recruit-feature-title">カトレアで働く魅力</h3>
               <p class="recruit-feature-description">
@@ -100,7 +100,7 @@ const recruitmentRequirementsData = [
             </div>
           </div>
           
-          <div class="recruit-feature-card">
+          <div class="recruit-feature-card" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-feature-content">
               <h3 class="recruit-feature-title">こんな方を求めています</h3>
               <p class="recruit-feature-description">
@@ -124,12 +124,12 @@ const recruitmentRequirementsData = [
       <div class="recruit-flow-subtitle">One day with Staff</div>
       <div class="recruit-flow-container">
         <div class="recruit-flow-heading">
-          <h2 class="recruit-flow-section-title">カトレアでの１日の流れ</h2>
+          <h2 class="recruit-flow-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">カトレアでの１日の流れ</h2>
         </div>
         
         
         <div class="recruit-flow-items">
-          <div class="recruit-flow-item">
+          <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
               <img src="/images/content/img_recruit_job-flow-01.webp" alt="お客様を迎える準備" loading="lazy" />
             </div>
@@ -140,7 +140,7 @@ const recruitmentRequirementsData = [
             </div>
           </div>
           
-          <div class="recruit-flow-item">
+          <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
               <img src="/images/content/img_recruit_job-flow-01.webp" alt="お客様へのご案内" loading="lazy" />
             </div>
@@ -151,7 +151,7 @@ const recruitmentRequirementsData = [
             </div>
           </div>
           
-          <div class="recruit-flow-item">
+          <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
               <img src="/images/content/img_recruit_job-flow-01.webp" alt="ペットのお世話" loading="lazy" />
             </div>
@@ -162,7 +162,7 @@ const recruitmentRequirementsData = [
             </div>
           </div>
           
-          <div class="recruit-flow-item">
+          <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
               <img src="/images/content/img_recruit_job-flow-01.webp" alt="お店とペットの魅力を発信" loading="lazy" />
             </div>
@@ -173,7 +173,7 @@ const recruitmentRequirementsData = [
             </div>
           </div>
           
-          <div class="recruit-flow-item">
+          <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
               <img src="/images/content/img_recruit_job-flow-01.webp" alt="ペットと店舗のケア" loading="lazy" />
             </div>
@@ -191,10 +191,10 @@ const recruitmentRequirementsData = [
     <section class="recruit-process-section">
       <div class="recruit-process-container">
         <div class="recruit-process-heading">
-          <h2 class="recruit-process-section-title">採用までの流れ</h2>
+          <h2 class="recruit-process-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">採用までの流れ</h2>
         </div>
         
-        <div class="recruit-process-steps">
+        <div class="recruit-process-steps" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
           <div class="recruit-process-step">
             <div class="recruit-process-step-card">
               <div class="recruit-process-step-header">
@@ -274,11 +274,13 @@ const recruitmentRequirementsData = [
       <div class="recruitment-requirements-section__overlay"></div>
       <div class="recruitment-requirements-container">
         <div class="recruitment-requirements-heading">
-          <h2 class="recruitment-requirements-section-title">募集要項</h2>
+          <h2 class="recruitment-requirements-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">募集要項</h2>
         </div>
         
         <div class="recruitment-requirements-content">
-          <DataTable data={recruitmentRequirementsData} />
+          <div data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
+            <DataTable data={recruitmentRequirementsData} />
+          </div>
         </div>
       </div>
     </section>

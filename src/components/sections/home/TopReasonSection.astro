@@ -34,7 +34,7 @@ const reasons = [
   <div class="container">
     <div class="top-reason-list">
       <!-- タイトル要素をグリッドの最初の要素として配置 -->
-      <div class="top-reason-title-card">
+      <div class="top-reason-title-card" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
         <span class="top-reason-title-card__subtitle">5 reasons</span>
         <h2 class="top-reason-title-card__title">
           <span class="title-text-m">カトレアが選ばれる</span><br><span class="title-text-l">5</span><span class="title-text-s">つの</span><span class="title-text-m">理由</span>
@@ -43,7 +43,11 @@ const reasons = [
       
       <!-- 理由カード -->
       {reasons.map((reason, i) => (
-        <div class="top-reason-card" style={`background-image: url('${reason.img}')`}>
+        <div class="top-reason-card" 
+          style={`background-image: url('${reason.img}')`}
+          data-aos="fade-up" 
+          data-aos-duration="1200" data-aos-easing="ease-out-cubic" 
+          data-aos-delay={200 + (i * 150)}>
           <div class="top-reason-card__overlay">
             <div class="top-reason-card__content">
               <span class="top-reason-card__number">{String(i + 1).padStart(2, '0')}</span>

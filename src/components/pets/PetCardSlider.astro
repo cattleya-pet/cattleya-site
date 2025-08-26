@@ -41,25 +41,27 @@ const {
 
 <section class="pet-slider-section">
   <div class="container">
-    {subtitle ? (
-      <SectionHeading 
-        subtitle={subtitle}
-        title={title}
-        size="large"
-        alignment="center"
-        subtitleClass="text-new"
-        titleClass="text-new"
-      />
-    ) : titleDecorated ? (
-      <h2 class="pet-slider-title">
-        <span class="pet-slider-title__decoration">＼</span>
-        {title}
-        <span class="pet-slider-title__decoration">／</span>
-      </h2>
-    ) : (
-      <h2 class="pet-slider-title">{title}</h2>
-    )}
-    <div class="slider-container" data-slider-id={sliderId} data-auto-slide-interval={autoSlideInterval}>
+    <div data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="600">
+      {subtitle ? (
+        <SectionHeading 
+          subtitle={subtitle}
+          title={title}
+          size="large"
+          alignment="center"
+          subtitleClass="text-new"
+          titleClass="text-new"
+        />
+      ) : titleDecorated ? (
+        <h2 class="pet-slider-title">
+          <span class="pet-slider-title__decoration">＼</span>
+          {title}
+          <span class="pet-slider-title__decoration">／</span>
+        </h2>
+      ) : (
+        <h2 class="pet-slider-title">{title}</h2>
+      )}
+    </div>
+    <div class="slider-container" data-slider-id={sliderId} data-auto-slide-interval={autoSlideInterval} data-aos="fade-up" data-aos-duration="1200" data-aos-delay="800" data-aos-easing="ease-out-cubic">
       <button class="slider-button prev" aria-label="前の画像へ">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

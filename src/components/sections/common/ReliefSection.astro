@@ -71,16 +71,21 @@ const reliefs = [
 <section class="relief-section" style="background-image: url('/images/backgrounds/bg_bricks-white-01.webp');">
   <div class="relief-section__overlay"></div>
   <div class="container">
-    <SectionHeading 
-      subtitle="Relief"
-      title="カトレアの安心"
-      alignment="center"
-      subtitleClass="text-secondary"
-      titleClass="text-primary"
-    />
+    <div data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
+      <SectionHeading 
+        subtitle="Relief"
+        title="カトレアの安心"
+        alignment="center"
+        subtitleClass="text-secondary"
+        titleClass="text-primary"
+      />
+    </div>
     <div class="relief-list">
       {reliefs.map((item, index) => (
-        <div class={`relief-item ${index % 2 === 0 ? 'relief-item--odd' : 'relief-item--even'}`}>
+        <div class={`relief-item ${index % 2 === 0 ? 'relief-item--odd' : 'relief-item--even'}`}
+          data-aos="fade-up" 
+          data-aos-duration="1200" data-aos-easing="ease-out-cubic" 
+          data-aos-delay={200 + (index * 250)}>
           <!-- モバイル用ヘッダー -->
           <div class="relief-info-header relief-info-header--mobile">
             <div class="relief-title-group">

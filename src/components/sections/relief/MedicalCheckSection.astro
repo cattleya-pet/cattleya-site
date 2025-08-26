@@ -37,14 +37,14 @@ const medicalCheckItems = [
   <div class="container medical-check-container">
     <!-- モバイル用ヘッダー -->
     <div class="medical-check-heading--mobile">
-      <h2 class="medical-check-section-title">メディカルチェック</h2>
+      <h2 class="medical-check-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="400">メディカルチェック</h2>
     </div>
     
-    <div class="medical-check-layout">
+    <div class="medical-check-layout" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="400">
       <div class="medical-check-content">
         <!-- デスクトップ用ヘッダー -->
         <div class="medical-check-heading--desktop">
-          <h2 class="medical-check-section-title">メディカルチェック</h2>
+          <h2 class="medical-check-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="400">メディカルチェック</h2>
         </div>
         
         <p class="medical-check-desc">
@@ -60,8 +60,8 @@ const medicalCheckItems = [
     </div>
     
     <div class="medical-check-items">
-      {medicalCheckItems.map((item) => (
-        <div class="medical-check-item">
+      {medicalCheckItems.map((item, index) => (
+        <div class="medical-check-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic" data-aos-delay={200 + (index * 150)}>
           <div class="medical-check-item-icon-wrap">
             <img src={item.icon} alt={item.title} class="medical-check-item-icon" loading="lazy" />
           </div>

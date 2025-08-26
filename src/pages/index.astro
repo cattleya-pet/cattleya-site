@@ -48,24 +48,30 @@ const initialPets = regularPets.slice(0, 6); // 犬猫混合でランダムソ�
     />
 
     <section class="pets-section">
-      <SectionHeading 
-        subtitle="Seach Dogs and Cats"
-        title="子犬・子猫を探す"
-        subtitleClass="text-disabled"
-        titleClass="text-primary"
-      />
-      <PetTabs activeTab="all" />
-      <div class="pets-grid" 
-        data-all-pets={JSON.stringify(initialPets)}
-        data-dogs={JSON.stringify(dogs)}
-        data-cats={JSON.stringify(cats)}>
-        {initialPets.map((pet) => (
-          <PetCard pet={pet} />
-        ))}
+      <div data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
+        <SectionHeading 
+          subtitle="Seach Dogs and Cats"
+          title="子犬・子猫を探す"
+          subtitleClass="text-disabled"
+          titleClass="text-primary"
+        />
       </div>
-      <ButtonWrapper>
-        <BaseButton href="/search" text="もっとみる" />
-      </ButtonWrapper>
+      <div data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
+        <PetTabs activeTab="all" />
+        <div class="pets-grid" 
+          data-all-pets={JSON.stringify(initialPets)}
+          data-dogs={JSON.stringify(dogs)}
+          data-cats={JSON.stringify(cats)}>
+          {initialPets.map((pet, index) => (
+            <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay={200 + (index * 150)} data-aos-easing="ease-out-cubic">
+              <PetCard pet={pet} />
+            </div>
+          ))}
+        </div>
+        <ButtonWrapper>
+          <BaseButton href="/search" text="もっとみる" />
+        </ButtonWrapper>
+      </div>
     </section>
 
     <TopReasonSection />

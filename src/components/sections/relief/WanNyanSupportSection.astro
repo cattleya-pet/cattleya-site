@@ -29,14 +29,14 @@ const supportItems = [
   <div class="container wannyan-support-container">
     <!-- モバイル用ヘッダー -->
     <div class="wannyan-support-heading--mobile">
-      <h2 class="wannyan-support-section-title">わんにゃんサポート</h2>
+      <h2 class="wannyan-support-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">わんにゃんサポート</h2>
     </div>
     
-    <div class="wannyan-support-layout">
+    <div class="wannyan-support-layout" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
       <div class="wannyan-support-content">
         <!-- デスクトップ用ヘッダー -->
         <div class="wannyan-support-heading--desktop">
-          <h2 class="wannyan-support-section-title">わんにゃんサポート</h2>
+          <h2 class="wannyan-support-section-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">わんにゃんサポート</h2>
         </div>
         
         <p class="wannyan-support-desc">
@@ -52,7 +52,7 @@ const supportItems = [
     
     <div class="wannyan-support-items">
       {supportItems.map((item, index) => (
-        <div class="wannyan-support-item">
+        <div class="wannyan-support-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic" data-aos-delay={200 + (index * 150)}>
           <div class="wannyan-support-item-icon-wrap">
             <img src={item.icon} alt={item.title} class="wannyan-support-item-icon" loading="lazy" />
           </div>

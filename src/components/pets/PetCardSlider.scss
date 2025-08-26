@@ -74,7 +74,7 @@
   display: flex;
   flex-wrap: nowrap;
   width: max-content; /* コンテンツの幅に合わせる */
-  transition: transform 0.5s ease;
+  transition: transform 0.7s ease-out;
   will-change: transform; /* アニメーションパフォーマンス改善 */
   gap: 4vw; /* デフォルト: スマホ時は4vw固定 */
   margin: 0 auto;
