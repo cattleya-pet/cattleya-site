@@ -48,7 +48,7 @@ const DEBUG_MODE = false; // 本番: false, デバッグ時: true に変更
 //=================================================================
 // Vercel Deploy Hook 設定
 //=================================================================
-const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/41ld0GerxA";
+const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/HOywf01XK9";
 const DEPLOY_DELAY_SECONDS = 90; // deploy前の待機時間（秒）
 
 //=================================================================
