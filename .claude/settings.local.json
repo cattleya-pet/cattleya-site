@@ -34,7 +34,8 @@
       "Bash(open \"http://localhost:4323/\")",
       "Bash(open \"http://localhost:4322/\")",
       "Bash(npm install:*)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(open \"http://localhost:4323/404\")"
     ],
     "deny": []
   },

@@ -48,8 +48,9 @@ if (dogMixBreeds && dogMixBreeds.breeds) {
 console.log('ヘッダーと同じミックス犬品種データ:', finalMixBreeds);
 
 // HeroSection用の画像（先頭のミックス個体の画像）
+const placeholderImage = '/images/ui/img_loading-pet-image-01.webp';
 const heroImage = initialDogs.length > 0 
-  ? getImageUrl(initialDogs[0].imageUrl01, 800, 600)
+  ? (initialDogs[0].imageUrl01 ? getImageUrl(initialDogs[0].imageUrl01, 800, 600) : placeholderImage)
   : '/images/backgrounds/img_bg-hero_search-dogs-01.webp';
 
 // パンくずリストのデータ

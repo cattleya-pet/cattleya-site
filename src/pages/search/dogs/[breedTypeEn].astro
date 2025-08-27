@@ -105,8 +105,9 @@ const breedData = pureBreeds.find(breed => breed.url.split('/').pop() === breedT
 const breedTypeJa = breedData ? breedData.name : (initialDogs.length > 0 ? initialDogs[0].breedTypeJa : breedTypeEn);
 
 // HeroSection用の画像（先頭の個体の画像）
+const placeholderImage = '/images/ui/img_loading-pet-image-01.webp';
 const heroImage = initialDogs.length > 0 
-  ? getImageUrl(initialDogs[0].imageUrl01, 800, 600)
+  ? (initialDogs[0].imageUrl01 ? getImageUrl(initialDogs[0].imageUrl01, 800, 600) : placeholderImage)
   : '/images/backgrounds/img_bg-hero_search-dogs-01.webp';
 
 // パンくずリストのデータ

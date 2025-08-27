@@ -143,11 +143,12 @@ mediaSlots.forEach((slot, index) => {
   } else {
     // 空のスロットにはプレースホルダー画像を使用
     mediaItems.push({
-      type: 'image',
+      type: 'image', // プレースホルダーは常に画像として扱う
       url: placeholderImage,
       thumbnail: placeholderImage,
       alt: `${pet.breedTypeJa}のプレースホルダー画像${index + 1}`,
-      isPlaceholder: true
+      isPlaceholder: true,
+      isVideoPlaceholder: slot.type === 'video' // 動画プレースホルダーフラグ
     });
   }
 });
@@ -277,14 +278,31 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                         class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
                         data-index={index}
                       >
-                        {item.type === 'image' ? (
+                        {item.type === 'image' && !item.isVideoPlaceholder ? (
                           <img 
                             src={item.url}
                             alt={item.alt}
                             class="carousel__image"
                             loading={index === 0 ? 'eager' : 'lazy'}
                           />
+                        ) : item.type === 'image' && item.isVideoPlaceholder ? (
+                          <!-- 動画プレースホルダー（no-image + メッセージ） -->
+                          <div class="carousel__video-container carousel__video-container--placeholder">
+                            <img 
+                              src={item.url}
+                              alt={item.alt}
+                              class="carousel__image"
+                              loading={index === 0 ? 'eager' : 'lazy'}
+                            />
+                            <div class="carousel__video-message">
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32" class="video-message-icon">
+                                <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z"/>
+                              </svg>
+                              <p class="video-message-text">動画が設定されて<br>いません</p>
+                            </div>
+                          </div>
                         ) : (
+                          <!-- 実際の動画 -->
                           <div class="carousel__video-container">
                             <video
                               class="carousel__video"
@@ -318,13 +336,29 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                       class={`carousel__thumbnail ${index === 0 ? 'carousel__thumbnail--active' : ''}`}
                       data-index={index}
                     >
-                      {item.type === 'image' ? (
+                      {item.type === 'image' && !item.isVideoPlaceholder ? (
                         <img 
                           src={item.thumbnail}
                           alt={item.alt}
                           class="carousel__thumbnail-image"
                         />
+                      ) : item.type === 'image' && item.isVideoPlaceholder ? (
+                        <!-- 動画プレースホルダー（no-image + メッセージ） -->
+                        <div class="carousel__thumbnail-video carousel__thumbnail-video--placeholder">
+                          <img 
+                            src={item.thumbnail}
+                            alt={item.alt}
+                            class="carousel__thumbnail-image"
+                          />
+                          <div class="carousel__thumbnail-message">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" class="thumbnail-message-icon">
+                              <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z"/>
+                            </svg>
+                            <span class="thumbnail-message-text">動画なし</span>
+                          </div>
+                        </div>
                       ) : (
+                        <!-- 実際の動画サムネイル -->
                         <div class="carousel__thumbnail-video">
                           <video
                             class="carousel__thumbnail-video-element"
@@ -674,13 +708,27 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
       // メディア内容をクリア
       modalMedia.innerHTML = '';
       
-      if (mediaItem.type === 'image') {
+      if (mediaItem.type === 'image' && !mediaItem.isVideoPlaceholder) {
         const img = document.createElement('img');
         img.src = mediaItem.url;
         img.alt = mediaItem.alt;
         img.className = 'media-modal__image';
         modalMedia.appendChild(img);
         console.log('🖼️ Image added to modal');
+      } else if (mediaItem.type === 'image' && mediaItem.isVideoPlaceholder) {
+        // 動画プレースホルダーの場合はメッセージを表示
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'media-modal__video-message';
+        messageContainer.innerHTML = `
+          <div class="modal-video-message">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48" class="modal-message-icon">
+              <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z"/>
+            </svg>
+            <p class="modal-message-text">動画が設定されていません</p>
+          </div>
+        `;
+        modalMedia.appendChild(messageContainer);
+        console.log('📹 Video placeholder message added to modal');
       } else if (mediaItem.type === 'video') {
         // HTML5 video要素を作成
         const video = document.createElement('video');

@@ -70,7 +70,8 @@ const {
       <div class="slider-track">
         <div class="pets-slider">
           {pets.map((pet) => {
-            const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
+            const placeholderImage = '/images/ui/img_loading-pet-image-01.webp';
+            const imageUrl = pet.imageUrl01 ? getImageUrl(pet.imageUrl01, 600, 600) : placeholderImage;
             const formattedDate = formatDate(pet.birthday);
             const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
             
@@ -88,7 +89,7 @@ const {
                       width="600"
                       height="600"
                       onload="this.parentElement.classList.add('loaded')"
-                      onerror="this.parentElement.classList.add('loaded')"
+                      onerror="this.src='/images/ui/img_loading-pet-image-01.webp'; this.parentElement.classList.add('loaded')"
                     />
                   </div>
                   <div class="pet-card__new-info">

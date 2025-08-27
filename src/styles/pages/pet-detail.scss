@@ -227,6 +227,13 @@
     background-color: rgba(0, 0, 0, 0.9);
     transform: translate(-50%, -50%) scale(1.1);
   }
+  
+  // 動画プレースホルダー用のスタイル
+  &--placeholder {
+    .carousel__image {
+      opacity: 0.8; // プレースホルダー画像を少し暗く
+    }
+  }
 }
 
 .carousel__video-thumbnail {
@@ -274,6 +281,41 @@
       width: rem(48);
       height: rem(48);
       margin-left: rem(6);
+    }
+  }
+}
+
+// 動画メッセージスタイル（メインカルーセル用）
+.carousel__video-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  
+  .video-message-icon {
+    margin-bottom: rem(8);
+    opacity: 0.8;
+  }
+  
+  .video-message-text {
+    @include typography-ja-3s;
+    font-size: rem(12);
+    line-height: 1.4;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    
+    @include breakpoint-up(sm) {
+      @include typography-ja-s;
+      font-size: rem(14);
     }
   }
 }
@@ -407,6 +449,13 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  
+  // 動画プレースホルダー用のスタイル
+  &--placeholder {
+    .carousel__thumbnail-image {
+      opacity: 0.8; // プレースホルダー画像を少し暗く
+    }
+  }
 }
 
 .carousel__thumbnail-video-element {
@@ -462,6 +511,40 @@ iframe.carousel__thumbnail-video-element {
       width: rem(20);
       height: rem(20);
       margin-left: rem(3);
+    }
+  }
+}
+
+// サムネイル動画メッセージスタイル
+.carousel__thumbnail-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  
+  .thumbnail-message-icon {
+    margin-bottom: rem(2);
+    opacity: 0.8;
+  }
+  
+  .thumbnail-message-text {
+    font-size: rem(8);
+    line-height: 1.2;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    
+    @include breakpoint-up(lg) {
+      font-size: rem(9);
     }
   }
 }
@@ -1143,6 +1226,63 @@ iframe.carousel__thumbnail-video-element {
   
   @include breakpoint-up(sm) {
     @include typography-ja-s($font-weight-regular);
+  }
+}
+
+// モーダル動画メッセージスタイル
+.media-modal__video-message {
+  width: min(90vw, 67.5vh);
+  height: min(90vh, 120vw);
+  max-width: 90vw;
+  max-height: 90vh;
+  aspect-ratio: 3 / 4;
+  background-color: $color-background;
+  border-radius: $radius-m;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @include breakpoint-up(sm) {
+    width: min(85vw, 67.5vh);
+    height: min(85vh, 113.3vw);
+    max-width: 85vw;
+    max-height: 85vh;
+  }
+  
+  @include breakpoint-up(lg) {
+    width: min(80vw, 67.5vh);
+    height: min(80vh, 106.7vw);
+    max-width: 80vw;
+    max-height: 80vh;
+  }
+  
+  .modal-video-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: $color-text-secondary;
+    
+    .modal-message-icon {
+      margin-bottom: rem(16);
+      opacity: 0.6;
+      
+      @include breakpoint-up(sm) {
+        width: rem(64);
+        height: rem(64);
+        margin-bottom: rem(20);
+      }
+    }
+    
+    .modal-message-text {
+      @include typography-ja-m;
+      font-weight: $font-weight-semibold;
+      margin: 0;
+      
+      @include breakpoint-up(sm) {
+        @include typography-ja-l;
+      }
+    }
   }
 }
 
