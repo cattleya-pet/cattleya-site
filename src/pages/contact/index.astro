@@ -385,7 +385,7 @@ const breadcrumbItems = [
               {pets.filter(pet => pet.animalType === 'dog').map((pet) => (
                 <div class="pet-card" data-pet-id={pet.id}>
                   <div class="pet-card__image">
-                    <img src={pet.imageUrl01} alt={pet.breedTypeJa} />
+                    <img src={pet.imageUrl01 || '/images/ui/img_loading-pet-image-01.webp'} alt={pet.breedTypeJa} />
                   </div>
                   <div class="pet-card__content">
                     <div class="pet-card__checkbox">
@@ -417,7 +417,7 @@ const breadcrumbItems = [
               {pets.filter(pet => pet.animalType === 'cat').map((pet) => (
                 <div class="pet-card" data-pet-id={pet.id}>
                   <div class="pet-card__image">
-                    <img src={pet.imageUrl01} alt={pet.breedTypeJa} />
+                    <img src={pet.imageUrl01 || '/images/ui/img_loading-pet-image-01.webp'} alt={pet.breedTypeJa} />
                   </div>
                   <div class="pet-card__content">
                     <div class="pet-card__checkbox">
