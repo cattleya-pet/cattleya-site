@@ -15,7 +15,7 @@ import '../../../styles/layout/pets-grid.scss';
 const allCats = await getLatestPetsByType('cat');
 
 // 初期表示用（最初の18件）
-const initialCats = allCats.slice(0, 18);
+const initialCats = allCats.slice(0, 24);
 
 // Navigation.astroと全く同じロジックで猫の品種データを取得
 const { pureBreeds: catBreeds, hasMix: catHasMix } = await getBreedsByAnimalType('cat');
@@ -82,7 +82,7 @@ const breadcrumbItems = [
         <div class="pets-grid" data-all-pets={JSON.stringify(allCats)}>
           {initialCats.map((pet) => <PetCard pet={pet} />)}
         </div>
-        {allCats.length > 18 && (
+        {allCats.length > 24 && (
           <ViewMoreButton />
         )}
       </div>
@@ -103,7 +103,7 @@ const breadcrumbItems = [
     
     // Get all pets data from the grid
     const allPetsData = JSON.parse(petsGrid.dataset.allPets || '[]');
-    let currentlyShown = 18;
+    let currentlyShown = 24;
     const itemsPerPage = 18;
     
     viewMoreButton.addEventListener('click', function() {

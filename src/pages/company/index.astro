@@ -31,8 +31,18 @@ const animalHandlingTable1 = [
   { label: '動物取扱責任者', value: '佐藤 寧々' }
 ];
 
-// 動物取扱業申請情報テーブル2データ
+// 動物取扱業申請情報テーブル2データ（渋谷店）
 const animalHandlingTable2 = [
+    { label: '事業所の名称', value: 'Cattleya 渋谷店' },
+  { label: '事業所の所在地', value: '〒150-0042<br>東京都渋谷区宇田川町13番9号KNビル1F〜3F' },
+  { label: '動物取扱業の種別<br>及び登録番号', value: '販売　<br class="sm-down-only">25東京都販第008725号<br><br class="sm-down-only">貸出し　<br class="sm-down-only">25東京都販第008725号' },
+  { label: '登録年月日', value: '令和7年8月6日' },
+  { label: '有効期間の末尾', value: '令和12年8月5日' },
+  { label: '動物取扱責任者', value: '水野 奈々' }
+];
+
+// 動物取扱業申請情報テーブル3データ（池袋店）
+const animalHandlingTable3 = [
 { label: '事業所の名称', value: 'Cattleya 池袋店' },
   { label: '事業所の所在地', value: '〒170-0013<br>東京都豊島区東池袋一丁目14番11号 小松ビル1F2F' },
   { label: '動物取扱業の種別<br>及び登録番号', value: '販売　<br class="sm-down-only">23東京都販第007783号<br><br class="sm-down-only">貸出し　<br class="sm-down-only">23東京都貸第007783号' },
@@ -192,6 +202,11 @@ const animalHandlingTable2 = [
           <!-- テーブル2 -->
           <div class="animal-handling-table-wrapper">
             <DataTable data={animalHandlingTable2} />
+          </div>
+          
+          <!-- テーブル3 -->
+          <div class="animal-handling-table-wrapper">
+            <DataTable data={animalHandlingTable3} />
           </div>
         </div>
       </div>
@@ -578,10 +593,10 @@ const animalHandlingTable2 = [
 .animal-handling-tables {
   display: flex;
   flex-direction: column;
-  gap: rem(60);
+  gap: rem(50);
   
   @include breakpoint-up(sm) {
-    gap: rem(80);
+    gap: rem(60);
   }
 }
 

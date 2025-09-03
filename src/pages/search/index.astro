@@ -11,7 +11,7 @@ import '../../styles/layout/pets-grid.scss';
 
 // 全てのペットデータを取得（SSG対応）
 const allPets = await getAllLatestPets();
-const initialPets = allPets.slice(0, 18);
+const initialPets = allPets.slice(0, 24);
 // タブ切り替え用に犬と猫の全データを取得
 const dogs = await getLatestPetsByType('dog');
 const cats = await getLatestPetsByType('cat');
@@ -64,10 +64,13 @@ const breadcrumbItems = [
 
   // タブごとのインデックス管理
   let indices = {
-    all: 18,
-    dog: 18,
-    cat: 18
+    all: 24,
+    dog: 24,
+    cat: 24
   };
+
+  // PetTabsからアクセス可能にするためにwindowオブジェクトに保存
+  window.indices = indices;
   let currentTab = 'all';
 
   const viewMoreButton = document.getElementById('viewMoreButton') as HTMLButtonElement;
@@ -130,6 +133,10 @@ const breadcrumbItems = [
     let dataSource = allPetsData;
     if (currentTab === 'dog') dataSource = dogsData;
     if (currentTab === 'cat') dataSource = catsData;
+    
+    // インデックスを24にリセット
+    indices[currentTab] = 24;
+    window.indices = indices; // windowオブジェクトも更新
     
     if (viewMoreButton) {
       if (indices[currentTab] >= dataSource.length) {

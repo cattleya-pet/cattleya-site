@@ -105,8 +105,8 @@ if (breedDogs.length === 0) {
   console.log(`[${breedTypeEn}] ミックスのみ:`, exactClassificationOnly.length);
 }
 
-// 初期表示用（最初の18件）
-const initialDogs = breedDogs.slice(0, 18);
+// 初期表示用（最初の24件）
+const initialDogs = breedDogs.slice(0, 24);
 
 // 品種名を取得（日本語）
 // まずミックス品種データから日本語名を探す
@@ -151,7 +151,7 @@ const breadcrumbItems = [
             <div class="pets-grid" data-all-pets={JSON.stringify(breedDogs)}>
               {initialDogs.map((pet) => <PetCard pet={pet} />)}
             </div>
-            {breedDogs.length > 18 && (
+            {breedDogs.length > 24 && (
               <ViewMoreButton />
             )}
           </>
@@ -179,7 +179,7 @@ const breadcrumbItems = [
     
     // Get all pets data from the grid
     const allPetsData = JSON.parse(petsGrid.dataset.allPets || '[]');
-    let currentlyShown = 18;
+    let currentlyShown = 24;
     const itemsPerPage = 18;
     
     viewMoreButton.addEventListener('click', function() {

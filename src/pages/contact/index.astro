@@ -2675,8 +2675,39 @@ input[type="date"] {
   document.addEventListener('DOMContentLoaded', function() {
     const hash = window.location.hash;
     if (hash) {
+      // ハッシュからタブパラメータを抽出
+      const hashPart = hash.substring(1);
+      const [targetId, params] = hashPart.split('&');
+      
+      // タブパラメータがある場合は対応するタブを選択
+      if (params) {
+        const urlParams = new URLSearchParams(params);
+        const tabParam = urlParams.get('tab');
+        if (tabParam) {
+          const targetTab = document.querySelector(`[data-tab="${tabParam}"]`);
+          if (targetTab) {
+            // 既存のタブ切り替え処理を実行
+            const tabs = document.querySelectorAll('.contact-tab');
+            const forms = document.querySelectorAll('.contact-form');
+            
+            // すべてのタブからactiveクラスを削除
+            tabs.forEach(t => t.classList.remove('active'));
+            // すべてのフォームからactiveクラスを削除
+            forms.forEach(f => f.classList.remove('active'));
+            
+            // 対象タブにactiveクラスを追加
+            targetTab.classList.add('active');
+            // 対応するフォームにactiveクラスを追加
+            const targetForm = document.querySelector(`[data-form="${tabParam}"]`);
+            if (targetForm) {
+              targetForm.classList.add('active');
+            }
+          }
+        }
+      }
+      
       setTimeout(() => {
-        const targetElement = document.getElementById(hash.substring(1));
+        const targetElement = document.getElementById(targetId);
         if (targetElement) {
           const screenWidth = window.innerWidth;
           let yOffset;

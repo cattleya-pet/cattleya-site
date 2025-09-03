@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import HeroSection from '../../components/sections/common/HeroSection.astro';
 import BannerSection from '../../components/sections/common/BannerSection.astro';
 import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
@@ -34,33 +35,11 @@ const breadcrumbItems = [
 
 <Layout title="お迎えまでの流れ | カトレア" description="カトレアでペットをお迎えいただくまでの流れをご紹介します。">
   <main>
-    <!-- ヒーローセクション -->
-    <section class="hero-section hero-section--flow">
-      <div class="hero-background">
-        <img 
-          src="/images/backgrounds/img_bg-hero_flow-01.webp" 
-          alt="お迎えまでの流れ" 
-          class="hero-background__image"
-          loading="eager"
-        />
-      </div>
-      
-      <!-- ページタイトルエリア -->
-      <div class="hero-content">
-        <div class="hero-content__semicircle">
-          <div class="hero-content__circle"></div>
-        </div>
-        <div class="container">
-          <div class="hero-content__inner">
-            <h1 class="hero-title" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic">お迎えまでの流れ</h1>
-            
-            <!-- パンくずリスト -->
-            <div class="hero-breadcrumb">
-              <Breadcrumb items={breadcrumbItems} />
-            </div>
-        </div>
-      </div>
-    </section>
+    <HeroSection 
+      title="お迎えまでの流れ"
+      image="/images/backgrounds/img_bg-hero_flow-01.webp"
+      breadcrumbItems={breadcrumbItems}
+    />
 
     <!-- スクロールリンクボタンセクション -->
     <section class="step-links-section">
@@ -349,6 +328,7 @@ const breadcrumbItems = [
                           ※1回～84回までお支払い回数をお選びいただけます。
                         </p>
                       </div>
+                      <p class="payment-methods__note">※現金、クレジットカード、ショッピングローンは併用可能です。</p>
                     </div>
                   </div>
                 </div>

@@ -111,11 +111,15 @@
 
 // ステップリンクセクション
 .step-links-section {
-  padding: 0 0 rem(60);
+  padding: rem(40) 0 rem(90) 0;
   background-color: $color-background-primary;
   
   @include breakpoint-up(sm) {
-    padding: 0 0 rem(80);
+    padding: rem(40) 0 rem(80) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(70) 0 rem(150) 0;
   }
 }
 
@@ -585,7 +589,7 @@
 
 .flow-step__image {
   position: relative;
-  width: 80%;
+  width: 60%;
   aspect-ratio: 1;
   margin: 0 auto;
   order: -1;
@@ -942,10 +946,17 @@
 .payment-methods {
   display: flex;
   flex-direction: column;
-  gap: rem(25);
+  gap: 0;
   
   @include breakpoint-up(sm) {
-    gap: rem(30);
+    // gap: rem(30);
+  }
+  
+  &__note {
+    @include typography-ja-s($font-weight-semibold);
+    color: $color-text-secondary;
+    margin: rem(15) 0 0 0;
+    padding-left: rem(10);
   }
 }
 
@@ -955,13 +966,40 @@
   @include breakpoint-up(sm) {
   }
   
+  &:nth-child(2) {
+    padding-top: rem(12);
+  }
+  
+  &:nth-child(3) {
+    padding-top: rem(24);
+  }
+  
   &__title {
     font-size: rem(16);
     color: $color-text-primary;
-    margin-bottom: rem(15);
+    margin-bottom: rem(10);
+    position: relative;
+    padding-left: rem(20);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: rem(16);
+      height: rem(16);
+      background-image: url('/images/ui/icon_check-mark-01.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
     
     @include breakpoint-up(sm) {
       text-align: left;
+    }
+    @include breakpoint-up(lg) {
+      font-size: rem(18);
     }
   }
   
@@ -970,6 +1008,7 @@
     font-weight: $font-weight-semibold;
     line-height: 1.6;
     margin: 0;
+    padding-left: rem(20);
   }
 }
 
@@ -977,6 +1016,7 @@
   display: flex;
   gap: rem(10);
   flex-wrap: wrap;
+  padding-left: rem(20);
   
   @include breakpoint-up(sm) {
     justify-content: flex-start;
@@ -985,7 +1025,7 @@
 }
 
 .card-logo {
-  height: rem(24);
+  height: rem(22);
   width: auto;
   
   @include breakpoint-up(sm) {

@@ -63,12 +63,12 @@ const breadcrumbItems = [
                     <div class="homestay-hero-check-item">
                       <img src="/images/ui/icon_check-mark-01.svg" alt="チェック" class="homestay-hero-check-mark" />
                       <span class="homestay-hero-check-text">
-                        一律税込<span class="homestay-hero-check-number">10,000</span>円
+                        一律<span class="homestay-hero-check-number">10,000</span>円 (税込)
                       </span>
                     </div>
                   </div>
                   <p class="homestay-hero-note">
-                    ※ホームステイ後ご購入の場合、頭金として充当させていただきます
+                    ※ホームステイ後にペットをご購入される場合、こちらの金額は頭金として充当させていただきます
                   </p>
                 </div>
               </div>
@@ -214,9 +214,9 @@ const breadcrumbItems = [
           </div>
           
           <!-- ボタン -->
-          <div class="homestay-solution-button">
+          <!-- <div class="homestay-solution-button">
             <BaseButton href="/flow" variant="short" text="お迎えまでの流れを確認する" />
-          </div>
+          </div> -->
         </div>
         
         <!-- デスクトップ版レイアウト -->
@@ -246,9 +246,9 @@ const breadcrumbItems = [
             </div>
             
             <!-- ボタン -->
-            <div class="homestay-solution-button">
+            <!-- <div class="homestay-solution-button">
               <BaseButton href="/flow" variant="short" text="お迎えまでの流れを確認する" />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -280,7 +280,8 @@ const breadcrumbItems = [
                   </div>
                 </div>
                 <div class="homestay-flow-step-desc">
-                  <p>前向きにご検討中のワンちゃん・ネコちゃんをスタッフにご相談ください。店頭でご相談いただくか、下記よりご相談ください。</p>
+                  <p>前向きにご検討中のワンちゃん・ネコちゃんをスタッフにご相談ください。店頭でご相談いただくか、問い合わせフォームよりご相談ください。</p>
+                  <a href="/contact#mail-contact" class="homestay-flow-step-link">問い合わせフォーム</a>
                 </div>
               </div>
             </div>
@@ -2037,6 +2038,29 @@ const breadcrumbItems = [
     color: $color-text-primary;
     margin: 0;
     line-height: 1.7;
+  }
+}
+
+.homestay-flow-step-link {
+  background-color: $color-background-gender-female;
+  color: $color-background-primary;
+  border: none;
+  border-radius: $radius-s;
+  padding: rem(6) rem(20);
+  @include typography-ja-s($font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  margin-top: rem(15);
+  
+  @include breakpoint-up(sm) {
+    display: inline-block;
+    margin: rem(15) 0 0 0;
   }
 }
 

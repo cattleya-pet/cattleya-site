@@ -41,6 +41,8 @@
   padding: rem(10);
   background-color: rgba($color-background-select, 0.1);
   vertical-align: top;
+  width: rem(140);
+  min-width: rem(140);
   
   @include breakpoint-up(sm) {
     padding: rem(20) rem(20) rem(20) rem(10);
@@ -52,6 +54,25 @@
   }
 }
 
+// recruitment-requirements-section内のDataTable専用スタイル
+.recruitment-requirements-section .data-table__label {
+  width: rem(100);
+  min-width: rem(100);
+  
+  @include breakpoint-up(md) {
+    width: rem(180);
+    min-width: rem(180);
+  }
+}
+
+.recruitment-requirements-section .data-table__value {
+  width: calc(100% - rem(100));
+  
+  @include breakpoint-up(md) {
+    width: calc(100% - rem(180));
+  }
+}
+
 .data-table__value {
   @include typography-ja-s;
   color: $color-text-primary;
@@ -59,7 +80,11 @@
   background-color: rgba($color-background-secondary, 0.4);
   vertical-align: top;
   line-height: 1.8;
-  width: calc(100% - rem(180));
+  width: calc(100% - rem(140));
+  
+  @include breakpoint-up(md) {
+    width: calc(100% - rem(180));
+  }
   
   @include breakpoint-up(sm) {
     padding: rem(20) rem(20) rem(20) rem(10);

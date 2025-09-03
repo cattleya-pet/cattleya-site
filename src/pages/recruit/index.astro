@@ -6,6 +6,7 @@ import ContactCTASection from '../../components/sections/common/ContactCTASectio
 import DataTable from '../../components/ui/DataTable.astro';
 import { Image } from 'astro:assets';
 import logoImage from '../../assets/logos/logo_main-color.svg';
+import CatFootprintIcon from '../../assets/icons/icon_cat-footprint-01.svg?raw';
 
 // パンくずリストのデータ
 const breadcrumbItems = [
@@ -36,7 +37,7 @@ const recruitmentRequirementsData = [
     value: '正社員：週休2日制（シフト制）、年次有給休暇、特別休暇<br>アルバイト：シフトにより応相談' 
   },
   { 
-    label: '待遇・福利厚生', 
+    label: '待遇・<br class="sm-down-only">福利厚生', 
     value: '各種社会保険完備（健康保険・厚生年金・雇用保険・労災保険）<br>交通費支給（上限あり）<br>制服貸与<br>社員割引制度<br>研修制度あり' 
   },
   { 
@@ -142,7 +143,7 @@ const recruitmentRequirementsData = [
           
           <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
-              <img src="/images/content/img_recruit_job-flow-01.webp" alt="お客様へのご案内" loading="lazy" />
+              <img src="/images/content/img_recruit_job-flow-02.webp" alt="お客様へのご案内" loading="lazy" />
             </div>
             <div class="recruit-flow-item-content">
               <div class="recruit-flow-item-phrase">お客様へのご案内</div>
@@ -153,7 +154,7 @@ const recruitmentRequirementsData = [
           
           <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
-              <img src="/images/content/img_recruit_job-flow-01.webp" alt="ペットのお世話" loading="lazy" />
+              <img src="/images/content/img_recruit_job-flow-03.webp" alt="ペットのお世話" loading="lazy" />
             </div>
             <div class="recruit-flow-item-content">
               <div class="recruit-flow-item-phrase">ペットのお世話</div>
@@ -164,7 +165,7 @@ const recruitmentRequirementsData = [
           
           <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
-              <img src="/images/content/img_recruit_job-flow-01.webp" alt="お店とペットの魅力を発信" loading="lazy" />
+              <img src="/images/content/img_recruit_job-flow-04.webp" alt="お店とペットの魅力を発信" loading="lazy" />
             </div>
             <div class="recruit-flow-item-content">
               <div class="recruit-flow-item-phrase">お店とペットの魅力を発信</div>
@@ -175,7 +176,7 @@ const recruitmentRequirementsData = [
           
           <div class="recruit-flow-item" data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <div class="recruit-flow-item-image">
-              <img src="/images/content/img_recruit_job-flow-01.webp" alt="ペットと店舗のケア" loading="lazy" />
+              <img src="/images/content/img_recruit_job-flow-05.webp" alt="ペットと店舗のケア" loading="lazy" />
             </div>
             <div class="recruit-flow-item-content">
               <div class="recruit-flow-item-phrase">ペットと店舗のケア</div>
@@ -210,8 +211,8 @@ const recruitmentRequirementsData = [
                 </div>
               </div>
               <div class="recruit-process-step-desc">
-                <p>お問い合わせフォームより、まずは求人申し込みの旨をご連絡ください。<br>※フォームの「求人申し込み」にチェックを入れてください。</p>
-                <a href="/contact#mail-contact" class="recruit-process-step-link">お申し込み</a>
+                <p>お問い合わせフォームより、まずは求人申し込みの旨をご連絡ください。</p>
+                <a href="/contact#mail-contact&tab=job" class="recruit-process-step-link">お申し込み</a>
               </div>
             </div>
           </div>
@@ -280,6 +281,14 @@ const recruitmentRequirementsData = [
         <div class="recruitment-requirements-content">
           <div data-aos="fade-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             <DataTable data={recruitmentRequirementsData} />
+          </div>
+          
+          <div class="recruitment-requirements-button" data-aos="fade-up" data-aos-duration="1400" data-aos-easing="ease-out-cubic">
+            <a href="/contact#mail-contact&tab=job" class="recruitment-apply-button">
+              <span class="recruitment-apply-button__line"></span>
+              <span class="recruitment-apply-button__text">お申し込み</span>
+              <span class="recruitment-apply-button__icon" set:html={CatFootprintIcon}></span>
+            </a>
           </div>
         </div>
       </div>
@@ -707,7 +716,7 @@ const recruitmentRequirementsData = [
   &::after {
     content: "";
     position: absolute;
-    bottom: rem(-8);
+    bottom: rem(-7.7);
     left: 50%;
     width: rem(15);
     height: rem(15);
@@ -721,7 +730,7 @@ const recruitmentRequirementsData = [
       left: rem(25);
       border: 2px solid;
       border-color: $color-brand-primary $color-brand-primary transparent transparent;
-      bottom: rem(-8.5);
+      bottom: rem(-7.7);
     }
   }
 }
@@ -1075,5 +1084,93 @@ const recruitmentRequirementsData = [
 
 .recruitment-requirements-content {
   width: 100%;
+  
+  // recruitment-requirements-section内のDataTableスタイル調整（Astroスコープ内）
+  :global(.data-table__label) {
+    width: rem(100);
+    min-width: rem(100);
+    
+    @include breakpoint-up(md) {
+      width: rem(180);
+      min-width: rem(180);
+    }
+  }
+  
+  :global(.data-table__value) {
+    width: calc(100% - rem(100));
+    
+    @include breakpoint-up(md) {
+      width: calc(100% - rem(180));
+    }
+  }
+}
+
+// 募集要項ボタンセクション
+.recruitment-requirements-button {
+  margin-top: rem(50);
+  text-align: center;
+  
+  @include breakpoint-up(sm) {
+    margin-top: rem(70);
+  }
+}
+
+.recruitment-apply-button {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-text-primary;
+  border-radius: $radius-s;
+  padding: rem(30) rem(95) rem(30) rem(75);
+  text-decoration: none;
+  color: $color-text-primary;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  min-width: rem(270);
+  background-color: rgba($color-border-new, 0.6);
+  
+  &:hover {
+    text-decoration: none;
+    
+    .recruitment-apply-button__line {
+      transform: translateX(rem(20));
+    }
+  }
+}
+
+.recruitment-apply-button__line {
+  position: absolute;
+  left: rem(-60);
+  width: rem(80);
+  height: 1px;
+  background-color: $color-text-primary;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.recruitment-apply-button__text {
+  @include typography-ja-s($font-weight-semibold);
+  color: $color-text-primary;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.recruitment-apply-button__icon {
+  position: absolute;
+  right: rem(30);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(20);
+  height: rem(20);
+  
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: $color-text-primary;
+  }
 }
 </style>

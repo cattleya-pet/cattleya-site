@@ -94,8 +94,8 @@ if (breedCats.length === 0) {
   console.log(`[${breedTypeEn}] 血統書付きのみ:`, exactClassificationOnly.length);
 }
 
-// 初期表示用（最初の18件）
-const initialCats = breedCats.slice(0, 18);
+// 初期表示用（最初の24件）
+const initialCats = breedCats.slice(0, 24);
 
 // 品種名を取得（日本語）
 // まず品種データから日本語名を探す
@@ -136,7 +136,7 @@ const breadcrumbItems = [
             <div class="pets-grid" data-all-pets={JSON.stringify(breedCats)}>
               {initialCats.map((pet) => <PetCard pet={pet} />)}
             </div>
-            {breedCats.length > 18 && (
+            {breedCats.length > 24 && (
               <ViewMoreButton />
             )}
           </>
@@ -164,7 +164,7 @@ const breadcrumbItems = [
     
     // Get all pets data from the grid
     const allPetsData = JSON.parse(petsGrid.dataset.allPets || '[]');
-    let currentlyShown = 18;
+    let currentlyShown = 24;
     const itemsPerPage = 18;
     
     viewMoreButton.addEventListener('click', function() {

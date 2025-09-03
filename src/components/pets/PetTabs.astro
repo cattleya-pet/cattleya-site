@@ -84,7 +84,8 @@ const tabs = [
   // ペット表示を更新する関数
   function updatePetsDisplay(selectedTab) {
     const dataMap = { all: allPets, dog: dogs, cat: cats };
-    const currentPets = dataMap[selectedTab] || [];
+    const allCurrentPets = dataMap[selectedTab] || [];
+    const currentPets = allCurrentPets.slice(0, 24); // 初期24件表示
 
     if (petsGrid) {
       // DocumentFragmentを使用してDOMの更新を最適化
@@ -99,14 +100,34 @@ const tabs = [
       petsGrid.replaceChildren(fragment);
     }
 
-    // 件数表示を更新
+    // 件数表示を更新（全数を表示）
     const petsCountElement = document.getElementById('pets-count');
     if (petsCountElement) {
       const numberElement = petsCountElement.querySelector('.pets-count__number');
       if (numberElement) {
-        numberElement.textContent = currentPets.length.toString();
+        numberElement.textContent = allCurrentPets.length.toString();
       }
     }
+
+    // ViewMoreボタンの表示制御
+    const viewMoreButton = document.getElementById('viewMoreButton');
+    if (viewMoreButton) {
+      if (allCurrentPets.length > 24) {
+        viewMoreButton.style.display = 'flex';
+      } else {
+        viewMoreButton.style.display = 'none';
+      }
+    }
+
+    // 外部のindices変数を更新（searchページ用）
+    if (typeof window !== 'undefined' && window.indices) {
+      window.indices[selectedTab] = 24;
+    }
+    
+    // タブ変更イベントを発行してsearchページに通知
+    document.dispatchEvent(new CustomEvent('tabChanged', { 
+      detail: { tab: selectedTab } 
+    }));
   }
 
   // 初期表示時に現在のアクティブタブに応じたペットを表示

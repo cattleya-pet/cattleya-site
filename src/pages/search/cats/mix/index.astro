@@ -16,8 +16,8 @@ import '../../../../styles/layout/pets-grid.scss';
 const allCats = await getLatestPetsByType('cat');
 const mixCats = allCats.filter(pet => pet.classification === 'mix');
 
-// 初期表示用（最初の18件）
-const initialCats = mixCats.slice(0, 18);
+// 初期表示用（最初の24件）
+const initialCats = mixCats.slice(0, 24);
 
 console.log('ミックス猫総数:', mixCats.length);
 console.log('初期表示ミックス猫数:', initialCats.length);
@@ -81,7 +81,7 @@ const breadcrumbItems = [
             <div class="pets-grid" data-all-pets={JSON.stringify(mixCats)}>
               {initialCats.map((pet) => <PetCard pet={pet} />)}
             </div>
-            {mixCats.length > 18 && (
+            {mixCats.length > 24 && (
               <ViewMoreButton />
             )}
           </>
@@ -109,7 +109,7 @@ const breadcrumbItems = [
     
     // Get all pets data from the grid
     const allPetsData = JSON.parse(petsGrid.dataset.allPets || '[]');
-    let currentlyShown = 18;
+    let currentlyShown = 24;
     const itemsPerPage = 18;
     
     viewMoreButton.addEventListener('click', function() {
