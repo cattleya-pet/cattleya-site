@@ -242,7 +242,11 @@ if (pet.classification === 'mix') {
 breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || pet.id}）` });
 ---
 
-<Layout title={`${pet.breedTypeJa} | 子犬詳細 | カトレア`}>
+<Layout 
+  title={`${pet.breedTypeJa}（${pet.gender}）｜カトレア ${pet.storeName}｜子犬詳細`}
+  description={`No.${pet.id.replace(/^0+/, '') || pet.id}、誕生日：${formatDate(pet.birthday)}、カラー：${pet.color}。`}
+  ogImage={pet.imageUrl01 ? getImageUrl(pet.imageUrl01, 1200, 630) : '/og-image.png'}
+>
   <main>
     <!-- パンくずリスト -->
     <div class="breadcrumb-container">

@@ -186,6 +186,10 @@ try {
   displayVoices = [];
 }
 
+// SEO用のメタデータを生成
+const storeTitle = `${storeInfo.storeName}`;
+const storeDescription = `カトレア${storeInfo.storeName}の店舗情報。${storeInfo.storeAddress}にございます。営業時間：${storeInfo.businessHours?.replace(/\n/g, ' ')}。子犬・子猫との出会いをサポートします。`;
+
 // パンくずリストのデータ
 const breadcrumbItems = [
   { label: 'ホーム', href: '/' },
@@ -194,7 +198,7 @@ const breadcrumbItems = [
 ];
 ---
 
-<Layout title={`${storeInfo.storeName} | 店舗詳細 | カトレア`}>
+<Layout title={storeTitle} description={storeDescription}>
   <main>
     <!-- パンくずリスト -->
     <div class="breadcrumb-container">
@@ -224,7 +228,7 @@ const breadcrumbItems = [
                     </svg>
                   </button>
                   
-                  <div class="carousel__container">
+                  <div class="carousel__container" id="carousel-container">
                     {mediaItems.map((item, index) => (
                       <div 
                         class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
@@ -281,12 +285,12 @@ const breadcrumbItems = [
                         />
                       ) : (
                         <div class="carousel__thumbnail-video">
-                          <video 
+                          <video
                             class="carousel__thumbnail-video-element"
-                            muted
+                            data-video-src={item.url}
                             preload="metadata"
-                            data-video-src={item.thumbnail}
-                            data-video-thumbnail="true"
+                            muted
+                            playsInline
                           ></video>
                           <div class="carousel__thumbnail-play-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -485,6 +489,33 @@ const breadcrumbItems = [
     <ContactCTASection />
   </main>
 
+  <!-- JSON-LD構造化データ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "PetStore",
+    "name": `Cattleya ${storeInfo.storeName}`,
+    "url": Astro.url.toString(),
+    "logo": "https://cattleya-pets.com/images/logo.png",
+    "image": "https://cattleya-pets.com/og-image.png",
+    "description": storeDescription,
+    "address": {
+      "@type": "PostalAddress",
+      "postalCode": storeInfo.storePostCode || '',
+      "addressRegion": "東京都",
+      "addressLocality": storeInfo.storeAddress ? storeInfo.storeAddress.split('\n')[0] : '',
+      "streetAddress": storeInfo.storeAddress ? storeInfo.storeAddress.replace(/\n/g, ' ') : ''
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": storeInfo.storeName === '新宿店' ? 35.6928 : storeInfo.storeName === '渋谷店' ? 35.6611 : 35.7305,
+      "longitude": storeInfo.storeName === '新宿店' ? 139.7024 : storeInfo.storeName === '渋谷店' ? 139.6957 : 139.7153
+    },
+    "telephone": storeInfo.storePhoneNumber || '',
+    "openingHours": storeInfo.businessHours ? storeInfo.businessHours.replace(/\n/g, ' ') : '',
+    "priceRange": "$$"
+  })}>
+  </script>
+
   <!-- モーダル -->
   <div id="media-modal" class="media-modal">
     <div class="media-modal__overlay"></div>
@@ -516,19 +547,17 @@ const breadcrumbItems = [
 </Layout>
 
 <script define:vars={{ mediaItemsCount: mediaItems.length, mediaItems: mediaItems }}>
-  import { getImageUrl } from '../../lib/utils/image';
-  import { formatDate } from '../../lib/utils/date';
 
   // ページが読み込まれるまで待つ
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('Store page JavaScript initialized');
+    console.log('🚀 Store page initialized with HTML5 video support');
     
     // メディアアイテムデータを準備（Astroから渡される）
     const mediaItemsData = mediaItems;
     const mediaItemsCount = mediaItems.length;
     
-    console.log('Media items received:', mediaItemsData);
-    console.log('Media items count:', mediaItemsCount);
+    console.log('🎯 Found media items:', mediaItemsData.length);
+    console.log('🎯 Media items data:', mediaItemsData);
     
     let currentSlide = 0;
     let currentModalSlide = 0;
@@ -538,6 +567,8 @@ const breadcrumbItems = [
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     
+    console.log(`🎯 Found ${slides.length} slides, ${thumbnails.length} thumbnails`);
+    
     // モーダル要素
     const modal = document.getElementById('media-modal');
     const modalMedia = document.getElementById('modal-media');
@@ -546,29 +577,40 @@ const breadcrumbItems = [
     const modalPrev = document.getElementById('modal-prev');
     const modalNext = document.getElementById('modal-next');
 
-    // カルーセル機能
     function showSlide(index) {
-      console.log('Showing slide:', index);
-      
-      // 現在のスライドの動画を停止
-      const currentActiveSlide = document.querySelector('.carousel__slide--active');
-      if (currentActiveSlide) {
-        const currentVideo = currentActiveSlide.querySelector('[data-video-player="true"]');
-        const currentOverlay = currentActiveSlide.querySelector('[data-video-overlay="true"]');
-        
-        if (currentVideo && currentVideo.tagName === 'VIDEO') {
-          currentVideo.pause();
-          currentVideo.currentTime = 0;
-          
-          if (currentOverlay) {
-            currentOverlay.style.display = 'flex';
-          }
-        }
-      }
-      
-      // スライドを切り替え
       slides.forEach((slide, i) => {
         slide.classList.toggle('carousel__slide--active', i === index);
+        
+        // HTML5 video要素の制御
+        const video = slide.querySelector('.carousel__video');
+        const playBtn = slide.querySelector('.carousel__video-play-btn');
+        
+        if (video && video.dataset.videoSrc) {
+          if (i === index) {
+            // アクティブなスライドでは動画URLを設定、再生ボタンを表示
+            const videoUrl = video.dataset.videoSrc;
+            console.log('🎬 Loading main carousel video with URL:', videoUrl);
+            video.src = videoUrl;
+            
+            // メタデータ読み込み後に最初のフレームを表示
+            video.addEventListener('loadedmetadata', () => {
+              console.log('🎬 Main carousel video metadata loaded');
+              video.currentTime = 0.5; // 0.5秒地点のフレームを表示
+            });
+            
+            video.addEventListener('seeked', () => {
+              console.log('🎬 Main carousel video seeked to first frame');
+              video.pause(); // 最初のフレームで一時停止
+            });
+            
+            if (playBtn) playBtn.style.display = 'flex';
+          } else {
+            // 非アクティブなスライドの動画をリセット
+            video.src = '';
+            video.pause();
+            if (playBtn) playBtn.style.display = 'flex';
+          }
+        }
       });
 
       // サムネイルを切り替え
@@ -907,50 +949,11 @@ const breadcrumbItems = [
 
     // 重複するイベントリスナーを削除し、画像・動画要素に直接設定したもののみ使用
 
-    // 動画初期化
-    function initializeVideos() {
-      document.querySelectorAll('[data-video-player="true"]').forEach(video => {
-        const container = video.closest('.carousel__video-container');
-        const overlay = container?.querySelector('[data-video-overlay="true"]');
-        const playButton = container?.querySelector('[data-video-play="true"]');
-        
-        if (!container || !overlay || !playButton) return;
-        
-        video.addEventListener('loadedmetadata', () => {
-          overlay.style.display = 'flex';
-        });
-        
-        playButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          if (video.paused) {
-            video.play().then(() => {
-              overlay.style.display = 'none';
-            }).catch(error => {
-              console.error('動画再生エラー:', error);
-            });
-          }
-        });
-        
-        video.addEventListener('ended', () => {
-          overlay.style.display = 'flex';
-          video.currentTime = 0;
-        });
-        
-        video.addEventListener('pause', () => {
-          if (!video.ended) {
-            overlay.style.display = 'flex';
-          }
-        });
-      });
-    }
-
     // タッチスワイプサポート
     let touchStartX = 0;
     let touchEndX = 0;
     
-    const carouselContainer = document.querySelector('.carousel__container');
+    const carouselContainer = document.getElementById('carousel-container');
     if (carouselContainer) {
       carouselContainer.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
@@ -988,30 +991,6 @@ const breadcrumbItems = [
     setTimeout(adjustMapSize, 100);
     setTimeout(adjustMapSize, 500);
     setTimeout(adjustMapSize, 1000);
-
-    // メインカルーセル動画の初期化（ペット詳細ページと同じ実装）
-    function loadMainCarouselVideos() {
-      const mainVideos = document.querySelectorAll('.carousel__video[data-video-src]');
-      console.log('🎬 Found main carousel videos:', mainVideos.length);
-      
-      mainVideos.forEach((video, index) => {
-        const videoUrl = video.dataset.videoSrc;
-        if (videoUrl) {
-          console.log(`🎬 Loading main carousel video ${index}:`, videoUrl);
-          video.src = videoUrl;
-          
-          // ロード完了でサムネイルフレームを設定
-          video.addEventListener('loadedmetadata', () => {
-            console.log(`🎬 Main carousel video ${index} metadata loaded`);
-            video.currentTime = 0.1; // 最初の方のフレーム
-          });
-          
-          video.addEventListener('error', (e) => {
-            console.error(`🎬 Error loading main carousel video ${index}:`, e);
-          });
-        }
-      });
-    }
 
     // サムネイル動画の最初のフレームを表示（ペット詳細ページと同じ実装）
     function loadVideoThumbnails() {
@@ -1051,14 +1030,13 @@ const breadcrumbItems = [
       });
     }
 
-    // 初期化
-    initializeVideos();
+    // 初期表示（ペット詳細ページと同じ順序）
+    showSlide(0);
     
-    // メインカルーセル動画を初期化
-    setTimeout(loadMainCarouselVideos, 50);
-    
-    // サムネイル動画を初期化（少し遅延させて実行）
+    // サムネイル動画を初期化
     setTimeout(loadVideoThumbnails, 100);
+    
+    console.log('✅ All event listeners set up with HTML5 video support');
 
     // ペットタブ機能（searchページと同じ）
     const tabButtons = document.querySelectorAll('.pet-tabs__item');
@@ -1069,7 +1047,8 @@ const breadcrumbItems = [
 
     // ペットカードのテンプレート関数
     function generatePetCard(pet) {
-      const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
+      // getImageUrlのロジックを直接実装
+      const imageUrl = pet.imageUrl01 ? `${pet.imageUrl01}?w=600&h=600&fit=crop` : '/images/ui/img_loading-pet-image-01.webp';
       const breedTypeEn = (pet.breedTypeEn || '').toLowerCase();
       const genderIcon = pet.gender === '男の子' 
         ? '<span class="pet-card__gender male"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 0V5H14V1.733L8.871 6.817C9.201 7.297 9.47167 7.80367 9.683 8.337C9.89433 8.87033 10 9.42467 10 10C10 11.394 9.51533 12.576 8.546 13.546C7.57667 14.516 6.39533 15.0007 5.002 15C3.60867 14.9993 2.42667 14.5147 1.456 13.546C0.485333 12.5773 0 11.396 0 10.002C0 8.608 0.485 7.426 1.455 6.456C2.425 5.486 3.60667 5.00067 5 5C5.576 5 6.12733 5.105 6.654 5.315C7.18067 5.52433 7.682 5.79567 8.158 6.129L13.287 1H10V0H15ZM4.997 6C3.89167 6 2.949 6.39067 2.169 7.172C1.38967 7.954 1 8.89767 1 10.003C1 11.109 1.39067 12.0517 2.172 12.831C2.954 13.6103 3.89767 14 5.003 14C6.109 14 7.05167 13.6093 7.831 12.828C8.61033 12.046 9 11.1023 9 9.997C9 8.89167 8.60933 7.949 7.828 7.169C7.04667 6.389 6.103 5.99933 4.997 6Z" fill="#7398D5"/></svg></span>'
@@ -1099,7 +1078,7 @@ const breadcrumbItems = [
                 </h3>
                 <div class="pet-card__details">
                   <p class="pet-card__detail-item">カラー：${pet.color}</p>
-                  <p class="pet-card__detail-item">誕生日：${formatDate(pet.birthday)}</p>
+                  <p class="pet-card__detail-item">誕生日：${pet.birthday ? new Date(pet.birthday).toLocaleDateString('ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '/') : '未設定'}</p>
                   <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
                 </div>
               </div>

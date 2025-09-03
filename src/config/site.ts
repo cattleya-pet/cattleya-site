@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'Cattleya',
   description: 'ペットショップ Cattleyaの公式サイトです。',
   url: 'https://cattleya-pets.com',
-  ogImage: '/images/og-image.jpg',
+  ogImage: '/og-image.png',
   links: {
     about: '/relief',
     company: '/company',

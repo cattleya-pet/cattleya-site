@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cattleya-pets.com/sitemap.xml
+
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /admin/
+Disallow: /debug-carousel.html
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Crawl-delay: 1

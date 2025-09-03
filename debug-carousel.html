@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Debug</title>
+    <style>
+        .carousel {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .carousel__main {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .carousel__slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .carousel__slide--active {
+            display: block;
+        }
+        
+        .carousel__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .carousel__nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .carousel__nav--prev {
+            left: 10px;
+        }
+        
+        .carousel__nav--next {
+            right: 10px;
+        }
+        
+        .carousel__thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .carousel__thumbnail {
+            width: 80px;
+            height: 60px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .carousel__thumbnail--active {
+            border-color: #007bff;
+        }
+        
+        .carousel__thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .debug-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carousel Debug Test</h1>
+    
+    <div class="carousel">
+        <div class="carousel__main">
+            <button class="carousel__nav carousel__nav--prev" id="prevBtn">◀</button>
+            
+            <div class="carousel__slide carousel__slide--active" data-index="0">
+                <img src="https://via.placeholder.com/600x400/FF6B6B/FFFFFF?text=Image+1" alt="Test Image 1" class="carousel__image">
+            </div>
+            <div class="carousel__slide" data-index="1">
+                <img src="https://via.placeholder.com/600x400/4ECDC4/FFFFFF?text=Image+2" alt="Test Image 2" class="carousel__image">
+            </div>
+            <div class="carousel__slide" data-index="2">
+                <img src="https://via.placeholder.com/600x400/45B7D1/FFFFFF?text=Image+3" alt="Test Image 3" class="carousel__image">
+            </div>
+            <div class="carousel__slide" data-index="3">
+                <video class="carousel__image" controls muted>
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <button class="carousel__nav carousel__nav--next" id="nextBtn">▶</button>
+        </div>
+        
+        <div class="carousel__thumbnails">
+            <button class="carousel__thumbnail carousel__thumbnail--active" data-index="0">
+                <img src="https://via.placeholder.com/80x60/FF6B6B/FFFFFF?text=1" alt="Thumb 1" class="carousel__thumbnail-image">
+            </button>
+            <button class="carousel__thumbnail" data-index="1">
+                <img src="https://via.placeholder.com/80x60/4ECDC4/FFFFFF?text=2" alt="Thumb 2" class="carousel__thumbnail-image">
+            </button>
+            <button class="carousel__thumbnail" data-index="2">
+                <img src="https://via.placeholder.com/80x60/45B7D1/FFFFFF?text=3" alt="Thumb 3" class="carousel__thumbnail-image">
+            </button>
+            <button class="carousel__thumbnail" data-index="3">
+                <img src="https://via.placeholder.com/80x60/F7DC6F/FFFFFF?text=VID" alt="Video" class="carousel__thumbnail-image">
+            </button>
+        </div>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Debug Info:</h3>
+        <div id="debug-output"></div>
+        <button onclick="testCarousel()">Test Carousel Functions</button>
+    </div>
+
+    <script>
+        console.log('🚀 Debug carousel initialized');
+        
+        let currentSlide = 0;
+        const mediaItemsCount = 4;
+        
+        const slides = document.querySelectorAll('.carousel__slide');
+        const thumbnails = document.querySelectorAll('.carousel__thumbnail');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const debugOutput = document.getElementById('debug-output');
+        
+        console.log(`🎯 Found ${slides.length} slides, ${thumbnails.length} thumbnails`);
+        
+        function updateDebugInfo(message) {
+            debugOutput.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+        
+        function showSlide(index) {
+            console.log('Showing slide:', index);
+            updateDebugInfo(`Showing slide: ${index}`);
+            
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('carousel__slide--active', i === index);
+            });
+
+            thumbnails.forEach((thumb, i) => {
+                thumb.classList.toggle('carousel__thumbnail--active', i === index);
+            });
+
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % mediaItemsCount;
+            showSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + mediaItemsCount) % mediaItemsCount;
+            showSlide(prev);
+        }
+
+        // Event listeners
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Prev button clicked');
+                updateDebugInfo('Prev button clicked');
+                prevSlide();
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Next button clicked');
+                updateDebugInfo('Next button clicked');
+                nextSlide();
+            });
+        }
+
+        // Thumbnail clicks
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Thumbnail clicked:', index);
+                updateDebugInfo(`Thumbnail clicked: ${index}`);
+                showSlide(index);
+            });
+        });
+        
+        function testCarousel() {
+            updateDebugInfo('=== TESTING CAROUSEL ===');
+            updateDebugInfo(`Current slide: ${currentSlide}`);
+            updateDebugInfo(`Total slides: ${mediaItemsCount}`);
+            updateDebugInfo(`Slides found: ${slides.length}`);
+            updateDebugInfo(`Thumbnails found: ${thumbnails.length}`);
+            updateDebugInfo(`Prev button: ${prevBtn ? 'Found' : 'NOT FOUND'}`);
+            updateDebugInfo(`Next button: ${nextBtn ? 'Found' : 'NOT FOUND'}`);
+            
+            // Test next slide
+            setTimeout(() => {
+                updateDebugInfo('Testing next slide...');
+                nextSlide();
+            }, 1000);
+            
+            // Test prev slide
+            setTimeout(() => {
+                updateDebugInfo('Testing prev slide...');
+                prevSlide();
+            }, 2000);
+            
+            // Test thumbnail click
+            setTimeout(() => {
+                updateDebugInfo('Testing thumbnail click (index 2)...');
+                showSlide(2);
+            }, 3000);
+        }
+        
+        // Initialize
+        showSlide(0);
+        updateDebugInfo('Carousel initialized');
+        
+        console.log('✅ All event listeners set up');
+    </script>
+</body>
+</html>
