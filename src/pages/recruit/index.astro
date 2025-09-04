@@ -58,7 +58,7 @@ const recruitmentRequirementsData = [
     <!-- 採用メインセクション -->
     <section class="recruit-section">
       <div class="recruit-container">
-        <div class="recruit-main" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-out-cubic" data-aos-delay="400">
+        <div class="recruit-main">
           <!-- セクションラベル -->
           <div class="recruit-label">
             <Image src={logoImage} alt="Cattleya" class="recruit-logo" width={240} height={60} />
@@ -307,11 +307,15 @@ const recruitmentRequirementsData = [
 
 // 採用メインセクション
 .recruit-section {
-  padding: rem(90) 0 rem(110) 0;
+  padding: rem(60) 0 rem(110) 0;
   background: $color-background-primary; // bg-primary
   
   @include breakpoint-up(sm) {
-    padding: rem(120) 0 rem(150) 0;
+    padding: rem(70) 0 rem(150) 0;
+  }
+  
+  @include breakpoint-up(lg) {
+    padding: rem(40) 0 rem(150) 0;
   }
   
   .recruit-container {
