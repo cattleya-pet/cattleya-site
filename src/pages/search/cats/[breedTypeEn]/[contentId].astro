@@ -816,36 +816,34 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
     }
 
     function updateModalNavButtons() {
+      // 循環ナビゲーションのため常に有効にする
       if (modalPrev) {
-        modalPrev.disabled = currentModalSlide === 0;
+        modalPrev.disabled = false;
       }
       if (modalNext) {
-        modalNext.disabled = currentModalSlide === mediaItemsCount - 1;
+        modalNext.disabled = false;
       }
     }
 
     function showModalSlide(index) {
-      if (index < 0 || index >= mediaItemsCount) return;
+      // 循環処理を追加
+      const normalizedIndex = (index + mediaItemsCount) % mediaItemsCount;
       
-      const mediaItem = mediaItems[index];
+      const mediaItem = mediaItems[normalizedIndex];
       if (mediaItem) {
-        openModal(mediaItem, index);
+        openModal(mediaItem, normalizedIndex);
         
         // メインカルーセルも同期して更新
-        showSlide(index);
+        showSlide(normalizedIndex);
       }
     }
 
     function nextModalSlide() {
-      if (currentModalSlide < mediaItemsCount - 1) {
-        showModalSlide(currentModalSlide + 1);
-      }
+      showModalSlide(currentModalSlide + 1);
     }
 
     function prevModalSlide() {
-      if (currentModalSlide > 0) {
-        showModalSlide(currentModalSlide - 1);
-      }
+      showModalSlide(currentModalSlide - 1);
     }
 
     function showSlide(index) {

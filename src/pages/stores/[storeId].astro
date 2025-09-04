@@ -847,13 +847,14 @@ const breadcrumbItems = [
     }
 
     function updateModalNavButtons() {
+      // 循環ナビゲーションのため常に有効にする
       if (modalPrev) {
-        modalPrev.disabled = currentModalSlide === 0;
-        modalPrev.style.opacity = currentModalSlide === 0 ? '0.5' : '1';
+        modalPrev.disabled = false;
+        modalPrev.style.opacity = '1';
       }
       if (modalNext) {
-        modalNext.disabled = currentModalSlide === mediaItemsCount - 1;
-        modalNext.style.opacity = currentModalSlide === mediaItemsCount - 1 ? '0.5' : '1';
+        modalNext.disabled = false;
+        modalNext.style.opacity = '1';
       }
     }
 
@@ -866,20 +867,14 @@ const breadcrumbItems = [
 
     function nextModalSlide() {
       console.log('🎯 nextModalSlide called, current:', currentModalSlide, 'max:', mediaItemsCount - 1);
-      if (currentModalSlide < mediaItemsCount - 1) {
-        showModalSlide(currentModalSlide + 1);
-      } else {
-        console.log('🎯 Already at last slide');
-      }
+      const nextIndex = (currentModalSlide + 1) % mediaItemsCount;
+      showModalSlide(nextIndex);
     }
 
     function prevModalSlide() {
       console.log('🎯 prevModalSlide called, current:', currentModalSlide);
-      if (currentModalSlide > 0) {
-        showModalSlide(currentModalSlide - 1);
-      } else {
-        console.log('🎯 Already at first slide');
-      }
+      const prevIndex = (currentModalSlide - 1 + mediaItemsCount) % mediaItemsCount;
+      showModalSlide(prevIndex);
     }
 
     // メインカルーセルクリック時にモーダル表示
