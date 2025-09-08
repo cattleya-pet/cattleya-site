@@ -322,21 +322,21 @@
     }
     
     &.male svg {
-      width: rem(14);
-      height: rem(14);
+      width: rem(12.6);
+      height: rem(12.6);
       
       @include breakpoint-up(xl) {
-        width: rem(20);
-        height: rem(20);
+        width: rem(18);
+        height: rem(18);
       }
     }
     
     &.female svg {
-      width: rem(8);
-      height: rem(13);
+      width: rem(11.2);
+      height: rem(14);
       
       @include breakpoint-up(xl) {
-        width: rem(12);
+        width: rem(16);
         height: rem(20);
       }
     }
