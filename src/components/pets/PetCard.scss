@@ -146,11 +146,11 @@
     }
     
     &.female svg {
-      width: rem(14);
+      width: rem(11.2);
       height: rem(14);
       
       @include breakpoint-up(xl) {
-        width: rem(20);
+        width: rem(16);
         height: rem(20);
       }
     }
