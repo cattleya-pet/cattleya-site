@@ -128,11 +128,8 @@
     margin-left: 0.3rem;
     display: inline-block;
     vertical-align: baseline;
-    margin-bottom: rem(-1);
+    margin-bottom: rem(-2);
 
-    @include breakpoint-up(xl) {
-      margin-bottom: rem(-2);
-    }
     
     svg {
       display: block;
