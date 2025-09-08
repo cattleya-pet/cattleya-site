@@ -137,11 +137,11 @@
     }
     
     &.male svg {
-      width: rem(11.9);
+      width: rem(12.6);
       height: rem(14);
       
       @include breakpoint-up(xl) {
-        width: rem(17);
+        width: rem(18);
         height: rem(20);
       }
     }
