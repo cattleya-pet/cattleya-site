@@ -251,24 +251,25 @@
   display: inline-flex;
   align-items: center;
   object-fit: contain;
+  margin-top: rem(2);
   
   &.male {
-    width: rem(12.6);
-    height: rem(12.6);
+    width: rem(18);
+    height: rem(18);
     
     @include breakpoint-up(lg) {
-      width: rem(18);
-      height: rem(18);
+      width: rem(27);
+      height: rem(27);
     }
   }
   
   &.female {
-    width: rem(11.2);
-    height: rem(14);
+    width: rem(16);
+    height: rem(20);
     
     @include breakpoint-up(lg) {
-      width: rem(16);
-      height: rem(20);
+      width: rem(24);
+      height: rem(30);
     }
   }
 }
