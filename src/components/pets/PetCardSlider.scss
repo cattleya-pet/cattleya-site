@@ -319,12 +319,12 @@
     }
     
     &.male {
-      width: rem(12.6);
-      height: rem(12.6);
+      width: rem(14);
+      height: rem(14);
       
       @include breakpoint-up(xl) {
-        width: rem(18);
-        height: rem(18);
+        width: rem(20);
+        height: rem(20);
       }
     }
     
