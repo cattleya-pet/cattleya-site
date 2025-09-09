@@ -129,6 +129,7 @@
     display: inline-block;
     vertical-align: baseline;
     margin-bottom: rem(-2);
+    object-fit: contain;
     
     &.male {
       width: rem(12.6);

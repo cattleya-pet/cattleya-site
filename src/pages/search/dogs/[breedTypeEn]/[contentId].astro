@@ -7,8 +7,6 @@ import { getStoreById } from '../../../../lib/api/stores';
 import { getVoices } from '../../../../lib/api/voice';
 import { getImageUrl } from '../../../../lib/utils/image';
 import { formatDate } from '../../../../lib/utils/date';
-import MaleIcon from '../../../../assets/icons/icon_male.svg?raw';
-import FemaleIcon from '../../../../assets/icons/icon_female.svg?raw';
 import BaseButton from '../../../../components/ui/buttons/BaseButton.astro';
 import ButtonWrapper from '../../../../components/ui/buttons/ButtonWrapper.astro';
 import VoiceCard from '../../../../components/voice/VoiceCard.astro';
@@ -550,16 +548,10 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                       <h3 class="pet-card__title">
                         {recommendedPet.breedTypeJa}
                         {recommendedPet.gender === '男の子' && (
-                          <span 
-                            class="pet-card__gender male" 
-                            set:html={MaleIcon}
-                          />
+                          <img class="pet-card__gender male" src="/icons/icon_male.png" alt="男の子" />
                         )}
                         {recommendedPet.gender === '女の子' && (
-                          <span 
-                            class="pet-card__gender female" 
-                            set:html={FemaleIcon}
-                          />
+                          <img class="pet-card__gender female" src="/icons/icon_female.png" alt="女の子" />
                         )}
                       </h3>
                       <div class="pet-card__details">

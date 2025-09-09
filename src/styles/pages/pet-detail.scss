@@ -61,32 +61,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  object-fit: contain;
   
   &.male {
-    color: #7398D5;
+    width: rem(22);
+    height: rem(22);
     
-    svg {
-      width: rem(22);
-      height: rem(22);
-      
-      @include breakpoint-up(lg) {
-        width: rem(26);
-        height: rem(26);
-      }
+    @include breakpoint-up(lg) {
+      width: rem(26);
+      height: rem(26);
     }
   }
   
   &.female {
-    color: #D55665;
+    width: rem(21);
+    height: rem(21);
     
-    svg {
-      width: rem(21);
-      height: rem(21);
-      
-      @include breakpoint-up(lg) {
-        width: rem(25);
-        height: rem(25);
-      }
+    @include breakpoint-up(lg) {
+      width: rem(25);
+      height: rem(25);
     }
   }
 }
