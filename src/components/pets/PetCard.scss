@@ -130,13 +130,7 @@
     vertical-align: baseline;
     margin-bottom: rem(-2);
     
-
-    
-    svg {
-      display: block;
-    }
-    
-    &.male svg {
+    &.male {
       width: rem(12.6);
       height: rem(12.6);
       
@@ -146,7 +140,7 @@
       }
     }
     
-    &.female svg {
+    &.female {
       width: rem(11.2);
       height: rem(14);
       

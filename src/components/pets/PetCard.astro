@@ -3,8 +3,6 @@ import type { Pet } from '../../lib/api/pets/types';
 import { formatDate } from '../../lib/utils/date';
 import { getImageUrl } from '../../lib/utils/image';
 import './PetCard.scss';
-import MaleIcon from '../../assets/icons/icon_male.svg?raw';
-import FemaleIcon from '../../assets/icons/icon_female.svg?raw';
 
 interface Props {
   pet: Pet;
@@ -36,15 +34,17 @@ const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? '
       <h3 class="pet-card__title">
         {pet.breedTypeJa}
         {pet.gender === '男の子' && (
-          <span 
+          <img 
             class="pet-card__gender male" 
-            set:html={MaleIcon}
+            src="/icons/icon_male.png"
+            alt="男性"
           />
         )}
         {pet.gender === '女の子' && (
-          <span 
+          <img 
             class="pet-card__gender female" 
-            set:html={FemaleIcon}
+            src="/icons/icon_female.png"
+            alt="女性"
           />
         )}
       </h3>
