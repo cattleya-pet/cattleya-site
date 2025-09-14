@@ -2,7 +2,7 @@
  * スプレッドシート「individual」を編集したとき **だけ**
  * その行に対応する microCMS individual API を更新／追加／削除するスクリプト
  *
- * 2025-07-改訂版（randomId 列を削除したレイアウトに対応）
+ * 2025-09-改訂版（randomId 列を削除したレイアウトに対応）
  *
  * - A列 : petNumber   → コンテンツID（6桁ゼロ埋め）
  * - B列 : animalType
@@ -48,7 +48,7 @@ const DEBUG_MODE = false; // 本番: false, デバッグ時: true に変更
 //=================================================================
 // Vercel Deploy Hook 設定
 //=================================================================
-const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/HOywf01XK9";
+const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/140eE3m5ND";
 const DEPLOY_DELAY_SECONDS = 90; // deploy前の待機時間（秒）
 
 //=================================================================
@@ -102,17 +102,17 @@ function buildRecordFromRow(row) {
     tags:           row[7],   // H
     gender:         row[8],   // I
     birthday:       formatBirthday(row[9]),  // J
-    mixFatherBreed: row[10] || "",  // K
-    mixMotherBreed: row[11] || "",  // L
-    fatherWeight:   fw,
-    motherWeight:   mw,
+    mixFatherBreed: row[10] || null,  // K
+    mixMotherBreed: row[11] || null,  // L
+    fatherWeight:   (fw && fw !== "") ? fw : null,
+    motherWeight:   (mw && mw !== "") ? mw : null,
     storeName:      row[14],  // O
     storeId:        row[15],  // P
     isNew:          isNew,    // Q
-    imageUrl01:     row[17] || "", // R
-    imageUrl02:     row[18] || "", // S
-    imageUrl03:     row[19] || "", // T
-    videoUrl:       row[20] || ""  // U
+    imageUrl01:     row[17] || null, // R
+    imageUrl02:     row[18] || null, // S
+    imageUrl03:     row[19] || null, // T
+    videoUrl:       row[20] || null  // U
   };
 }
 
@@ -195,14 +195,6 @@ function syncDataWithMicroCMS() {
   syncWithAPI(INDIVIDUAL_API_URL, records, "id");
 }
 
-//=================================================================
-// 定期実行用：スプレッドシートとmicroCMSを完全同期
-//=================================================================
-function scheduledSync() {
-  Logger.log('定期同期開始');
-  syncDataWithMicroCMS();
-  Logger.log('定期同期完了');
-}
 
 //=================================================================
 // HTTP ラッパー群（変更なし）

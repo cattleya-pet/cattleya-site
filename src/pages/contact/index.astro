@@ -225,6 +225,9 @@ const breadcrumbItems = [
             <div class="form-group">
               <label class="form-label" id="inquiry-number-label">お問い合わせ番号</label>
               <div class="form-pet-select">
+                <div class="multi-store-inquiry-notice" id="multi-store-inquiry-notice">
+                  <p>※店舗が異なる複数のペットをお問い合わせした場合、各店舗よりご連絡いたします</p>
+                </div>
                 <div class="visit-reservation-notice" id="visit-reservation-notice" style="display: none;">
                   <p>※来店予約では、店舗が異なるペットは選べません</p>
                 </div>
@@ -923,7 +926,7 @@ const breadcrumbItems = [
 
 // フォームスタイリング
 .contact-forms {
-  max-width: rem(800);
+  max-width: rem(840);
   margin: 0 auto;
 }
 
@@ -1267,6 +1270,19 @@ input[type="date"] {
   
   .checkbox-text {
     user-select: none;
+  }
+}
+
+// 複数店舗問い合わせ時の注意文
+.multi-store-inquiry-notice {
+  margin-bottom: rem(12);
+  padding: rem(11) 0;
+  
+  p {
+    @include typography-ja-s($font-weight-semibold);
+    margin: 0;
+    text-align: left;
+    line-height: 1.4;
   }
 }
 
@@ -2230,8 +2246,10 @@ input[type="date"] {
       // 来店予約の詳細を非表示にする
       const visitReservationDetails = document.getElementById('visit-reservation-details');
       const visitReservationNotice = document.getElementById('visit-reservation-notice');
+      const multiStoreInquiryNotice = document.getElementById('multi-store-inquiry-notice');
       if (visitReservationDetails) visitReservationDetails.style.display = 'none';
       if (visitReservationNotice) visitReservationNotice.style.display = 'none';
+      if (multiStoreInquiryNotice) multiStoreInquiryNotice.style.display = 'block';
       // 選択されたペットをクリア
       selectedPets = [];
       updateSelectedPetsDisplay();
@@ -2650,6 +2668,10 @@ input[type="date"] {
           visitReservationDetails.style.display = 'block';
           visitReservationNotice.style.display = 'block';
           
+          // 来店予約表示時は複数店舗注意文を非表示
+          const multiStoreInquiryNotice = document.getElementById('multi-store-inquiry-notice');
+          if (multiStoreInquiryNotice) multiStoreInquiryNotice.style.display = 'none';
+          
           // 来店予約チェック時：異店舗ペットを自動解除（この時点では単一店舗のみ）
           handleStoreRestrictionForVisitReservation();
           
@@ -2658,6 +2680,10 @@ input[type="date"] {
         } else {
           visitReservationDetails.style.display = 'none';
           visitReservationNotice.style.display = 'none';
+          
+          // 来店予約非表示時は複数店舗注意文を表示
+          const multiStoreInquiryNotice = document.getElementById('multi-store-inquiry-notice');
+          if (multiStoreInquiryNotice) multiStoreInquiryNotice.style.display = 'block';
           // チェックを外した時に入力値をリセット
           const visitDate = document.getElementById('visit-date');
           const visitTime = document.getElementById('visit-time');
