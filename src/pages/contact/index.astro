@@ -1279,10 +1279,14 @@ input[type="date"] {
   padding: rem(11) 0;
   
   p {
-    @include typography-ja-s($font-weight-semibold);
+    font-size: rem(12);
+    font-weight: $font-weight-semibold;
     margin: 0;
     text-align: left;
     line-height: 1.4;
+    @include breakpoint-up(md) {
+      @include typography-ja-s($font-weight-semibold);
+    }
   }
 }
 
@@ -1292,9 +1296,13 @@ input[type="date"] {
   padding: rem(11) 0;
   
   p {
-    @include typography-ja-s($font-weight-semibold);
+    font-size: rem(12);
+    font-weight: $font-weight-semibold;
     margin: 0;
     line-height: 1.4;
+    @include breakpoint-up(md) {
+      @include typography-ja-s($font-weight-semibold);
+    }
   }
 }
 
