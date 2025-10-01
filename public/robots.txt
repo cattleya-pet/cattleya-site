@@ -7,6 +7,7 @@ Disallow: /api/
 Disallow: /_astro/
 Disallow: /admin/
 Disallow: /debug-carousel.html
+Disallow: /flow-explanation/
 
 User-agent: Googlebot
 Allow: /

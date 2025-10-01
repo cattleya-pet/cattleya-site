@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BannerSection from '../../components/sections/common/BannerSection.astro';
+import ContactCTASection from '../../components/sections/common/ContactCTASection.astro';
+---
+
+<Layout 
+  title="お迎えまでの流れ - ペットショップ Cattleya" 
+  description="カトレアでのペットお迎えまでの流れをご説明いたします。"
+  noindex={true}
+>
+  <main>
+    <!-- 動画セクション -->
+    <section class="flow-video-section">
+      <div class="container">
+        <div class="video-description">
+          <p>
+            カトレアでのペットお迎えまでの流れを<br class="sm-down-only">動画でご紹介いたします。
+          </p>
+        </div>
+        
+        <div class="video-wrapper">
+          <video 
+            controls 
+            muted
+            preload="metadata"
+            class="flow-video"
+          >
+            <source src="/movie/mv_flow-explanation-01.mp4" type="video/mp4">
+            お使いのブラウザは動画再生に対応していません。
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- バナーセクション -->
+    <BannerSection />
+    
+    <!-- CTAセクション -->
+    <ContactCTASection />
+  </main>
+</Layout>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+
+  .flow-video-section {
+    padding: rem(60) 0 rem(90);
+
+
+    .container {
+      max-width: rem(960);
+      margin: 0 auto;
+    }
+  }
+
+  .video-wrapper {
+    margin: 40px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 16 / 9;
+    background: #000;
+
+    @include breakpoint-up(sm) {
+      margin: 60px 0;
+      border-radius: 16px;
+    }
+  }
+
+  .flow-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .video-description {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.8;
+    color: $color-text-light;
+
+    @include breakpoint-up(sm) {
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+</style>

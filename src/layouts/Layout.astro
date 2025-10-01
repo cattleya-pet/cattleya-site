@@ -10,9 +10,10 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  noindex?: boolean;
 }
 
-const { title, description = siteConfig.description, ogImage = siteConfig.ogImage, ogType = 'website' } = Astro.props;
+const { title, description = siteConfig.description, ogImage = siteConfig.ogImage, ogType = 'website', noindex = false } = Astro.props;
 const fullTitle = `${title} | ${siteConfig.name}`;
 const currentUrl = Astro.url.toString();
 ---
@@ -24,6 +25,7 @@ const currentUrl = Astro.url.toString();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     
     <!-- OGP Meta Tags -->
     <meta property="og:title" content={fullTitle} />
