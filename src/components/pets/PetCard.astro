@@ -12,8 +12,8 @@ const { pet } = Astro.props;
 // カード画像用のサイズを指定
 const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
 
-// 詳細ページのURLを生成（ミックス個体の場合は/mix/パスを含める）
-const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' + pet.breedTypeEn.toLowerCase() : pet.breedTypeEn.toLowerCase()}/${pet.id}`;
+// 詳細ページのURLを生成（ミックス個体の場合は/mix/パスを含め、×を-に変換）
+const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' + pet.breedTypeEn.replace(/×/g, '-').toLowerCase() : pet.breedTypeEn.toLowerCase()}/${pet.id}`;
 ---
 
 <div class="pet-card" data-animal-type={pet.animalType}>

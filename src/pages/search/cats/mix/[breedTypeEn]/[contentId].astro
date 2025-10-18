@@ -34,7 +34,7 @@ export async function getStaticPaths() {
       
       const paths = allValidCats.map((pet) => ({
         params: { 
-          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          breedTypeEn: pet.breedTypeEn.replace(/×/g, '-').toLowerCase(),
           contentId: pet.id
         }
       }));
@@ -46,7 +46,7 @@ export async function getStaticPaths() {
       .filter(pet => pet.breedTypeEn && pet.id) // breedTypeEnとidが存在するものだけ
       .map((pet) => ({
         params: { 
-          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          breedTypeEn: pet.breedTypeEn.replace(/×/g, '-').toLowerCase(),
           contentId: pet.id
         }
       }));
@@ -67,19 +67,41 @@ export async function getStaticPaths() {
 
 const { breedTypeEn, contentId } = Astro.params;
 
+// URLパラメータの - を × に戻し、大文字に変換
+const actualBreedTypeEn = breedTypeEn?.replace(/-/g, '×').toUpperCase();
+
 console.log('=== ミックス猫詳細ページ開始 ===');
 console.log('breedTypeEn:', breedTypeEn);
+console.log('actualBreedTypeEn:', actualBreedTypeEn);
 console.log('contentId:', contentId);
 
 // ペット詳細データを取得
 const allCats = await getLatestPetsByType('cat');
 console.log('[ペット詳細] 全猫データ数:', allCats.length);
-const pet = allCats.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
+// デバッグ情報を追加
+console.log('検索条件:');
+console.log('- contentId:', contentId);
+console.log('- actualBreedTypeEn:', actualBreedTypeEn);
+
+// ミックス猫のデータを絞り込み
+const mixCats = allCats.filter(p => p.classification === 'mix');
+console.log('ミックス猫の総数:', mixCats.length);
+console.log('ミックス猫のサンプル:', mixCats.slice(0, 3).map(p => ({ id: p.id, breedTypeEn: p.breedTypeEn, classification: p.classification })));
+
+// まずcontentIdで検索
+const petsByContentId = allCats.filter(p => p.id === contentId);
+console.log('contentIdでの検索結果:', petsByContentId.length);
+if (petsByContentId.length > 0) {
+  console.log('見つかったペット:', petsByContentId.map(p => ({ id: p.id, breedTypeEn: p.breedTypeEn, classification: p.classification })));
+}
+
+// 正確な検索
+const pet = allCats.find(p => p.id === contentId && p.breedTypeEn === actualBreedTypeEn && p.classification === 'mix');
 
 if (!pet) {
-  console.error(`Pet not found: ${contentId}, breedTypeEn: ${breedTypeEn}`);
-  console.log('Available ids:', allCats.map(p => p.id).slice(0, 10));
-  console.log('Available breedTypeEns:', [...new Set(allCats.map(p => p.breedTypeEn))]);
+  console.error(`Pet not found: ${contentId}, breedTypeEn: ${actualBreedTypeEn}`);
+  console.log('Available mix cat ids:', mixCats.map(p => p.id).slice(0, 10));
+  console.log('Available mix cat breedTypeEns:', [...new Set(mixCats.map(p => p.breedTypeEn))]);
   return new Response('Pet not found', { status: 404 });
 }
 

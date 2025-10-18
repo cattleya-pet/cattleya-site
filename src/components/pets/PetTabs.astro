@@ -42,7 +42,7 @@ const tabs = [
   // ペットカードのテンプレート関数を最適化
   function generatePetCard(pet) {
     const imageUrl = getImageUrl(pet.imageUrl01, 600, 600);
-    const breedTypeEn = (pet.breedTypeEn || '').toLowerCase();
+    const breedTypeEn = (pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase();
     const genderIcon = pet.gender === '男の子' 
       ? '<img class="pet-card__gender male" src="/icons/icon_male.png" alt="男性" />'
       : pet.gender === '女の子' 

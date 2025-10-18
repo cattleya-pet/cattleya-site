@@ -71,7 +71,7 @@ const {
             const placeholderImage = '/images/ui/img_loading-pet-image-01.webp';
             const imageUrl = pet.imageUrl01 ? getImageUrl(pet.imageUrl01, 600, 600) : placeholderImage;
             const formattedDate = formatDate(pet.birthday);
-            const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${pet.breedTypeEn.toLowerCase()}/${pet.id}`;
+            const detailUrl = `/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${pet.breedTypeEn.replace(/×/g, '-').toLowerCase()}/${pet.id}`;
             
             return (
               <div class="pet-card__new">

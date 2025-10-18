@@ -13,36 +13,30 @@ import '../../../../styles/layout/pets-grid.scss';
 
 export async function getStaticPaths() {
   try {
-    // 猫の品種データを取得してミックス品種を抽出
-    const { pureBreeds, hasMix } = await getBreedsByAnimalType('cat');
+    // 直接ペットデータからミックス品種を抽出
+    const allCats = await getLatestPetsByType('cat');
+    console.log('[getStaticPaths] 全猫データ数:', allCats.length);
     
-    if (!hasMix) {
-      console.log('[getStaticPaths] ミックス猫が存在しません');
-      return [];
-    }
+    // ミックス猫のみを抽出
+    const mixCats = allCats.filter(pet => pet.classification === 'mix');
+    console.log('[getStaticPaths] ミックス猫数:', mixCats.length);
     
-    const submenuItems = [{ type: 'cat', breeds: pureBreeds, hasMix: hasMix }];
-    const mixBreeds = await getMixBreedsByAnimalType(submenuItems);
-    const catMixBreeds = mixBreeds.find(mb => mb.type === 'cat');
+    // ユニークなbreedTypeEnを取得
+    const uniqueBreedTypes = [...new Set(mixCats.map(pet => pet.breedTypeEn))];
+    console.log('[getStaticPaths] ユニークなミックス品種:', uniqueBreedTypes);
     
-    if (!catMixBreeds || !catMixBreeds.breeds || catMixBreeds.breeds.length === 0) {
-      console.log('[getStaticPaths] 猫のミックス品種データがありません');
-      return [];
-    }
-    
-    console.log('[getStaticPaths] ミックス猫品種数:', catMixBreeds.breeds.length);
-    
-    const paths = catMixBreeds.breeds.map((breed) => {
-      const breedTypeEn = breed.url.split('/').pop();
-      console.log('[getStaticPaths] 生成するミックス猫パス:', breedTypeEn, '品種名:', breed.name);
+    // ハイフン形式のパスを生成
+    const paths = uniqueBreedTypes.map((breedTypeEn) => {
+      const urlPath = breedTypeEn.replace(/×/g, '-').toLowerCase();
+      console.log('[getStaticPaths] 生成するパス:', breedTypeEn, '->', urlPath);
       return {
         params: { 
-          breedTypeEn: breedTypeEn 
+          breedTypeEn: urlPath 
         }
       };
     });
     
-    console.log('[getStaticPaths] 生成されるミックス猫パス数:', paths.length);
+    console.log('[getStaticPaths] 生成されるパス数:', paths.length);
     return paths;
   } catch (error) {
     console.error('[getStaticPaths] ミックス猫エラー:', error);
@@ -52,13 +46,17 @@ export async function getStaticPaths() {
 
 const { breedTypeEn } = Astro.params;
 
+// URLパラメータの - を × に戻し、大文字に変換
+const actualBreedTypeEn = breedTypeEn?.replace(/-/g, '×').toUpperCase();
+
 console.log('=== ミックス猫品種ページ開始 ===');
 console.log('breedTypeEn:', breedTypeEn);
+console.log('actualBreedTypeEn:', actualBreedTypeEn);
 
 // この品種のミックス猫を取得（全フィールド）
 const allCats = await getLatestPetsByType('cat');
 console.log(`[${breedTypeEn}] 全猫データ数:`, allCats.length);
-console.log(`[${breedTypeEn}] 探しているミックス品種:`, breedTypeEn);
+console.log(`[${breedTypeEn}] 探しているミックス品種:`, actualBreedTypeEn);
 
 // データサンプルを確認
 if (allCats.length > 0) {
@@ -86,7 +84,7 @@ if (allCats.length > 0) {
 
 const breedCats = allCats.filter(pet => 
   pet.classification === 'mix' && 
-  pet.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase()
+  pet.breedTypeEn === actualBreedTypeEn
 );
 
 console.log(`[${breedTypeEn}] フィルタ後のミックス猫数:`, breedCats.length);
@@ -95,7 +93,7 @@ console.log(`[${breedTypeEn}] フィルタ後のミックス猫数:`, breedCats.
 if (breedCats.length === 0) {
   const partialMatches = allCats.filter(pet => 
     pet.classification === 'mix' && 
-    pet.breedTypeEn?.toLowerCase().includes(breedTypeEn.toLowerCase())
+    pet.breedTypeEn?.includes(actualBreedTypeEn)
   );
   console.log(`[${breedTypeEn}] 部分一致結果:`, partialMatches.length);
   
@@ -198,7 +196,7 @@ const breadcrumbItems = [
         nextBatch.forEach(pet => {
           const petCard = document.createElement('div');
           petCard.innerHTML = `
-            <a href="/search/cats/mix/${encodeURIComponent((pet.breedTypeEn || '').toLowerCase())}/${pet.id}" class="pet-card">
+            <a href="/search/cats/mix/${encodeURIComponent((pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${pet.id}" class="pet-card">
               <div class="pet-card__image">
                 <img src="${pet.imageUrl01}" alt="${pet.name}" loading="lazy" />
               </div>

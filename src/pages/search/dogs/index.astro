@@ -128,7 +128,7 @@ const breadcrumbItems = [
         nextBatch.forEach(pet => {
           const petCardHTML = `
             <div class="pet-card" data-animal-type="${pet.animalType}">
-              <a href="/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((pet.breedTypeEn || '').toLowerCase())}/${pet.id}" class="pet-card__link">
+              <a href="/search/${pet.animalType}s/${pet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${pet.id}" class="pet-card__link">
                 <div class="pet-card__inner">
                   <div class="pet-card__image-container">
                     <img

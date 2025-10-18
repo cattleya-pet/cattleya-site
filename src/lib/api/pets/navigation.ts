@@ -27,12 +27,14 @@ export async function getMixBreedsByAnimalType(submenuItems: SubmenuItem[] = [])
           .filter(pet => pet.classification === 'mix')
           .map(pet => ({
             name: pet.breedTypeJa,
-            url: `/search/${item.type === 'dog' ? 'dogs' : item.type === 'cat' ? 'cats' : item.type + 's'}/mix/${encodeURIComponent(pet.breedTypeEn.toLowerCase())}`
+            url: `/search/${item.type === 'dog' ? 'dogs' : item.type === 'cat' ? 'cats' : item.type + 's'}/mix/${encodeURIComponent(pet.breedTypeEn.replace(/×/g, '-').toLowerCase())}`
           }))
           // breedTypeJaの重複を除去
           .filter((breed, index, self) => 
             index === self.findIndex(b => b.name === breed.name)
-          );
+          )
+          // 五十音順にソート
+          .sort((a, b) => a.name.localeCompare(b.name, 'ja'));
         return { type: item.type, breeds: mixBreeds };
       }
       return { type: item.type, breeds: [] };

@@ -13,36 +13,30 @@ import '../../../../styles/layout/pets-grid.scss';
 
 export async function getStaticPaths() {
   try {
-    // 犬の品種データを取得してミックス品種を抽出
-    const { pureBreeds, hasMix } = await getBreedsByAnimalType('dog');
+    // 直接ペットデータからミックス品種を抽出
+    const allDogs = await getLatestPetsByType('dog');
+    console.log('[getStaticPaths] 全犬データ数:', allDogs.length);
     
-    if (!hasMix) {
-      console.log('[getStaticPaths] ミックス犬が存在しません');
-      return [];
-    }
+    // ミックス犬のみを抽出
+    const mixDogs = allDogs.filter(pet => pet.classification === 'mix');
+    console.log('[getStaticPaths] ミックス犬数:', mixDogs.length);
     
-    const submenuItems = [{ type: 'dog', breeds: pureBreeds, hasMix: hasMix }];
-    const mixBreeds = await getMixBreedsByAnimalType(submenuItems);
-    const dogMixBreeds = mixBreeds.find(mb => mb.type === 'dog');
+    // ユニークなbreedTypeEnを取得
+    const uniqueBreedTypes = [...new Set(mixDogs.map(pet => pet.breedTypeEn))];
+    console.log('[getStaticPaths] ユニークなミックス品種:', uniqueBreedTypes);
     
-    if (!dogMixBreeds || !dogMixBreeds.breeds || dogMixBreeds.breeds.length === 0) {
-      console.log('[getStaticPaths] 犬のミックス品種データがありません');
-      return [];
-    }
-    
-    console.log('[getStaticPaths] ミックス犬品種数:', dogMixBreeds.breeds.length);
-    
-    const paths = dogMixBreeds.breeds.map((breed) => {
-      const breedTypeEn = breed.url.split('/').pop();
-      console.log('[getStaticPaths] 生成するミックスパス:', breedTypeEn, '品種名:', breed.name);
+    // ハイフン形式のパスを生成
+    const paths = uniqueBreedTypes.map((breedTypeEn) => {
+      const urlPath = breedTypeEn.replace(/×/g, '-').toLowerCase();
+      console.log('[getStaticPaths] 生成するパス:', breedTypeEn, '->', urlPath);
       return {
         params: { 
-          breedTypeEn: breedTypeEn 
+          breedTypeEn: urlPath 
         }
       };
     });
     
-    console.log('[getStaticPaths] 生成されるミックスパス数:', paths.length);
+    console.log('[getStaticPaths] 生成されるパス数:', paths.length);
     return paths;
   } catch (error) {
     console.error('[getStaticPaths] ミックスエラー:', error);
@@ -52,13 +46,17 @@ export async function getStaticPaths() {
 
 const { breedTypeEn } = Astro.params;
 
+// URLパラメータの - を × に戻し、大文字に変換
+const actualBreedTypeEn = breedTypeEn?.replace(/-/g, '×').toUpperCase();
+
 console.log('=== ミックス品種ページ開始 ===');
 console.log('breedTypeEn:', breedTypeEn);
+console.log('actualBreedTypeEn:', actualBreedTypeEn);
 
 // この品種のミックス犬を取得（全フィールド）
 const allDogs = await getLatestPetsByType('dog');
 console.log(`[${breedTypeEn}] 全犬データ数:`, allDogs.length);
-console.log(`[${breedTypeEn}] 探しているミックス品種:`, breedTypeEn);
+console.log(`[${breedTypeEn}] 探しているミックス品種:`, actualBreedTypeEn);
 
 // データサンプルを確認
 if (allDogs.length > 0) {
@@ -86,16 +84,25 @@ if (allDogs.length > 0) {
 
 const breedDogs = allDogs.filter(pet => 
   pet.classification === 'mix' && 
-  pet.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase()
+  pet.breedTypeEn === actualBreedTypeEn
 );
 
 console.log(`[${breedTypeEn}] フィルタ後のミックス犬数:`, breedDogs.length);
+
+// デバッグ情報を追加
+const allMixDogs = allDogs.filter(pet => pet.classification === 'mix');
+console.log('=== デバッグ情報 ===');
+console.log('URLパラメータ breedTypeEn:', breedTypeEn);
+console.log('変換後 actualBreedTypeEn:', actualBreedTypeEn);
+console.log('全犬数:', allDogs.length);
+console.log('ミックス犬数:', allMixDogs.length);
+console.log('利用可能なミックス品種:', [...new Set(allMixDogs.map(p => p.breedTypeEn))]);
 
 // もしフィルタ結果が0なら、部分一致も試してみる
 if (breedDogs.length === 0) {
   const partialMatches = allDogs.filter(pet => 
     pet.classification === 'mix' && 
-    pet.breedTypeEn?.toLowerCase().includes(breedTypeEn.toLowerCase())
+    pet.breedTypeEn?.includes(actualBreedTypeEn)
   );
   console.log(`[${breedTypeEn}] 部分一致結果:`, partialMatches.length);
   
@@ -198,7 +205,7 @@ const breadcrumbItems = [
         nextBatch.forEach(pet => {
           const petCard = document.createElement('div');
           petCard.innerHTML = `
-            <a href="/search/dogs/mix/${encodeURIComponent((pet.breedTypeEn || '').toLowerCase())}/${pet.id}" class="pet-card">
+            <a href="/search/dogs/mix/${encodeURIComponent((pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${pet.id}" class="pet-card">
               <div class="pet-card__image">
                 <img src="${pet.imageUrl01}" alt="${pet.name}" loading="lazy" />
               </div>

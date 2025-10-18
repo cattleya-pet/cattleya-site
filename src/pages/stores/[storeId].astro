@@ -444,6 +444,7 @@ const breadcrumbItems = [
             {displayVoices.map((voice, index) => (
               <div class={`voice-card-wrapper ${index >= 1 ? 'voice-card--sm-only' : ''}`}>
                 <VoiceCard
+                  id={voice.id}
                   petName={voice.petName}
                   petGender={voice.petGender}
                   petThumbnail={voice.petThumbnail}
@@ -1042,7 +1043,7 @@ const breadcrumbItems = [
     function generatePetCard(pet) {
       // getImageUrlのロジックを直接実装
       const imageUrl = pet.imageUrl01 ? `${pet.imageUrl01}?w=600&h=600&fit=crop` : '/images/ui/img_loading-pet-image-01.webp';
-      const breedTypeEn = (pet.breedTypeEn || '').toLowerCase();
+      const breedTypeEn = (pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase();
       const genderIcon = pet.gender === '男の子' 
         ? '<img class="pet-card__gender male" src="/icons/icon_male.png" alt="男の子" />'
         : pet.gender === '女の子' 

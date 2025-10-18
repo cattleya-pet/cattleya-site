@@ -34,7 +34,7 @@ export async function getStaticPaths() {
       
       const paths = allValidDogs.map((pet) => ({
         params: { 
-          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          breedTypeEn: pet.breedTypeEn.replace(/×/g, '-').toLowerCase(),
           contentId: pet.id
         }
       }));
@@ -46,7 +46,7 @@ export async function getStaticPaths() {
       .filter(pet => pet.breedTypeEn && pet.id) // breedTypeEnとidが存在するものだけ
       .map((pet) => ({
         params: { 
-          breedTypeEn: pet.breedTypeEn.toLowerCase(),
+          breedTypeEn: pet.breedTypeEn.replace(/×/g, '-').toLowerCase(),
           contentId: pet.id
         }
       }));
@@ -67,19 +67,68 @@ export async function getStaticPaths() {
 
 const { breedTypeEn, contentId } = Astro.params;
 
+// URLパラメータの - を × に戻し、大文字に変換
+const actualBreedTypeEn = breedTypeEn?.replace(/-/g, '×').toUpperCase();
+
 console.log('=== ミックス犬詳細ページ開始 ===');
 console.log('breedTypeEn:', breedTypeEn);
+console.log('actualBreedTypeEn:', actualBreedTypeEn);
 console.log('contentId:', contentId);
 
 // ペット詳細データを取得
 const allDogs = await getLatestPetsByType('dog');
 console.log('[ペット詳細] 全犬データ数:', allDogs.length);
-const pet = allDogs.find(p => p.id === contentId && p.breedTypeEn?.toLowerCase() === breedTypeEn?.toLowerCase());
+// デバッグ情報を追加
+console.log('=== 詳細デバッグ開始 ===');
+console.log('検索条件:');
+console.log('- URLパラメータ breedTypeEn:', breedTypeEn);
+console.log('- 変換後 actualBreedTypeEn:', actualBreedTypeEn);
+console.log('- contentId:', contentId);
+
+// ミックス犬のデータを絞り込み
+const mixDogs = allDogs.filter(p => p.classification === 'mix');
+console.log('ミックス犬の総数:', mixDogs.length);
+console.log('ミックス犬のサンプル（全データ）:', mixDogs.map(p => ({ 
+  id: p.id, 
+  breedTypeEn: p.breedTypeEn, 
+  breedTypeJa: p.breedTypeJa,
+  classification: p.classification 
+})));
+
+// まずcontentIdで検索
+const petsByContentId = allDogs.filter(p => p.id === contentId);
+console.log('contentIdでの検索結果:', petsByContentId.length);
+if (petsByContentId.length > 0) {
+  console.log('contentIdで見つかったペット:', petsByContentId.map(p => ({ 
+    id: p.id, 
+    breedTypeEn: p.breedTypeEn, 
+    breedTypeJa: p.breedTypeJa,
+    classification: p.classification 
+  })));
+} else {
+  console.log('contentIdで見つからない。利用可能なID一覧（最初の20件）:');
+  console.log(allDogs.map(p => p.id).slice(0, 20));
+}
+
+// breedTypeEnで検索
+const petsByBreedType = mixDogs.filter(p => p.breedTypeEn === actualBreedTypeEn);
+console.log('breedTypeEnでの検索結果:', petsByBreedType.length);
+if (petsByBreedType.length > 0) {
+  console.log('breedTypeEnで見つかったペット:', petsByBreedType.map(p => ({ 
+    id: p.id, 
+    breedTypeEn: p.breedTypeEn, 
+    breedTypeJa: p.breedTypeJa,
+    classification: p.classification 
+  })));
+}
+
+// 正確な検索
+const pet = allDogs.find(p => p.id === contentId && p.breedTypeEn === actualBreedTypeEn && p.classification === 'mix');
 
 if (!pet) {
-  console.error(`Pet not found: ${contentId}, breedTypeEn: ${breedTypeEn}`);
-  console.log('Available ids:', allDogs.map(p => p.id).slice(0, 10));
-  console.log('Available breedTypeEns:', [...new Set(allDogs.map(p => p.breedTypeEn))]);
+  console.error(`Pet not found: ${contentId}, breedTypeEn: ${actualBreedTypeEn}`);
+  console.log('Available mix dog ids:', mixDogs.map(p => p.id).slice(0, 10));
+  console.log('Available mix dog breedTypeEns:', [...new Set(mixDogs.map(p => p.breedTypeEn))]);
   return new Response('Pet not found', { status: 404 });
 }
 
