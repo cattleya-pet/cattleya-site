@@ -90,6 +90,10 @@
     top: rem(-180);
     font-size: rem(180);
   }
+
+  @media (min-width: 1460px) {
+    top: rem(-220);
+  }
 }
 
 .voice-detail__title {

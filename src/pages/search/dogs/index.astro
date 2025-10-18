@@ -148,9 +148,9 @@ const breadcrumbItems = [
                       ${pet.gender === '女の子' ? '<img class="pet-card__gender female" src="/icons/icon_female.png" alt="女性" />' : ''}
                     </h3>
                     <div class="pet-card__details">
-                      <p class="pet-card__detail-item">カラー：${pet.color}</p>
-                      <p class="pet-card__detail-item">誕生日：${new Date(pet.birthday).toLocaleDateString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric'})}</p>
-                      <p class="pet-card__detail-item">店舗：${pet.storeName}</p>
+                      <p class="pet-card__detail-item">カラー：${pet.color || ''}</p>
+                      <p class="pet-card__detail-item">誕生日：${pet.birthday ? new Date(pet.birthday).toLocaleDateString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric'}) : ''}</p>
+                      <p class="pet-card__detail-item">店舗：${pet.storeName || ''}</p>
                     </div>
                   </div>
                 </div>

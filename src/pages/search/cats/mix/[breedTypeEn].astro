@@ -194,20 +194,38 @@ const breadcrumbItems = [
         
         // Create and append new pet cards
         nextBatch.forEach(pet => {
-          const petCard = document.createElement('div');
-          petCard.innerHTML = `
-            <a href="/search/cats/mix/${encodeURIComponent((pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${pet.id}" class="pet-card">
-              <div class="pet-card__image">
-                <img src="${pet.imageUrl01}" alt="${pet.name}" loading="lazy" />
-              </div>
-              <div class="pet-card__content">
-                <h3 class="pet-card__name">${pet.name}</h3>
-                <p class="pet-card__breed">${pet.breedTypeJa}</p>
-                <p class="pet-card__gender">${pet.gender}</p>
-              </div>
-            </a>
+          const petCardHTML = `
+            <div class="pet-card" data-animal-type="${pet.animalType}">
+              <a href="/search/cats/mix/${encodeURIComponent((pet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${pet.id}" class="pet-card__link">
+                <div class="pet-card__inner">
+                  <div class="pet-card__image-container">
+                    <img
+                      class="pet-card__image"
+                      src="${pet.imageUrl01}"
+                      alt="${pet.breedTypeJa}の写真"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                      onerror="this.src='/images/ui/img_loading-pet-image-01.webp'"
+                    />
+                  </div>
+                  <div class="pet-card__info">
+                    <h3 class="pet-card__title">
+                      ${pet.breedTypeJa}
+                      ${pet.gender === '男の子' ? '<img class="pet-card__gender male" src="/icons/icon_male.png" alt="男性" />' : ''}
+                      ${pet.gender === '女の子' ? '<img class="pet-card__gender female" src="/icons/icon_female.png" alt="女性" />' : ''}
+                    </h3>
+                    <div class="pet-card__details">
+                      <p class="pet-card__detail-item">カラー：${pet.color || ''}</p>
+                      <p class="pet-card__detail-item">誕生日：${pet.birthday ? new Date(pet.birthday).toLocaleDateString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric'}) : ''}</p>
+                      <p class="pet-card__detail-item">店舗：${pet.storeName || ''}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
           `;
-          petsGrid.appendChild(petCard.firstElementChild);
+          petsGrid.insertAdjacentHTML('beforeend', petCardHTML);
         });
         
         currentlyShown += itemsPerPage;
