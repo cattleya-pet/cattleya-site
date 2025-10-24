@@ -56,7 +56,7 @@ const RETRY_DELAY_BASE = 1000; // リトライ基本待機時間（ミリ秒）
 //=================================================================
 // Vercel Deploy Hook 設定
 //=================================================================
-const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/140eE3m5ND";
+const VERCEL_WEBHOOK_URL = "https://api.vercel.com/v1/integrations/deploy/prj_xjNXgpD3aFBP6sQ6XOCRWurrLd06/LxG98Iw4NB";
 const DEPLOY_DELAY_SECONDS = 90; // deploy前の待機時間（秒）
 
 //=================================================================
