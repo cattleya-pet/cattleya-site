@@ -52,6 +52,11 @@ const {
     @include typography-en-2s;
     margin: 0;
     
+    // NEW FACEなど特定のサブタイトルは太字
+    &.text-new {
+      font-weight: $font-weight-bold;
+    }
+    
     @include breakpoint-up(lg) {
     }
   }
