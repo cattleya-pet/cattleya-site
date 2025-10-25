@@ -516,14 +516,25 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
                     </div>
                   </a>
 
-                  <button class="action-button action-button--phone">
-                    <div class="action-button__icon">
-                      <img src="/icons/icon_store-phone-01.svg" alt="電話アイコン" width="32" height="32" />
-                    </div>
-                    <div class="action-button__text">
-                      この子を電話で<br>問い合わせる
-                    </div>
-                  </button>
+                  {storeInfo?.storePhoneNumber ? (
+                    <a href={`tel:${storeInfo.storePhoneNumber}`} class="action-button action-button--phone">
+                      <div class="action-button__icon">
+                        <img src="/icons/icon_store-phone-01.svg" alt="電話アイコン" width="32" height="32" />
+                      </div>
+                      <div class="action-button__text">
+                        この子を電話で<br>問い合わせる
+                      </div>
+                    </a>
+                  ) : (
+                    <a href="/contact#phone-contact" class="action-button action-button--phone">
+                      <div class="action-button__icon">
+                        <img src="/icons/icon_store-phone-01.svg" alt="電話アイコン" width="32" height="32" />
+                      </div>
+                      <div class="action-button__text">
+                        この子を電話で<br>問い合わせる
+                      </div>
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -580,7 +591,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
           <div class="pets-grid">
             {allRecommendedPets.map((recommendedPet, index) => (
               <div class={`pet-card ${index >= 2 ? 'pet-card--lg-only' : ''}`} data-animal-type={recommendedPet.animalType}>
-                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${recommendedPet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((recommendedPet.breedTypeEn || '').toLowerCase())}/${recommendedPet.id}`} class="pet-card__link">
+                <a href={`/search/${pet.animalType === 'dog' ? 'dogs' : 'cats'}/${recommendedPet.classification === 'mix' ? 'mix/' : ''}${encodeURIComponent((recommendedPet.breedTypeEn || '').replace(/×/g, '-').toLowerCase())}/${recommendedPet.id}`} class="pet-card__link">
                   <div class="pet-card__inner">
                     <div class="pet-card__image-container">
                       <img
@@ -644,6 +655,7 @@ breadcrumbItems.push({ label: `ペット詳細（${pet.id.replace(/^0+/, '') || 
             {displayVoices.map((voice, index) => (
               <div class={`voice-card-wrapper ${index >= 1 ? 'voice-card--sm-only' : ''}`}>
                 <VoiceCard
+                  id={voice.id}
                   petName={voice.petName}
                   petGender={voice.petGender}
                   petThumbnail={voice.petThumbnail}
