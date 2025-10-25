@@ -24,9 +24,6 @@ const storeImage = storeImages && storeImages.length > 0
   ? storeImages[0].url 
   : '/noimage.webp';
 
-// 住所を結合
-const fullAddress = `${storePostCode ? `〒${storePostCode} ` : ''}${storeAddress || ''}`;
-
 // 店舗詳細ページのURL
 const storeDetailUrl = `/stores/${storeId}`;
 ---
@@ -47,7 +44,14 @@ const storeDetailUrl = `/stores/${storeId}`;
           <img src={mapIcon.src} alt="住所" class="store-icon" />
         </div>
         <div class="store-card-info-content">
-          <div class="store-card-address">{fullAddress}</div>
+          <div class="store-card-address">
+            {storePostCode && (
+              <>
+                〒{storePostCode}<br/>
+              </>
+            )}
+            {storeAddress}
+          </div>
           {trafficInformation && (
             <div class="store-card-traffic">{trafficInformation}</div>
           )}
